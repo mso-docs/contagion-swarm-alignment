@@ -1,0 +1,9 @@
+FROM python:3.11-slim
+WORKDIR /contagion
+COPY pyproject.toml requirements-bootstrap.txt requirements-interpretability.txt ./
+COPY src ./src
+COPY scripts/setup_interpretability.py scripts/capture_neural.py ./scripts/
+RUN python scripts/setup_interpretability.py
+ENV HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 WANDB_MODE=disabled
+ENTRYPOINT [".venv-interp/bin/python", "scripts/capture_neural.py"]
+CMD ["--mode", "random-smoke", "--out", "results/neural-smoke"]

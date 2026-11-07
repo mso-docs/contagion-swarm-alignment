@@ -154,8 +154,11 @@ def sensitive_values(env):
     values = []
     for key, value in env.items():
         if value and (re.search(r'(?:KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL|AUTH)', key, re.I)
-                      or key in {'USER', 'LOGNAME', 'HOME', 'HOSTNAME', 'CONTAGION_BASE_URL'}):
+                      or key in {'USER', 'LOGNAME', 'HOME', 'HOSTNAME', 'CONTAGION_BASE_URL',
+                                  'PRIMARY_SERVER_ID', 'SECONDARY_SERVER_ID', 'PRIMARY_PROJECT_DIR', 'SECONDARY_PROJECT_DIR'}):
             values.append(value)
+    for key in ['PRIMARY_SERVER_ID','SECONDARY_SERVER_ID']:
+        if env.get(key):values.append(env[key].rsplit('@',1)[-1])
     endpoint = env.get('CONTAGION_BASE_URL', '')
     if endpoint:
         parsed = urlsplit(endpoint)

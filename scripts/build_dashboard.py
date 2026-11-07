@@ -16,7 +16,13 @@ def build(source, output):
         raise ValueError('Build output must be separate from the dashboard source')
     # Fail before changing a prior build if the data does not pass schema/redaction checks.
     validate_snapshot(source / 'data/results.json')
-    for asset in ASSETS:
+    assets = ASSETS
+    research = source / 'data/research.json'
+    if research.exists() or research.is_symlink():
+        from contagion.research_publication import validate_research_snapshot
+        validate_research_snapshot(research)
+        assets += ('data/research.json',)
+    for asset in assets:
         path = source / asset
         if path.is_symlink() or not path.is_file():
             raise ValueError('An approved dashboard asset is missing or is a symlink')
@@ -24,12 +30,12 @@ def build(source, output):
     output.mkdir(parents=True, exist_ok=True)
     if any(output.iterdir()):
         raise ValueError('Choose a fresh empty build directory')
-    for asset in ASSETS:
+    for asset in assets:
         target = output / asset
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(source / asset, target)
     (output / '.nojekyll').write_text('')
-    print('Built five allowlisted public files; no raw runs or environment files copied.')
+    print(f'Built {len(assets)+1} allowlisted public files; no raw runs or environment files copied.')
 
 
 if __name__ == '__main__':
