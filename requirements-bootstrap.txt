@@ -1,0 +1,3 @@
+# Upgrade venv-seeded tooling before installing the project or security tools.
+pip==26.3
+setuptools==84.1.0

@@ -9,7 +9,7 @@ import tarfile
 
 ROOT = Path(__file__).resolve().parents[1]
 DIRECTORIES = ('src', 'scripts', 'configs', 'tests', 'docs')
-FILES = ('pyproject.toml', 'requirements.lock.txt', 'requirements-interpretability.txt',
+FILES = ('pyproject.toml', 'requirements.lock.txt', 'requirements-bootstrap.txt', 'requirements-interpretability.txt',
          'README.md', 'AGENTS.md', 'CONTAGION_AGENT_MVP_SPEC.md', '.env.example',
          'dashboard/index.html', 'dashboard/style.css', 'dashboard/app.js',
          'dashboard/data/results.json', 'dashboard/data/research.json')

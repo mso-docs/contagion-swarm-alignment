@@ -19,7 +19,7 @@ def main():
     if args.env.exists():parser.exit(2,'Worker environment already exists; use its interpreter or choose a fresh --env directory.\n')
     subprocess.run([sys.executable,'-m','venv',str(args.env)],check=True)
     python=args.env/('Scripts/python.exe' if sys.platform=='win32' else 'bin/python')
-    subprocess.run([str(python),'-m','pip','install','--upgrade','pip==26.3'],check=True)
+    subprocess.run([str(python),'-m','pip','install','--upgrade','-r',str(ROOT/'requirements-bootstrap.txt')],check=True)
     if sys.platform=='linux':
         subprocess.run([str(python),'-m','pip','install','torch>=2.6,<3','--index-url','https://download.pytorch.org/whl/cpu'],check=True)
     subprocess.run([str(python),'-m','pip','install','-r',str(ROOT/'requirements-interpretability.txt'),'-e',str(ROOT)],check=True)

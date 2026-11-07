@@ -132,7 +132,7 @@ Use a supported Linux machine under the operator's control; do not alter the exp
 
 ```sh
 python3.11 -m venv .venv-interp
-.venv-interp/bin/python -m pip install --upgrade pip
+.venv-interp/bin/python -m pip install --upgrade -r requirements-bootstrap.txt
 .venv-interp/bin/python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 # Replace TESTED_VERSION with the exact verified TransformerLens 4 release.
 .venv-interp/bin/python -m pip install 'transformer-lens==TESTED_VERSION'

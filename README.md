@@ -15,6 +15,7 @@ Requires Python 3.11+. Tested locally with Python 3.14.5. No paid API is needed.
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+python -m pip install --upgrade -r requirements-bootstrap.txt
 python -m pip install -e '.[test]'
 pytest -q
 ```
@@ -24,7 +25,7 @@ pytest -q
 ## Commit and CI security
 
 ```bash
-.venv/bin/python -m pip install --upgrade pip==26.3
+.venv/bin/python -m pip install --upgrade -r requirements-bootstrap.txt
 .venv/bin/python -m pip install -r requirements-security.txt -e '.[test]'
 .venv/bin/python scripts/setup_security.py
 .venv/bin/python scripts/check_all.py

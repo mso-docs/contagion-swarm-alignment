@@ -45,7 +45,7 @@ def main(argv=None):
             parser.error('.venv-worker already exists; use its interpreter or choose a fresh project directory')
         venv.EnvBuilder(with_pip=True).create(environment)
         python = environment / 'bin/python'
-        subprocess.run([str(python), '-m', 'pip', 'install', '--upgrade', 'pip==26.3'], check=True)
+        subprocess.run([str(python), '-m', 'pip', 'install', '--upgrade', '-r', str(ROOT / 'requirements-bootstrap.txt')], check=True)
         subprocess.run([str(python), '-m', 'pip', 'install', '-e', str(ROOT) + '[test]'], check=True)
         subprocess.run([str(python), '-m', 'pip', 'check'], check=True)
         subprocess.run([str(python), '-m', 'pytest', '-q'], cwd=ROOT, check=True)

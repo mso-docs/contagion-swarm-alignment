@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 WORKDIR /contagion
-COPY pyproject.toml requirements-interpretability.txt ./
+COPY pyproject.toml requirements-bootstrap.txt requirements-interpretability.txt ./
 COPY src ./src
 COPY scripts/setup_interpretability.py scripts/capture_neural.py ./scripts/
 RUN python scripts/setup_interpretability.py
