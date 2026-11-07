@@ -201,3 +201,76 @@ def test_neural_public_reducer_withholds_private_inputs_and_checks_integrity(tmp
     data=json.loads(text);data['neural'][0]['layers'][0]['clean_residual_rms']=[1.,2.]
     out.write_text(json.dumps(data))
     with pytest.raises(ValueError):validate_research_snapshot(out,env={})
+
+
+def test_two_worker_shards_cover_schedule_without_splitting_pairs(tmp_path):
+    plan=StudyPlan(families=['catalog'],model='mock-v1',rounds=1,
+                   topologies=['ring','star','complete'],max_total_model_calls=30)
+    freeze=tmp_path/'freeze.json';freeze_plan(plan,freeze)
+    def run(index):
+        return asyncio.run(run_plan(plan,MockProvider(),tmp_path/f'worker{index}',freeze,index,2))
+    a,b=run(0),run(1)
+    assert len(a)==4 and len(b)==2
+    def conditions(paths):
+        result={}
+        for path in paths:
+            c=json.loads((path/'config.snapshot.json').read_text())
+            result.setdefault((c['family'],c['case_index'],c['seed'],c['topology']),set()).add(c['intervention'])
+        return result
+    x,y=conditions(a),conditions(b)
+    assert not set(x).intersection(y) and len(set(x)|set(y))==3
+    assert all(v=={'none','benign_override'} for v in [*x.values(),*y.values()])
+    with pytest.raises(ValueError):asyncio.run(run_plan(plan,MockProvider(),tmp_path/'invalid',freeze,2,2))
+
+
+def test_live_sharding_rejects_unknown_model_digest_before_calls(tmp_path):
+    plan=StudyPlan(families=['catalog'],rounds=1,max_total_model_calls=10)
+    provider=MockProvider();provider.identity={'backend':'openai','model':'test','digest':None}
+    with pytest.raises(ValueError):asyncio.run(run_plan(plan,provider,tmp_path/'invalid',tmp_path/'missing.json',0,2))
+    assert not (tmp_path/'invalid').exists()
+
+
+def test_cli_digest_mismatch_closes_provider_without_inference(monkeypatch,tmp_path):
+    from types import SimpleNamespace
+    from contagion import research
+    observed=[]
+    class Provider:
+        def __init__(self,*args,**kwargs):
+            self.identity={'backend':'ollama'}
+        async def discover(self):return [{'name':'test-model','digest':'actual-digest'}]
+        async def close(self):observed.append('closed')
+        async def chat(self,*args):observed.append('inference');raise AssertionError('Unexpected inference')
+    monkeypatch.setattr(research,'HTTPProvider',Provider)
+    monkeypatch.setattr(research,'environment',lambda path:{'CONTAGION_BASE_URL':'http://localhost:11434'})
+    args=SimpleNamespace(command='study',env_file=None,model='test-model',provider='ollama',expected_digest='other-digest')
+    with pytest.raises(ValueError):asyncio.run(research.main_async(args))
+    assert observed==['closed']
+
+
+@pytest.mark.parametrize('count',[5,10,20,40,80,128])
+def test_scaling_graphs_and_protocol_gate(count):
+    from contagion.topology import adjacency,study_adjacency
+    ring=study_adjacency('ring',count);star=study_adjacency('star',count)
+    assert len(ring)==count and all(len(v)==2 for v in ring.values())
+    assert len(star['agent_0'])==count-1
+    assert all(a not in v for a,v in ring.items())
+    assert all(a in ring[b] for a,neighbors in ring.items() for b in neighbors)
+    if count!=5:
+        with pytest.raises(ValueError):adjacency('ring',count)
+        with pytest.raises(ValueError):StudyPlan(agent_count=count)
+    StudyPlan(protocol_version='2.1',agent_count=count,families=['catalog'],rounds=2,
+              max_model_calls=count*2,max_total_model_calls=count*4)
+
+
+def test_scaling_mock_call_count_isolation_and_public_cohort(tmp_path):
+    from contagion.research_publication import make_research_snapshot
+    plan=StudyPlan(protocol_version='2.1',agent_count=10,families=['catalog'],model='mock-v1',rounds=2,
+                   max_model_calls=20,max_total_model_calls=40)
+    execute_study(tmp_path,plan)
+    rows=summarize_study(tmp_path/'raw')
+    assert len(rows)==2 and all(len(r['manifest']['graph'])==10 for r in rows)
+    assert all(r['manifest']['completed_model_calls']==20 for r in rows)
+    public=make_research_snapshot(study_sources=[tmp_path/'raw'],env={})
+    assert all(r.protocol=='2.1' and r.agent_count==10 for r in public.studies)
+    with pytest.raises(ValueError):StudyPlan(protocol_version='2.1',agent_count=128,families=['catalog'],topologies=['complete'],
+                                           rounds=2,max_model_calls=256,max_total_model_calls=512)

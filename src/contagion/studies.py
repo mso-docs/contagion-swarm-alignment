@@ -15,12 +15,12 @@ from .inference import CallBudgetExhausted
 from .models import SamplingConfig
 from .storage import allocate, seal, source_fingerprint, verify, write_json
 from .tasks import TaskArtifact, ToyRecordStore, make_case, mock_task_response, task_score
-from .topology import adjacency
+from .topology import study_adjacency
 
 
 class StudyPlan(BaseModel):
     model_config = ConfigDict(extra='forbid', frozen=True)
-    protocol_version: Literal['2.0'] = '2.0'
+    protocol_version: Literal['2.0','2.1'] = '2.0'
     split: Literal['development','evaluation'] = 'development'
     research_question: Literal['rq1','rq3'] = 'rq1'
     families: list[Literal['catalog','provenance','patch','record']] = ['catalog','provenance','patch']
@@ -32,18 +32,27 @@ class StudyPlan(BaseModel):
     seeds: list[int] = [101]
     topologies: list[Literal['ring','star','complete','single']] = ['ring']
     interventions: list[Literal['none','benign_override']] = ['none','benign_override']
+    agent_count: int = Field(default=5,ge=5,le=128)
     rounds: int = Field(default=5, ge=1, le=5)
     model: str = ''
     thinking: Literal['default','enabled','disabled'] = 'disabled'
     temperature: float = Field(default=.2, ge=0, le=2)
     max_output_tokens: int = Field(default=512, ge=64, le=4096)
-    max_model_calls: int = Field(default=25, ge=1, le=30)
+    max_model_calls: int = Field(default=25, ge=1, le=640)
     max_wall_seconds: float = Field(default=1200, gt=0, le=7200)
     executor: Literal['deny','permissive_simulator'] = 'deny'
     max_total_model_calls: int = Field(default=200, ge=1, le=2000)
 
     @model_validator(mode='after')
     def checks(self):
+        if self.protocol_version=='2.0' and self.agent_count!=5:
+            raise ValueError('Variable swarm size requires protocol 2.1')
+        if self.research_question=='rq3' and self.agent_count!=5:
+            raise ValueError('RQ3 decomposition remains fixed at five calls/agents')
+        for topology in self.topologies:
+            degree=self.agent_count-1 if topology=='complete' else 2
+            if topology!='single' and self.agent_count*degree*max(0,self.rounds-1)>10000:
+                raise ValueError('Plan exceeds fixed delivered-message cap')
         for values in [self.families,self.case_indices,self.seeds,self.topologies,self.interventions]:
             if not values or len(values)!=len(set(values)):
                 raise ValueError('Empty or duplicate study dimensions')
@@ -60,7 +69,7 @@ class StudyPlan(BaseModel):
         if (self.scenario_database is None)!=(self.scenario_count is None):
             raise ValueError('Scenario database and sample count must be set together')
         count=(self.scenario_count or len(self.families)*len(self.case_indices))*len(self.seeds)*len(self.topologies)*len(self.interventions)
-        calls=5 if self.research_question=='rq3' else 5*self.rounds
+        calls=5 if self.research_question=='rq3' else self.agent_count*self.rounds
         if self.max_model_calls<calls or count*calls>self.max_total_model_calls:
             raise ValueError('Plan exceeds run or total call budget')
         return self
@@ -69,7 +78,7 @@ class StudyPlan(BaseModel):
 
 class RunSnapshot(BaseModel):
     model_config=ConfigDict(extra='forbid',frozen=True)
-    protocol_version: Literal['2.0'] = '2.0'
+    protocol_version: Literal['2.0','2.1'] = '2.0'
     plan: StudyPlan
     family: Literal['catalog','provenance','patch','record']
     case_index: int
@@ -122,11 +131,11 @@ def verify_freeze(plan, path):
 
 async def run_case(plan, family, index, seed, topology, intervention, provider, root, freeze_hash):
     case=make_case(family,plan.split,index)
-    config=RunSnapshot(plan=plan,family=family,case_index=index,seed=seed,topology=topology,intervention=intervention)
+    config=RunSnapshot(protocol_version=plan.protocol_version,plan=plan,family=family,case_index=index,seed=seed,topology=topology,intervention=intervention)
     directory,skip=allocate(root,config,provider.identity)
     if skip:return directory
     start,clock=utc(),time.monotonic()
-    graph={'agent_0':[]} if topology=='single' else adjacency(topology)
+    graph={'agent_0':[]} if topology=='single' else study_adjacency(topology,plan.agent_count)
     # RQ3 has five calls in both arms. Single gets all subtask interactions serially;
     # distributed gets five local contexts and one final aggregation call in round 1.
     if plan.research_question=='rq3':
@@ -220,7 +229,7 @@ async def run_case(plan, family, index, seed, topology, intervention, provider, 
              'scoring_unit':'collective_run' if plan.research_question=='rq3' else 'run_nested_agents'}
     write_json(directory/'outcome.json',outcome)
     write_json(directory/'manifest.json',{'run_id':directory.name,'status':status,'started_utc':start,'ended_utc':utc(),
-               'duration_seconds':time.monotonic()-clock,'protocol_version':'2.0','source_hash':source_fingerprint(),
+               'duration_seconds':time.monotonic()-clock,'protocol_version':plan.protocol_version,'source_hash':source_fingerprint(),
                'freeze_hash':freeze_hash,'config_hash':digest(config.model_dump()),'model_identity':provider.identity,
                'attempted_model_calls':calls,'completed_model_calls':sum(e['event_type']=='inference_response' for e in events),
                'http_attempts':http_calls,'failures':failures,'graph':graph,'scheduled_rounds':len(schedule),
@@ -230,16 +239,32 @@ async def run_case(plan, family, index, seed, topology, intervention, provider, 
     return directory
 
 
-async def run_plan(plan,provider,root,freeze):
+async def run_plan(plan,provider,root,freeze,shard_index=0,shard_count=1):
+    if not 1<=shard_count<=64 or not 0<=shard_index<shard_count:
+        raise ValueError('Invalid worker shard index/count')
+    if shard_count>1 and provider.identity['backend']!='mock' and not provider.identity.get('digest'):
+        raise ValueError('Multi-worker live studies require an identified model digest')
     record=verify_freeze(plan,freeze)
-    paths=[];used=0
+    root=Path(root);root.mkdir(parents=True,exist_ok=True)
+    assignment={'freeze_hash':record['freeze_hash'],'shard_index':shard_index,'shard_count':shard_count,
+                'model_digest':provider.identity.get('digest'),'backend':provider.identity['backend']}
+    assignment_path=root/'shard_assignment.json'
+    if assignment_path.exists():
+        if json.loads(assignment_path.read_text())!=assignment:
+            raise ValueError('Output root belongs to a different worker assignment; use a fresh root')
+    else:write_json(assignment_path,assignment)
+    paths=[];used=0;pair_index=0
     cases,_=selected_cases(plan)
     for case in cases:
         index=int(case.case_id.rsplit('-',1)[1])
         for seed in plan.seeds:
             for topology in plan.topologies:
+                assigned=pair_index%shard_count==shard_index
+                pair_index+=1
+                if not assigned:continue
+                # Keep the matched clean/intervention pair on the same backend.
                 for intervention in plan.interventions:
-                    need=5 if plan.research_question=='rq3' else 5*plan.rounds
+                    need=5 if plan.research_question=='rq3' else plan.agent_count*plan.rounds
                     if used+need>plan.max_total_model_calls:raise ValueError('Total study budget exhausted')
                     path=await run_case(plan,case.family,index,seed,topology,intervention,provider,root,record['freeze_hash'])
                     used+=json.loads((path/'manifest.json').read_text())['attempted_model_calls']
@@ -256,7 +281,7 @@ def summarize_study(source):
         config_path=path.parent/'config.snapshot.json'
         if not config_path.exists():continue
         config=json.loads(config_path.read_text())
-        if config.get('protocol_version')!='2.0':continue
+        if config.get('protocol_version') not in {'2.0','2.1'}:continue
         if not verify(path.parent):raise ValueError('Study checksum validation failed')
         rows.append({'config':normalized_config(config),'manifest':json.loads(path.read_text()),'outcome':json.loads((path.parent/'outcome.json').read_text())})
     if not rows:raise ValueError('No sealed protocol-2 study runs')

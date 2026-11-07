@@ -66,9 +66,12 @@ def capture(output, mode='random-smoke', model_id=None, revision=None, allow_dow
         from tokenizers import Tokenizer
         from tokenizers.models import WordLevel
         from tokenizers.pre_tokenizers import Whitespace
+        from tokenizers.processors import TemplateProcessing
         vocab={'<pad>':0,'<unk>':1,'<bos>':2,'catalog':3,'summary':4,'clean':5,'override':6,'marker':7}
         backend=Tokenizer(WordLevel(vocab,unk_token='<unk>'));backend.pre_tokenizer=Whitespace()
-        tokenizer=PreTrainedTokenizerFast(tokenizer_object=backend,unk_token='<unk>',pad_token='<pad>',bos_token='<bos>',eos_token='<pad>')
+        backend.post_processor=TemplateProcessing(single='<bos> $A',special_tokens=[('<bos>',2)])
+        tokenizer=PreTrainedTokenizerFast(tokenizer_object=backend,unk_token='<unk>',pad_token='<pad>',bos_token='<bos>',eos_token='<pad>',
+                    name_or_path='contagion-offline-random-gpt2',add_bos_token=True)
         config=GPT2Config(vocab_size=len(vocab),n_positions=64,n_ctx=64,n_layer=2,n_head=2,n_embd=32,n_inner=64,
                           architectures=['GPT2LMHeadModel'],pad_token_id=0,bos_token_id=2,eos_token_id=0)
         config._attn_implementation='eager'
@@ -124,6 +127,7 @@ def capture(output, mode='random-smoke', model_id=None, revision=None, allow_dow
     data={'schema_version':'1.0','evidence_type':'random_weight_smoke' if mode=='random-smoke' else 'instrumented_checkpoint_replay',
           'model':model_id,'revision':revision,'seed':seed,'dtype':'float32','device':'cpu','started_utc':started,
           'duration_seconds':time.monotonic()-clock,'clean_token_count':int(clean.shape[1]),'corrupt_token_count':int(corrupt.shape[1]),
+          'capture_source_hash':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
           'token_labels_withheld':True,'top_k_selection':'highest clean mean absolute MLP activation, prespecified top-k',
           'layers':layers,'patch':{'hook':names[0],'clean_position':alignment[0],'corrupt_position':alignment[1],
           'target_token_id_private':target,'clean_target_logit':scalar(clean_logits),'corrupt_target_logit':scalar(corrupt_logits),

@@ -16,6 +16,7 @@ def main():
     if sys.platform=='darwin' and platform.machine()=='x86_64':
         parser.exit(2,'Unsupported local runtime: TransformerLens 4 needs torch>=2.6, unavailable for this Intel macOS interpreter. Use the prepared Linux CPU container/workflow or an operator-approved Linux worker. No legacy/insecure fallback installed.\n')
     if sys.version_info<(3,11):parser.exit(2,'Use Python 3.11 or later for the separate worker.\n')
+    if args.env.exists():parser.exit(2,'Worker environment already exists; use its interpreter or choose a fresh --env directory.\n')
     subprocess.run([sys.executable,'-m','venv',str(args.env)],check=True)
     python=args.env/('Scripts/python.exe' if sys.platform=='win32' else 'bin/python')
     subprocess.run([str(python),'-m','pip','install','--upgrade','pip==26.3'],check=True)

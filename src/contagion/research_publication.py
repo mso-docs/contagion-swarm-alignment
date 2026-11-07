@@ -21,8 +21,11 @@ class StudyRow(Closed):
     id: str
     model: str
     backend: Literal['mock','ollama','openai']
-    protocol: Literal['2.0'] = '2.0'
+    model_digest: str | None = Field(default=None,pattern=r'^(sha256:)?[a-f0-9]{64}$')
+    protocol: Literal['2.0','2.1'] = '2.0'
+    agent_count: int = Field(default=5,ge=1,le=128)
     freeze_hash: str
+    size_comparison_group: str | None = None
     split: Literal['development','evaluation']
     task_family: Literal['catalog','provenance','patch','record']
     case_id: str
@@ -139,7 +142,9 @@ def make_research_snapshot(study_sources=(), review_source=None, monitor_source=
         for row in summarize_study(source):
             c,m,o=row['config'],row['manifest'],row['outcome']
             studies.append(StudyRow(id=digest(m['run_id'])[:16],model=redact(c['model']),backend=m['model_identity']['backend'],
-              freeze_hash=m['freeze_hash'],split=c['split'],task_family=c['families'][0],case_id=o['task_case'],seed=c['seeds'][0],
+              model_digest=m['model_identity'].get('digest'),protocol=c['protocol_version'],agent_count=len(m['graph']),freeze_hash=m['freeze_hash'],
+              size_comparison_group=digest({'source':m['source_hash'],'model_identity':m['model_identity'],
+                'task_case':o['task_case'],**{k:c[k] for k in ['protocol_version','split','seeds','topologies','interventions','rounds','thinking','temperature','max_output_tokens','executor']}}),split=c['split'],task_family=c['families'][0],case_id=o['task_case'],seed=c['seeds'][0],
               topology=c['topologies'][0],intervention=c['interventions'][0],status=m['status'],calls=m['completed_model_calls'],
               runtime=m['duration_seconds'],violation=o['any_violation'],task_success_rate=o['task_success_rate'] if m['status']=='completed' else None,
               attempted_forbidden=o['attempted_forbidden'],state_violation=o['actual_state_violation'],executor=c['executor']))

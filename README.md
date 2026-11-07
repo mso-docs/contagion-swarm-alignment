@@ -151,7 +151,7 @@ Offline RQ2 monitoring operates on a **single legacy live cohort per invocation*
 
 Pass all desired sources to each export; a snapshot replaces the previous derived snapshot. The dashboard adds Scenarios & review and Neural captures views. Original model/cohort filters apply to the original experiment views; research tables identify their own model, evidence type, split, task and condition explicitly. A 60-second poll refreshes published snapshots; GitHub Pages updates after a successful pushed build, not directly from a running model server.
 
-TransformerLens uses an isolated **supported Linux CPU worker**; it cannot install here on Intel macOS/Python 3.14. The worker is prepared, but no neural measurements have been run or published:
+TransformerLens uses an isolated **supported Linux CPU worker**; it cannot install here on Intel macOS/Python 3.14. A CPU worker is installed on the configured secondary Linux server and an actual random-weight activation capture is now published. This verifies instrumentation; trained-checkpoint replay is still pending. To reproduce on another supported worker:
 
 ```sh
 # On an operator-approved Linux worker with Python 3.11:
@@ -160,4 +160,21 @@ python3.11 scripts/setup_interpretability.py
 .venv-interp/bin/python scripts/export_research.py --neural results/neural-smoke --out results/neural-public.json
 ```
 
-A manual GitHub Actions workflow also performs the offline random smoke after pushing. Random weights validate instrumentation only. Checkpoint mode requires an immutable model revision, explicitly aligned clean/corrupt positions and a target token; see `scripts/capture_neural.py --help` and [API notes](docs/TRANSFORMERLENS_API.md). Raw tensors and prompts stay private. The public reducer exposes residual RMS, selected MLP neuron measurements and clean/corrupt/patched/no-op/control logits only. Ollama reasoning text is not neural activation evidence; no SAE/Neuronpedia feature meanings are claimed. No remote worker has been changed or deployed.
+A manual GitHub Actions workflow also performs the offline random smoke after pushing. Random weights validate instrumentation only. Checkpoint mode requires an immutable model revision, explicitly aligned clean/corrupt positions and a target token; see `scripts/capture_neural.py --help` and [API notes](docs/TRANSFORMERLENS_API.md). Raw tensors and prompts stay private. The public reducer exposes residual RMS, selected MLP neuron measurements and clean/corrupt/patched/no-op/control logits only. Ollama reasoning text is not neural activation evidence; no SAE/Neuronpedia feature meanings are claimed. The secondary worker was installed in a fresh project directory without changing services, drivers or Ollama. Primary SSH authentication from this session remains unresolved; the operator confirmed its target is correct.
+
+### AI server workers
+
+See [primary/secondary worker setup](docs/WORKERS.md) for project-local installers, private endpoint files, neural smoke validation and reproducible two-server partitioning. `scripts/setup_worker.py` inventories a host without installing; `--install --role both` creates isolated Linux controller/neural environments. `scripts/prepare_worker.py --out results/deployment/worker-source.tar.gz` packages allowlisted sources for SSH transfer. Study commands accept `--env-file`, `--expected-digest`, `--shard-index` and `--shard-count`; paired controls stay on one server. Server targets must be supplied before remote installation.
+
+### Neural worker status and swarm-size scaling
+
+The private `.env` now supports `PRIMARY_SERVER_ID`, `SECONDARY_SERVER_ID`, `PRIMARY_PROJECT_DIR`, and `SECONDARY_PROJECT_DIR`; these values are included in privacy checks. `scripts/remote_worker.py preflight --server secondary` reads hardware metadata over existing SSH credentials. The isolated CPU neural environment on the secondary server has completed a real two-layer/four-token random smoke capture; no trained checkpoint has been measured yet. Its no-op and position controls matched the corrupt baseline. Raw prompts/tensors remain ignored; the dashboard serves reduced numeric arrays only.
+
+[Protocol 2.1](docs/PROTOCOL_2_1.md) adds 5–128-agent exploratory studies while retaining the original five-agent protocols. Mock cohorts at5/10/20/40/80 agents completed30 paired-condition runs,1860 scripted responses total. These are engineering checks, not live-model findings. Calls remain serial; primary-server concurrency settings have not been changed.
+
+```sh
+.venv/bin/python -m contagion.research freeze --config configs/scaling_exploratory.yaml --out results/freezes/scaling-new.json
+.venv/bin/python -m contagion.research study --config configs/scaling_exploratory.yaml --freeze results/freezes/scaling-new.json --out results/studies/scaling-new
+```
+
+For larger cohorts, copy the YAML to an ignored private plan, set protocol2.1/agent_count and explicit call budgets, then create a fresh freeze. Keep the same sampled scenario IDs/seeds across sizes. Coordinate a shared resource budget before live load testing; network bandwidth alone does not determine inference capacity. See WORKERS.md for remote commands and troubleshooting.

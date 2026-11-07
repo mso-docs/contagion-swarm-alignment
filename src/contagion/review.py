@@ -47,7 +47,7 @@ def samples_from_runs(source):
         manifest=json.loads(path.read_text())
         if manifest['status']!='completed':continue
         config=json.loads((directory/'config.snapshot.json').read_text())
-        if config.get('protocol_version')=='2.0':
+        if config.get('protocol_version') in {'2.0','2.1'}:
             from .studies import normalized_config
             config=normalized_config(config)
         events=read_events(directory/'events.jsonl')
