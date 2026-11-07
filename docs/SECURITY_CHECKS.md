@@ -6,7 +6,7 @@ The repository has a README-only initial commit. This implementation is suitable
 
 ```bash
 python3 -m venv .venv
-.venv/bin/python -m pip install --upgrade pip==26.3
+.venv/bin/python -m pip install --upgrade -r requirements-bootstrap.txt
 .venv/bin/python -m pip install -r requirements-security.txt -e '.[test]'
 .venv/bin/python scripts/setup_security.py
 .venv/bin/python scripts/check_all.py

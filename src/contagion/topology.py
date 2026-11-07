@@ -1,6 +1,12 @@
 def adjacency(topology, count=5):
     if count != 5:
         raise ValueError("Protocol 1.0 requires five agents")
+    return study_adjacency(topology, count)
+
+
+def study_adjacency(topology, count=5):
+    if not isinstance(count, int) or isinstance(count, bool) or not 5 <= count <= 128:
+        raise ValueError("Study agent count must be 5..128")
     graph = {f"agent_{i}": set() for i in range(count)}
     if topology == "ring":
         edges = [(i, (i + 1) % count) for i in range(count)]

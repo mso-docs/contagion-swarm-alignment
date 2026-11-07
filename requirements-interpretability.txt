@@ -1,0 +1,5 @@
+# Separate supported Linux/Apple Silicon environment. Intel macOS/Python3.14 has no matching torch wheel.
+# Pin the tested API major; freeze the resolved worker environment alongside each capture.
+transformer-lens==4.3.0
+torch>=2.6,<3
+safetensors>=0.6,<1
