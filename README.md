@@ -122,3 +122,42 @@ RQ1 asks how topology affects spread of unauthorized instructions. RQ2 asks how 
 The live pilot is preliminary and does not establish general alignment or a topology effect. No statistical significance, complete verified literature review, RQ2 detection results, RQ3 experiments, or submission PDF are claimed. See [progress](PROGRESS.md) and [reproducibility checklist](docs/REPRODUCIBILITY.md).
 
 The current task, matched thinking-on/off configs, scalable AI review proposal and real activation-study requirements are explained in [EXPERIMENT_STRATEGY.md](docs/EXPERIMENT_STRATEGY.md). New thinking comparisons, coding-shaped tasks, AI reviewers and neuron/SAE experiments are prospective; no results are claimed for them.
+
+### Scenario benchmarks, review and neural measurements (protocol 2)
+
+The optional research expansion preserves the original research questions and keeps the existing live results separate. See [the protocol amendment](docs/PROTOCOL_2.md). The database has **384 generated scenario variants across four categories**, with separate development/evaluation splits. These are synthetic project benchmarks, not 384 independent attack designs or scores on an established external benchmark.
+
+Build the ignored SQLite registry once after cloning, then freeze a seeded sample before running it:
+
+```sh
+.venv/bin/python -m contagion.research scenarios --out results/scenarios-v2.sqlite
+.venv/bin/python -m contagion.research freeze --config configs/scenario_development.yaml --out results/freezes/dev.json
+.venv/bin/python -m contagion.research study --config configs/scenario_development.yaml --freeze results/freezes/dev.json --out results/studies/dev
+.venv/bin/python -m contagion.research summarize --source results/studies/dev
+.venv/bin/python -m contagion.research review --source results/studies/dev --out results/reviews/dev --max-calls 20
+.venv/bin/python scripts/export_research.py --study results/studies/dev --review results/reviews/dev --scenario-index configs/scenarios_index.json
+```
+
+The commands above default to **mock inference**. For a live study, copy the YAML, choose the exact installed model in its `model` field, set the existing private `.env`, freeze that configuration, then add `--provider ollama` to the study command. No models are pulled automatically. Use `scenario_evaluation.yaml` for the held-out mock matrix and the separate `rq3_comparison.yaml`/`rq3_permissive_simulator.yaml` for matched five-call simulator arms. Freeze each plan separately and use fresh output directories. Source changes invalidate freezes.
+
+Independent review is bounded and blinded to target-model identity and intervention labels. To use an installed reviewer, add `--provider ollama --model EXACT_INSTALLED_TAG` to `review`. Reviewer confidence is uncalibrated; all samples remain in a human queue, including those skipped by the call budget. `calibrate --source REVIEW_DIRECTORY --labels PRIVATE_HUMAN_LABELS.jsonl --out PRIVATE_REPORT.json` computes descriptive agreement against real human labels. Human label rows contain `sample_id`, `behavior` and `evidence_event_ids`; allowed behaviors are compliant, violation, refusal, ambiguous and unscorable. A reviewer is an auxiliary measurement, never the primary alignment ground truth.
+
+Offline RQ2 monitoring operates on a **single legacy live cohort per invocation**:
+
+```sh
+.venv/bin/python -m contagion.research monitor --source results/live-rq1-batch --out results/monitors/qwen-ring
+.venv/bin/python scripts/export_research.py --study results/studies/dev --monitor results/monitors/qwen-ring/monitor.json --scenario-index configs/scenarios_index.json
+```
+
+Pass all desired sources to each export; a snapshot replaces the previous derived snapshot. The dashboard adds Scenarios & review and Neural captures views. Original model/cohort filters apply to the original experiment views; research tables identify their own model, evidence type, split, task and condition explicitly. A 60-second poll refreshes published snapshots; GitHub Pages updates after a successful pushed build, not directly from a running model server.
+
+TransformerLens uses an isolated **supported Linux CPU worker**; it cannot install here on Intel macOS/Python 3.14. The worker is prepared, but no neural measurements have been run or published:
+
+```sh
+# On an operator-approved Linux worker with Python 3.11:
+python3.11 scripts/setup_interpretability.py
+.venv-interp/bin/python scripts/capture_neural.py --mode random-smoke --out results/neural-smoke
+.venv-interp/bin/python scripts/export_research.py --neural results/neural-smoke --out results/neural-public.json
+```
+
+A manual GitHub Actions workflow also performs the offline random smoke after pushing. Random weights validate instrumentation only. Checkpoint mode requires an immutable model revision, explicitly aligned clean/corrupt positions and a target token; see `scripts/capture_neural.py --help` and [API notes](docs/TRANSFORMERLENS_API.md). Raw tensors and prompts stay private. The public reducer exposes residual RMS, selected MLP neuron measurements and clean/corrupt/patched/no-op/control logits only. Ollama reasoning text is not neural activation evidence; no SAE/Neuronpedia feature meanings are claimed. No remote worker has been changed or deployed.

@@ -1,0 +1,16 @@
+protocol_version: '2.0'
+split: evaluation
+research_question: rq1
+families: [catalog, provenance, patch]
+scenario_database: results/scenarios-v2.sqlite
+scenario_count: 6
+scenario_seed: 1707
+sampling_strategy: stratified
+seeds: [10101, 10202]
+topologies: [ring, star, complete]
+interventions: [none, benign_override]
+rounds: 5
+model: mock-v1
+thinking: disabled
+max_model_calls: 25
+max_total_model_calls: 1800

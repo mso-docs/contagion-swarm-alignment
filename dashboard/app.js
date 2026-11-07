@@ -73,6 +73,8 @@ async function load(){try{const response=await fetch(`data/results.json?v=${Date
 setInterval(()=>{if(!document.hidden)load();},60000);
 
 const VIEW_LABELS={
+ research:['Scenarios, Benchmarks & Review','Frozen scenario samples, task metrics, and uncalibrated independent review'],
+ neural:['Neural Measurements','Instrumented checkpoint captures and controlled patching evidence'],
  overview:['Swarm Observability & Evaluation','Model behavior, network propagation, and trace-level evidence'],
  models:['Model & Protocol Comparison','Compare matched model cohorts, conditions, latency, and resource use'],
  evaluations:['Evaluation Results','Validated behavior, output quality, exposure, and run-level outcomes'],
@@ -161,3 +163,24 @@ function renderRunQuality(){
 function renderDatasets(runs){
  const target=$('datasets');target.replaceChildren();for(const rs of groups(runs,r=>r.cohort)){const r=rs[0],row=el('tr'),model=el('td',r.model);model.append(el('small',r.cohort));row.append(model);[r.backend==='mock'?'Mock validation':'Live inference',r.protocol_version,[...new Set(rs.map(r=>r.seed))].sort((a,b)=>a-b).join(', '),rs.length,rs.reduce((n,r)=>n+r.completed_calls,0),r.thinking].forEach(value=>row.append(el('td',value)));target.append(row);}if(!runs.length){const row=el('tr'),cell=el('td','No matching cohorts.');cell.colSpan=7;row.append(cell);target.append(row);}
 }
+
+const researchState={snapshot:null};
+function researchTable(id,headers,rows){const target=$(id);target.replaceChildren();if(!rows.length){empty(target,'No published measurements in this category.');return;}const table=el('table'),head=el('tr');headers.forEach(h=>head.append(el('th',h)));table.append(head);rows.forEach(values=>{const row=el('tr');values.forEach(v=>row.append(el('td',v)));table.append(row);});target.append(table);}
+function renderResearch(){const d=researchState.snapshot;if(!d)return;
+ researchTable('research-studies',['Model / evidence','Task / case','Split / topology','Condition','Status / calls','Task success','Violation / attempt / state','Runtime'],d.studies.map(r=>[`${r.model} / ${r.backend}`,`${r.task_family} / ${r.case_id}`,`${r.split} / ${r.topology}`,r.intervention,`${r.status} / ${r.calls}`,pct(r.task_success_rate),`${r.violation} / ${r.attempted_forbidden} / ${r.state_violation}`,secs(r.runtime)]));
+ $('research-review-status').textContent=`Reviewer: ${d.review_source}. Uncalibrated; human review required. ${d.unreviewed_samples} samples remain unreviewed. Confidence is a self-report, not a validated probability.`;
+ researchTable('research-reviews',['Priority','Sample','Behavior','Confidence','Evidence IDs','Queue reasons'],[...d.reviews].sort((a,b)=>b.priority-a.priority).map(r=>[r.priority,r.sample_id,r.behavior,pct(r.confidence),r.evidence_event_ids.join(', '),r.queue_reasons.join(', ')]));
+ researchTable('research-monitor',['Evidence','Policy','Visibility','Runs','Precision','Recall','F1','False positive rate'],d.monitor.map(r=>[r.backend,r.policy,pct(r.visibility),r.n,pct(r.precision),pct(r.recall),pct(r.f1),pct(r.false_positive_rate)]));
+ $('scenario-count').textContent=`${d.scenarios.length} deterministic variants of four templates. Development and evaluation splits are separate. Variants are not independently authored attacks.`;
+ researchTable('research-scenarios',['Scenario','Category','Family','Split','Content hash'],d.scenarios.map(r=>[r.case_id,r.category,r.family,r.split,r.content_hash.slice(0,12)]));
+ const previous=$('neural-select').value;$('neural-select').replaceChildren(...d.neural.map(r=>new Option(`${r.model} / ${r.evidence_type} / ${r.id}`,r.id)));if(d.neural.some(r=>r.id===previous))$('neural-select').value=previous;renderNeural();
+}
+function renderNeural(){const target=$('neural-evidence');target.replaceChildren();const d=researchState.snapshot;const r=d?.neural.find(x=>x.id===$('neural-select').value)||d?.neural[0];if(!r){empty(target,'No measured neural captures published. The Linux TransformerLens worker is prepared; no activations have been inferred from model text.');return;}
+ target.append(el('p',`${r.model} · ${r.evidence_type} · ${secs(r.duration_seconds)} · ${r.device} / ${r.dtype} · revision ${r.revision??'seeded random initialization'}`,'notice'));
+ for(const kind of ['clean','corrupt']){target.append(el('h3',`${kind} residual RMS · layer × token position`));const table=el('table'),head=el('tr');head.append(el('th','Layer'));const n=r[`${kind}_token_count`];for(let i=0;i<n;i++)head.append(el('th',`P${i}`));table.append(head);const max=Math.max(.000001,...r.layers.flatMap(l=>l[`${kind}_residual_rms`]));r.layers.forEach(l=>{const row=el('tr');row.append(el('th',l.layer));l[`${kind}_residual_rms`].forEach(v=>{const cell=el('td',v.toFixed(3),'heatmap-cell');cell.style.backgroundColor=`rgba(62,148,255,${Math.max(.06,v/max*.8)})`;row.append(cell);});table.append(row);});const wrap=el('div',null,'neural-grid');wrap.append(table);target.append(wrap);}
+ const p=r.patch;target.append(el('h3','Single-position activation patch · target logit'));const list=el('dl');Object.entries(p).forEach(([k,v])=>list.append(el('dt',k),el('dd',typeof v==='number'?v.toFixed(4):v)));target.append(list,el('p','Compare clean, corrupt, patched, no-op and position-control logits. A logit difference is a local intervention effect, not evidence of model intent.','caption'));
+ target.append(el('h3','Selected MLP neurons · clean / corrupt by token position'));r.layers.forEach(l=>l.neurons.forEach(n=>{const detail=el('details');detail.append(el('summary',`Layer ${l.layer} / neuron ${n.index}`),el('pre',`Clean: ${n.clean.map(v=>v.toFixed(4)).join(' ')}\nCorrupt: ${n.corrupt.map(v=>v.toFixed(4)).join(' ')}`));target.append(detail);}));
+}
+async function loadResearch(){try{const response=await fetch(`data/research.json?v=${Date.now()}`,{cache:'no-store'});if(!response.ok)throw Error('Unavailable');const data=await response.json();if(data.schema_version!=='1.0'||!Array.isArray(data.studies)||!Array.isArray(data.neural)||!Array.isArray(data.scenarios))throw Error('Schema');researchState.snapshot=data;renderResearch();}catch{['research-studies','research-reviews','research-monitor','research-scenarios','neural-evidence'].forEach(id=>empty($(id),'No validated research snapshot available. Export research.json to publish these measurements.'));}}
+$('neural-select').addEventListener('change',renderNeural);
+loadResearch();setInterval(()=>{if(!document.hidden)loadResearch();},60000);
