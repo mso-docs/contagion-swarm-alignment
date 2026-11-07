@@ -1,0 +1,5 @@
+# Preserved P3 protocol; intentionally not executable until live RQ1 gate passes.
+visibility_fractions: [0.25, 0.50, 0.75, 1.00]
+monitor_seed: 404
+monitor: keyword_rule
+policy: sampled_communications_and_final_outputs

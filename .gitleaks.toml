@@ -1,0 +1,4 @@
+title = "Contagion secret detection"
+[extend]
+useDefault = true
+# No blanket exclusions for tests, fixtures, or public traces.

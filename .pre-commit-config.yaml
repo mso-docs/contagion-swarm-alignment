@@ -1,0 +1,60 @@
+minimum_pre_commit_version: '4.0.0'
+default_stages: [pre-commit, manual]
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: 83d9cd684c87d95d656c1458ef04895a7f1cbd8e # v8.30.1
+    hooks:
+      - id: gitleaks
+        name: Gitleaks staged secrets (redacted)
+        entry: gitleaks git --pre-commit --staged --redact=100 --no-banner --config=.gitleaks.toml --ignore-gitleaks-allow --timeout=120
+        stages: [pre-commit]
+        always_run: true
+      - id: gitleaks
+        alias: gitleaks-candidates
+        name: Gitleaks publishable worktree (redacted)
+        entry: .venv/bin/python scripts/security_guard.py --mode worktree --gitleaks
+        stages: [manual]
+        always_run: true
+      - id: gitleaks
+        alias: gitleaks-history
+        name: Gitleaks complete Git history (redacted)
+        entry: gitleaks git --redact=100 --no-banner --config=.gitleaks.toml --ignore-gitleaks-allow --log-opts=--all --timeout=120
+        stages: [manual]
+        always_run: true
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c # v6.0.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-json
+      - id: check-yaml
+      - id: check-toml
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: [--maxkb=5120, --enforce-all]
+  - repo: local
+    hooks:
+      - id: publication-guard
+        name: Block private files, known secrets and unsafe public data
+        entry: .venv/bin/python scripts/security_guard.py --mode staged
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+      - id: publication-worktree
+        name: Validate candidate files and public snapshot
+        entry: .venv/bin/python scripts/security_guard.py --mode worktree
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [manual]
+      - id: python-critical-lint
+        name: Python syntax and undefined names (Ruff)
+        entry: .venv/bin/python -m ruff check --select E9,F63,F7,F82
+        language: system
+        types: [python]
+      - id: bandit
+        name: Python security analysis (medium/high)
+        entry: .venv/bin/python -m bandit -q -r src scripts -ll -ii
+        language: system
+        pass_filenames: false
+        always_run: true

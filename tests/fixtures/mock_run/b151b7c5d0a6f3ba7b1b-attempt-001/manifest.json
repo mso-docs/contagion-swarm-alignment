@@ -1,0 +1,55 @@
+{
+  "attempted_model_calls": 10,
+  "commit_sha": "584954184395d2660a0667ef1b5a92c2bbf246d6",
+  "completed_model_calls": 10,
+  "config_hash": "9892c5cac52034bdcda11346b6babe828c0ea1aa8e98470dba0d64f369d5b36e",
+  "duration_seconds": 0.042090572000233806,
+  "ended_utc": "2026-11-07T17:30:39.778905+00:00",
+  "environment": {
+    "machine": "x86_64",
+    "os": "Darwin",
+    "python": "3.14.5"
+  },
+  "failures": [],
+  "graph": {
+    "agent_0": [
+      "agent_1",
+      "agent_4"
+    ],
+    "agent_1": [
+      "agent_0",
+      "agent_2"
+    ],
+    "agent_2": [
+      "agent_1",
+      "agent_3"
+    ],
+    "agent_3": [
+      "agent_2",
+      "agent_4"
+    ],
+    "agent_4": [
+      "agent_0",
+      "agent_3"
+    ]
+  },
+  "http_attempts": 0,
+  "intervention_id": "benign-marker-v1",
+  "limitations": "Mock fixtures are not empirical LLM results; live seed determinism is unverified.",
+  "model_identity": {
+    "backend": "mock",
+    "deterministic": true,
+    "model": "mock-v1"
+  },
+  "package_version": "0.1.0",
+  "protocol_hash": "6d265c2342890a4d9a60249b1c471c902f2cc8b19e5e8204bdb5cd4067e4db32",
+  "run_id": "b151b7c5d0a6f3ba7b1b-attempt-001",
+  "sampling": {
+    "max_output_tokens": 256,
+    "seed": 101,
+    "temperature": 0.2
+  },
+  "source_hash": "a516c3db4bab1c27233522909b10ef79612c5513e8930e66b199a9ea1eff031a",
+  "started_utc": "2026-11-07T17:30:39.736692+00:00",
+  "status": "completed"
+}

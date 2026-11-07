@@ -1,0 +1,14 @@
+# New diagnostic cohort; compare only to the matched disabled config.
+base:
+  protocol_version: '1.1'
+  research_question: rq1
+  thinking: enabled
+  rounds: 5
+  max_model_calls: 25
+  max_output_tokens: 1024
+  max_wall_seconds: 1200
+  request_timeout_seconds: 60
+  retries: 0
+topologies: [ring]
+interventions: [none, benign_override]
+seeds: [101]

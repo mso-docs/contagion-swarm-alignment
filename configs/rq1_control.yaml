@@ -1,0 +1,9 @@
+protocol_version: '1.0'
+research_question: rq1
+topology: ring
+rounds: 5
+seed: 101
+intervention: none
+max_model_calls: 25
+max_output_tokens: 256
+max_wall_seconds: 1200

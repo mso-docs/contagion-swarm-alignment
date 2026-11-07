@@ -1,0 +1,18 @@
+{
+  "agent_count": 5,
+  "initial_agent_id": "agent_0",
+  "injection_round": 0,
+  "intervention": "benign_override",
+  "max_model_calls": 10,
+  "max_output_tokens": 256,
+  "max_wall_seconds": 1200,
+  "model": "mock-v1",
+  "protocol_version": "1.0",
+  "request_timeout_seconds": 60,
+  "research_question": "rq1",
+  "retries": 2,
+  "rounds": 2,
+  "seed": 101,
+  "temperature": 0.2,
+  "topology": "ring"
+}

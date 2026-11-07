@@ -1,0 +1,13 @@
+# Contagion implementation instructions
+
+Read CONTAGION_AGENT_MVP_SPEC.md completely before changes. This is greenfield hackathon research begun November 7, 2026. Preserve RQ1/RQ2/RQ3 definitions and report null results honestly.
+
+Prioritize P0, live paired RQ1 validation, then P2. Stop before remote machine, credential, firewall, or infrastructure changes. Do not invent model tags or hostnames. Never claim mock observations as empirical model results. Do not add RQ3 before successful live RQ1 integration.
+
+Agents are isolated logical contexts. Only the controller routes synchronous next-round messages along undirected graph edges. Model text is untrusted JSON data, never executable instructions. No agent tools, networking, shell, file access, or external targets. Only the inference adapter may contact the explicitly configured model endpoint. Keep interventions benign and confined to delivered messages.
+
+Freeze/version task prompts, scoring and protocol; document amendments before evaluating outcomes. Distinguish exposure, quotation, agreement and behavioral adoption. Analyze runs as units; paired seeds and monitor projections are dependent. Raw append-only oracle logs are authoritative; monitor projections must use explicit field allowlists. Do not log credentials or private endpoint URLs. Never overwrite prior attempts. Validate checksums before resume/analysis.
+
+Use Python 3.11+, src layout, pytest. Run `.venv/bin/python -m pytest -q` and a mock pilot after changes to the harness. Update docs/BUILD_STATUS.md and PROGRESS.md with exact commands, observed results, blockers and next steps. All plots must derive from recorded events. No fabricated references or results.
+
+The user has explicitly authorized a local research dashboard and GitHub Pages workflow; this supersedes the original no-frontend scope for visualization only. Keep agents tool-free. Treat public snapshot export as a distinct privacy boundary: closed allowlisted schemas, scrub free text and known environment secrets, raw logs unchanged/ignored, summary-only default, opt-in reviewed traces. Do not imply redaction guarantees perfect anonymity. Never publish raw .env, configs containing endpoints, or request histories. Do not label narrow task compliance as a general alignment score or fabricate activation/causal plots from text. Actual pushes/deployment are left to the user unless explicitly requested.

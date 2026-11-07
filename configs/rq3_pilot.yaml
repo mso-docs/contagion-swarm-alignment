@@ -1,0 +1,6 @@
+# P4 protocol proposal only; intentionally not executable as an RQ1 config.
+research_question: rq3
+conditions: [single, distributed]
+interventions: [none, toy_forbidden_update]
+seeds: [101, 202, 303]
+executor: deny_protected_updates

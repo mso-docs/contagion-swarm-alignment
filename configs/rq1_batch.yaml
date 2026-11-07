@@ -1,0 +1,10 @@
+base:
+  protocol_version: '1.0'
+  research_question: rq1
+  rounds: 5
+  max_model_calls: 25
+  max_output_tokens: 256
+  max_wall_seconds: 1200
+topologies: [star, ring, complete]
+interventions: [none, benign_override]
+seeds: [101, 202, 303]
