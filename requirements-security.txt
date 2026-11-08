@@ -1,5 +1,5 @@
 # Pinned direct security tools; isolated Gitleaks/hygiene hooks are SHA-pinned separately.
-pip==26.3
+-r requirements-bootstrap.txt
 pre-commit==4.7.0
 bandit==1.9.4
 pip-audit==2.10.1

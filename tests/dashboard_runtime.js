@@ -1,7 +1,7 @@
 /* Lightweight DOM interaction smoke test; browser layout verification is separate. */
-async function dashboardSmoke(source, data, html) {
+async function dashboardSmoke(source, data, html, research={schema_version:"1.0",studies:[],reviews:[],monitor:[],neural:[],scenarios:[],review_source:"not_run",unreviewed_samples:0}) {
   class Element {
-    constructor(tag) { this.tagName=tag;this.children=[];this.attributes={};this.listeners={};this.value='';this.textContent='';this.dataset={};this.classes=new Set();this.classList={toggle:(name,on)=>{const enabled=on??!this.classes.has(name);enabled?this.classes.add(name):this.classes.delete(name);return enabled;},remove:name=>this.classes.delete(name)}; }
+    constructor(tag) { this.tagName=tag;this.children=[];this.attributes={};this.listeners={};this.value='';this.textContent='';this.dataset={};this.style={};this.classes=new Set();this.classList={toggle:(name,on)=>{const enabled=on??!this.classes.has(name);enabled?this.classes.add(name):this.classes.delete(name);return enabled;},remove:name=>this.classes.delete(name)}; }
     append(...nodes) { this.children.push(...nodes); }
     replaceChildren(...nodes) { this.children=[...nodes];if(this.tagName==='select')this.value=nodes[0]?.value??''; }
     setAttribute(key,value) { this.attributes[key]=value; }
@@ -12,10 +12,12 @@ async function dashboardSmoke(source, data, html) {
   for(const id of ['model','topology','condition','trace-agent','trace-type'])ids.get(id).value='all';
   ids.get('backend').value='live';ids.get('round').value='0';
   class Option extends Element { constructor(text,value){super('option');this.textContent=text;this.value=value;} }
-  const api=new Function('document','Option','fetch','setInterval',source+'\nreturn {load,render,renderRound,renderTraces,showView,state};')(document,Option,async()=>({ok:true,json:async()=>data}),()=>0);
-  await api.load();
+  const api=new Function('document','Option','fetch','setInterval',source+'\nreturn {load,render,renderRound,renderTraces,showView,state,loadResearch,researchState};')(document,Option,async url=>({ok:true,json:async()=>url.startsWith('data/research.json')?research:data}),()=>0);
+  await api.load();await api.loadResearch();
+  if(!ids.get("neural-evidence").children.length)throw Error("Missing honest neural empty state");
+  if(api.researchState.snapshot.scenarios.length!==research.scenarios.length)throw Error("Scenario catalog missing");
   if(!api.state.runs.length)throw Error('No initial runs rendered');
-  for(const view of ['models','evaluations','traces','datasets','methods','overview']){
+  for(const view of ['models','evaluations','traces','datasets','methods','research','neural','overview']){
     api.showView(view);
     if(document.body.dataset.view!==view)throw Error('Navigation failed: '+view);
     if(!ids.get('nav-'+view).classes.has('active'))throw Error('Active navigation failed');
@@ -49,9 +51,9 @@ async function dashboardSmoke(source, data, html) {
   if(document.body.classes.has('sidebar-open'))throw Error('Mobile navigation did not close');
   api.state.snapshot={...data,runs:[]};api.render();
   if(!ids.get('comparison').children.length)throw Error('Missing empty-state explanation');
-  return 'Dashboard JS runtime smoke passed: six views, metrics, charts, cohort isolation, round replay, traces, and empty states.';
+  return 'Dashboard JS runtime smoke passed: eight views, metrics, charts, cohort isolation, round replay, traces, and empty states.';
 }
 if(typeof module!=='undefined'&&require.main===module){
   const fs=require('node:fs'),path=require('node:path'),root=path.join(__dirname,'..','dashboard');
-  dashboardSmoke(fs.readFileSync(path.join(root,'app.js'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/results.json'),'utf8')),fs.readFileSync(path.join(root,'index.html'),'utf8')).then(console.log).catch(error=>{console.error(error);process.exitCode=1;});
+  dashboardSmoke(fs.readFileSync(path.join(root,'app.js'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/results.json'),'utf8')),fs.readFileSync(path.join(root,'index.html'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/research.json'),'utf8'))).then(console.log).catch(error=>{console.error(error);process.exitCode=1;});
 }

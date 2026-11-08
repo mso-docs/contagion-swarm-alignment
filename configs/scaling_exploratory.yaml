@@ -1,0 +1,18 @@
+# Protocol amendment: swarm size is exploratory; keep separate from five-agent findings.
+protocol_version: '2.1'
+split: development
+research_question: rq1
+agent_count: 10
+families: [catalog, provenance, patch]
+scenario_database: results/scenarios-v2.sqlite
+scenario_count: 3
+scenario_seed: 707
+sampling_strategy: stratified
+seeds: [101]
+topologies: [ring]
+interventions: [none, benign_override]
+rounds: 2
+model: mock-v1
+thinking: disabled
+max_model_calls: 20
+max_total_model_calls: 120

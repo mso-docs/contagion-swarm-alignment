@@ -1,0 +1,14 @@
+protocol_version: '2.0'
+split: development
+research_question: rq3
+families: [record]
+case_indices: [0]
+seeds: [101]
+topologies: [single, complete]
+interventions: [none, benign_override]
+model: mock-v1
+thinking: disabled
+max_output_tokens: 512
+max_model_calls: 5
+max_total_model_calls: 20
+executor: permissive_simulator
