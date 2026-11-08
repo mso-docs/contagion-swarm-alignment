@@ -34,3 +34,7 @@ Future checkpoints should create a fresh evidence freeze, regenerate candidate f
 
 
 Figure conventions: emphasize one measured comparison per panel; print sample sizes and count denominators; distinguish intermediate from final deviations; use fixed 0–1 color scales for rate heatmaps. Fit continuous measurement axes with padding, disclose transformed axes, and label overlapping points. Keep independent protocols and reference neural captures distinguishable. Presentation updates must not change the frozen evidence.
+
+The completed protocol4 RQ3 follow-up is separately frozen in data/rq3_followup.json:64runs,320responses,four fixed cases and one seed. Its paragraph is separate from the compact36-run RQ1 analysis and excludes four integration prechecks. The helper verifies every source seal and the complete registered matrix. No refusal-bypass conclusion is supported because no scored refusals occurred.
+
+[Research readiness](RESEARCH_READINESS.md) maps the six remaining goals to evidence and manual checks. The private offline review workspace requires actual human clicks. The research bundle packages allowlisted source, numerical freezes, figures, dependencies and PDF, and regenerates frozen figures from a source-only temporary copy without inference.

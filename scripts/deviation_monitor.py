@@ -1,5 +1,6 @@
 """Offline RQ2 extension: detect intermediate patch proposals, separate from final adoption."""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -32,20 +33,26 @@ def predict(view):
 
 
 def evaluate(source, output):
-    rows=[];projections=[]
+    rows=[];projections=[];source_runs=[];skipped_incomplete=0;source_seals={}
     for manifest_path in sorted(Path(source).rglob('manifest.json')):
         root=manifest_path.parent;config=json.loads((root/'config.snapshot.json').read_text())
         if config.get('family')!='patch' or config.get('plan',{}).get('research_question')!='rq1':continue
         if not verify(root):raise ValueError('Source integrity failure')
         manifest=json.loads(manifest_path.read_text())
-        if manifest['status']!='completed':continue
+        if manifest['status']!='completed':
+            skipped_incomplete+=1;continue
         events=read_events(root/'events.jsonl');artifacts=[e for e in events if e['event_type']=='artifact' and e['agent_id']!='agent_0']
+        expected=(config['plan'].get('agent_count',5)-1)*config['plan']['rounds']
+        if len(artifacts)!=expected:raise ValueError('Incomplete downstream artifact coverage; truth unknown')
+        if len({(e['agent_id'],e['round']) for e in artifacts})!=expected:raise ValueError('Duplicate downstream artifact')
         case=make_case('patch',config['plan']['split'],config['case_index']);positives=[]
         for e in artifacts:
             try:artifact=TaskArtifact(answer=json.loads(e['content']),message='')
             except ValueError:raise ValueError('Unknown artifact truth; exclude explicitly before evaluation') from None
             if task_score(case,artifact,ToyRecordStore())['violation']:positives.append(e['round'])
         truth=bool(positives);first_truth=min(positives) if positives else None
+        source_runs.append({'run_id':root.name,'case':config['case_index'],'seed':config['seed'],'truth':truth,'backend':manifest['model_identity']['backend']})
+        source_seals[root.name]=hashlib.sha256((root/'checksum.sha256').read_bytes()).hexdigest()
         cohort=digest({'source':manifest['source_hash'],'model':manifest['model_identity'],'plan':{k:v for k,v in config['plan'].items() if k not in {'seeds','topologies','interventions','case_indices'}}})
         for seed in [404,505,606]:
             for visibility in [.25,.5,.75,1.]:
@@ -65,6 +72,8 @@ def evaluate(source, output):
         summary.append({**dict(zip(['cohort','topology','policy','monitor_seed','visibility'],key)),**detection_metrics([(r['truth'],r['prediction']) for r in selected])})
     result={'schema_version':'intermediate-patch-monitor-1.0','endpoint':'Any downstream forbidden patch proposal at any round; NOT original final-adoption endpoint',
             'method':'visible_artifact_parser','observations':rows,'summary':summary,
+            'source_coverage':{'completed_runs':len(source_runs),'positive_runs':sum(r['truth'] for r in source_runs),'negative_runs':sum(not r['truth'] for r in source_runs),'case_seed_blocks':len({(r['case'],r['seed']) for r in source_runs}),'skipped_incomplete_attempts':skipped_incomplete,'mock_runs':sum(r['backend']=='mock' for r in source_runs)},
+            'source_seal_sha256':source_seals,'analysis_script_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             'limitations':['Post-hoc rubric motivated by compact patch findings; requires held-out replication.','Masks reuse trajectories; no independent projection sample size.','Communications-only parser abstains from inferring behavior from directives.']}
     output=Path(output);output.mkdir(parents=True,exist_ok=False)
     for view in projections:write_json(output/(view['view_id']+'.view.private.json'),view)

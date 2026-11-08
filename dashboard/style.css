@@ -28,3 +28,7 @@ body[data-view=research] .filters,body[data-view=neural] .filters{display:none}
 .chart-takeaway{font-size:12px;color:#c7daef;border-left:3px solid #409cff;padding:8px 12px;background:#10263b}.focused-outcomes{max-height:350px;overflow:auto;min-height:0!important}.focused-outcomes table{width:100%;font-variant-numeric:tabular-nums}.focused-outcomes th{position:sticky;top:0;background:#102337}.outcome-zero{color:#65d6a3}.outcome-deviation{color:#ff9caa}.chart svg{display:block;max-width:100%;height:auto!important}.interpret-grid .chart{min-height:0}.axis-label{font-size:12px}.focused-outcomes td{padding:8px 10px}
 
 #runtime-chart{max-height:330px;overflow:auto}#runtime-chart svg{min-width:500px}.focused-outcomes .chart-takeaway{position:sticky;left:0}
+
+.research-readiness{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:15px}.readiness-card{border:1px solid #29465f;border-top:3px solid #409cff;background:#0c2134;padding:14px;border-radius:6px}.readiness-card:nth-child(2){border-top-color:#a58bff}.readiness-card:nth-child(3){border-top-color:#40bf91}.readiness-card:nth-child(4){border-top-color:#2dcecf}.readiness-card:nth-child(5){border-top-color:#e8ae52}.readiness-card h3{margin:0;font-size:12px;color:#a9c3dd}.readiness-card strong{display:block;font-size:19px;margin:10px 0}.readiness-card p{font-size:11px;color:#91adc8;line-height:1.7;margin:0}
+
+#advisory-reviews{max-height:380px;overflow:auto}#advisory-detail{margin-top:16px}#advisory-detail pre{white-space:pre-wrap;overflow-wrap:anywhere}

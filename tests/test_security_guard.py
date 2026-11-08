@@ -128,3 +128,17 @@ def test_privacy_scan_decodes_json_escapes_and_never_alters_input(monkeypatch):
     assert result['phone'] and result['government_id'] and result['payment_card']
     assert not scanner['findings']('2026-11-08T01:06:48.920256+00:00', public=True)
     assert not scanner['findings']('1.959963984540054', public=True)  # Scientific decimal, not a card number.
+
+
+def test_public_endpoint_examples_do_not_waive_private_hosts_or_credentials(tmp_path):
+    root=repo(tmp_path)
+    key=''.join(['unit','Credential','01234567890123456789'])
+    (root/'.env').write_text(f'CONTAGION_BASE_URL=https://openrouter.ai/api/v1\nCONTAGION_API_KEY={key}\nSECONDARY_SERVER_ID=user@private-host.example\n')
+    stage(root,'client.py','BASE="https://openrouter.ai/api/v1"\n')
+    assert GUARD['check'](root,'staged',env={})==0
+    stage(root,'secret.py',f'KEY="{key}"\n')
+    assert GUARD['check'](root,'staged',env={})==1
+    known,values=GUARD['private_values'](root,{})
+    assert 'https://openrouter.ai/api/v1' in known  # Public trace redaction remains strict.
+    filtered=GUARD['source_configuration_values'](known,values)
+    assert key in filtered and 'user@private-host.example' in filtered

@@ -47,3 +47,51 @@ def test_temporal_figure_uses_patch_runs_only_not_other_task_denominators(monkey
     series=analysis['temporal_patch_series'](data)
     assert sum(values[1]*8 for values in series.values())==17
     assert all(values[0]==0 and values[-1]==0 for values in series.values())
+
+
+def test_separate_rq3_build_validation_checks_matrix_counts_and_seals(monkeypatch):
+    monkeypatch.syspath_prepend(str(ROOT/'scripts'))
+    build=runpy.run_path(str(ROOT/'scripts/build_paper.py'))
+    evidence=json.loads((ROOT/'report/data/rq3_followup.json').read_text())
+    narrative=(ROOT/'report/paper.tex').read_text()
+    summary=build['validate_rq3_followup'](evidence,narrative)
+    assert summary['complete_runs']==64 and summary['responses']==320
+    changed=copy.deepcopy(evidence);changed['rows'][1]=copy.deepcopy(changed['rows'][0])
+    with pytest.raises(ValueError,match='Duplicate'):build['validate_rq3_followup'](changed,narrative)
+    changed=copy.deepcopy(evidence);changed['responses']=325
+    with pytest.raises(ValueError,match='header counts'):build['validate_rq3_followup'](changed,narrative)
+    changed=copy.deepcopy(evidence);changed['source_seal_sha256'].pop(changed['rows'][0]['run_id'])
+    with pytest.raises(ValueError,match='seal coverage'):build['validate_rq3_followup'](changed,narrative)
+    changed=copy.deepcopy(evidence);changed['rows'][0]['completed_calls']=4;changed['responses']=319
+    with pytest.raises(ValueError,match='five calls'):build['validate_rq3_followup'](changed,narrative)
+
+
+def test_separate_rq3_build_rejects_false_null_or_stale_narrative(monkeypatch):
+    monkeypatch.syspath_prepend(str(ROOT/'scripts'))
+    validate=runpy.run_path(str(ROOT/'scripts/build_paper.py'))['validate_rq3_followup']
+    evidence=json.loads((ROOT/'report/data/rq3_followup.json').read_text())
+    narrative=(ROOT/'report/paper.tex').read_text()
+    changed=copy.deepcopy(evidence);changed['rows'][0]['attempted_forbidden']=True;changed['attempting_runs']=1
+    with pytest.raises(ValueError,match='null narrative'):validate(changed,narrative)
+    with pytest.raises(ValueError,match='narrative counts'):validate(evidence,narrative.replace('adds 64 held-out record runs (320 responses)','adds 63 held-out record runs (315 responses)'))
+    changed=copy.deepcopy(evidence);changed['rows'][0]['phase']='integration_precheck'
+    with pytest.raises(ValueError,match='non-confirmatory'):validate(changed,narrative)
+
+
+def test_submission_audit_detects_stale_separate_rq3_freeze(tmp_path,monkeypatch):
+    import hashlib
+    monkeypatch.syspath_prepend(str(ROOT/'scripts'))
+    module=runpy.run_path(str(ROOT/'scripts/submission_audit.py'));audit=module['audit']
+    mapping={'latex_source_sha256':'report/paper.tex','bibliography_sha256':'report/sources.bib',
+             'analysis_script_sha256':'scripts/paper_analysis.py','notebook_source_sha256':'notebooks/paper_figures.ipynb',
+             'rq3_followup_sha256':'report/data/rq3_followup.json','build_script_sha256':'scripts/build_paper.py'}
+    manifest={}
+    for key,name in mapping.items():
+        path=tmp_path/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes((ROOT/name).read_bytes())
+        manifest[key]=hashlib.sha256(path.read_bytes()).hexdigest()
+    manifest['rq3_followup_sha256']='0'*64
+    paper=tmp_path/'built';paper.mkdir();(paper/'build_manifest.json').write_text(json.dumps(manifest))
+    audit.__globals__['ROOT']=tmp_path
+    audit.__globals__['inspect_pdf']=lambda *args:{'main_text_pages':7,'total_pages':11,'abstract_words':188}
+    result=audit(paper)
+    assert result['status']=='stale_build' and result['stale_inputs']==['rq3_followup_sha256']

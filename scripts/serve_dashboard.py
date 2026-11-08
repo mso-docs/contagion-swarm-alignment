@@ -76,6 +76,10 @@ def private_campaigns(base):
                 planned=sum(len(j['plan']['families'])*len(j['plan']['case_indices'])*len(j['plan']['seeds'])*len(j['plan']['topologies'])*len(j['plan']['interventions']) for j in plan['jobs'])
                 row={'kind':'swarm_campaign','status':state['status'],'planned_runs':planned,'planned_calls':plan['planned_calls'],
                      'completed_runs':state.get('completed_runs',0),'physical_calls':state.get('physical_calls',0),'failed_runs':state.get('failed_runs',0)}
+            elif (directory/'primary-long-state.json').is_file():
+                state=json.loads((directory/'primary-long-state.json').read_text())
+                row={k:state.get(k,0) for k in ['planned_runs','planned_calls','completed_runs','physical_calls','failed_runs']}
+                row.update(kind='primary_long_queue',status=state['status'])
             elif (directory/'followup-state.json').is_file():
                 state=json.loads((directory/'followup-state.json').read_text())
                 row={k:state[k] for k in ['status','planned_runs','planned_calls','completed_runs','physical_calls','failed_runs']}
@@ -94,6 +98,15 @@ def private_campaigns(base):
                 stamp=state.get('updated_utc',state.get('started_utc',''))
                 if row['kind'] not in stopped or stamp>stopped[row['kind']][0]:stopped[row['kind']]=(stamp,row)
             else:result.append(row)
+        except (OSError,ValueError,KeyError,TypeError):continue
+    reviews=Path(base).parent/'reviews'
+    for directory in sorted(reviews.glob('primary-artifact-judge-*')):
+        try:
+            state=json.loads((directory/'queue-state.json').read_text())
+            if state['status'] not in {'waiting','running','stopped'}:continue
+            count=len(list((directory/'review').glob('response-*.private.json')))
+            row={'kind':'advisory_review','status':state['status'],'planned_runs':0,'completed_runs':0,'failed_runs':0,'physical_calls':count,'planned_calls':state['planned_calls']}
+            if type(row['planned_calls']) is int and row['planned_calls']>=0:result.append(row)
         except (OSError,ValueError,KeyError,TypeError):continue
     active={row['kind'] for row in result}
     result.extend(value[1] for kind,value in stopped.items() if kind not in active)
@@ -214,9 +227,11 @@ def handler_type(directory, state, data_directory=None):
         def do_GET(self):
             path = urlsplit(self.path).path
             if re.fullmatch(r'/__private_(?:repository|followup)/[a-f0-9]{16}',path):
-                host=urlsplit('http://'+self.headers.get('Host',''))
-                if host.hostname not in {'127.0.0.1','localhost'} or host.port!=self.server.server_port or host.username or host.password:
-                    self.send_error(403);return
+                try:
+                    host=urlsplit('http://'+self.headers.get('Host',''))
+                    local=host.hostname in {'127.0.0.1','localhost'} and host.port==self.server.server_port and not host.username and not host.password
+                except ValueError:local=False
+                if not local:self.send_error(403);return
                 try:
                     if path.startswith('/__private_followup/'):
                         from followup_publication import private_detail
@@ -227,6 +242,19 @@ def handler_type(directory, state, data_directory=None):
                     _,env=private_values(ROOT,dict(os.environ))
                     data=json.dumps(private_detail(detail_root,path.rsplit('/',1)[-1],env)).encode()
                     self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(data)));self.end_headers();self.wfile.write(data)
+                except Exception:self.send_error(404)
+                return
+            if re.fullmatch(r'/__private_judge/[a-f0-9]{16}/[a-f0-9]{16}',path):
+                try:
+                    host=urlsplit('http://'+self.headers.get('Host',''))
+                    local=host.hostname in {'127.0.0.1','localhost'} and host.port==self.server.server_port and not host.username and not host.password
+                except ValueError:local=False
+                if not local:self.send_error(403);return
+                try:
+                    from advisory_publication import detail
+                    _,env=private_values(ROOT,dict(os.environ))
+                    batch,sample=path.split('/')[-2:];body=json.dumps(detail(ROOT/'results/reviews',batch,sample,env)).encode()
+                    self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(body)));self.end_headers();self.wfile.write(body)
                 except Exception:self.send_error(404)
                 return
             if path == '/__local_status':

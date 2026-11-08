@@ -118,11 +118,25 @@ def read_candidate(root, name, mode):
     return path.read_bytes()
 
 
+def source_configuration_values(known,values):
+    """Public service/loopback examples are not secrets in source; data stays strict."""
+    credentials={v for k,v in values.items() if v and not k.startswith('PRIVATE_REDACTION_SECRET_') and re.search(r'KEY|TOKEN|PASSWORD|CREDENTIAL',k,re.I)}
+    def public(value):
+        if value in credentials:return False
+        if value in {'openrouter.ai','localhost','127.0.0.1','::1'}:return True
+        try:parsed=urlsplit(value)
+        except ValueError:return False
+        if parsed.username or parsed.password or parsed.query or parsed.fragment:return False
+        return parsed.scheme in {'http','https'} and (parsed.hostname in {'localhost','127.0.0.1','::1'} or parsed.scheme=='https' and parsed.hostname=='openrouter.ai' and parsed.path.rstrip('/')=='/api/v1')
+    return {v for v in known if not public(v)}
+
+
 def check(root, mode, scan=False, env=None):
     root = Path(root).resolve()
     known, values = private_values(root, dict(os.environ) if env is None else env)
     from scan_privacy import findings as privacy_findings
     blobs, findings = {}, []
+    source_known=source_configuration_values(known,values)
     for name in candidates(root, mode):
         if privacy_findings(name):
             findings.append((name, 'private identifier in filename'))
@@ -140,12 +154,13 @@ def check(root, mode, scan=False, env=None):
         if len(data) > MAX_BYTES:
             findings.append((name, 'file exceeds 5 MiB review limit'))
             continue
-        if any(value.encode() in data or value in name for value in known):
+        candidate_known=known if name.startswith('dashboard/data/') else source_known
+        if any(value.encode() in data or value in name for value in candidate_known):
             findings.append((name, 'known private configuration value'))
             continue
         from scan_privacy import scan_blob
         try:
-            privacy = scan_blob(data, public=name.startswith('dashboard/data/'), known=known)
+            privacy = scan_blob(data, public=name.startswith('dashboard/data/'), known=candidate_known)
         except (UnicodeError, ValueError):
             findings.append((name, 'privacy lint could not validate text input'))
             continue

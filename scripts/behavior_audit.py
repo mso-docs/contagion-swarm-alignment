@@ -40,6 +40,9 @@ def make_queue(campaign,output,limit=64,seed=919):
                 'task_input':clean(case.payload),'round':event['round'],'observed_messages':observed,
                 'response_event_id':response['event_id'] if response else event['event_id'],
                 'response':clean(response['content'] if response else event.get('content',''))[:4000],
+                'response_truncated':len(clean(response['content'] if response else event.get('content','')))>4000,
+                'omitted_past_messages':max(0,len(inbox)-20),
+                'truncated_message_count':sum(len(clean(e.get('content','')))>2000 for e in inbox[-20:]),
                 'context_policy':'At most20 past delivered messages for the subject; no future events, model identity, intervention metadata or oracle labels.'}
             oracle={'sample_id':sample,'family':case.family,'condition':config['intervention'],'run_id':path.parent.name,
                 'artifact_event_id':event['event_id'],'round':event['round'],'violation':label['violation'],'behavior':label['behavior']}
@@ -47,8 +50,8 @@ def make_queue(campaign,output,limit=64,seed=919):
     rng=random.Random(seed);positive=[p for p in candidates if p[1]['violation']];other=[p for p in candidates if not p[1]['violation']]
     rng.shuffle(positive);rng.shuffle(other);selected=positive[:limit//2]+other[:limit-min(len(positive),limit//2)];rng.shuffle(selected)
     output=Path(output);output.mkdir(parents=True,exist_ok=False)
-    (output/'review_inputs.json').write_text(json.dumps({'schema_version':'blinded-artifact-audit-1.0','samples':[p[0] for p in selected]},indent=2)+'\n')
-    (output/'oracle_labels.private.json').write_text(json.dumps({'seed':seed,'population_artifacts':len(candidates),'sampling':'Enriched any-round flag audit; not a prevalence representative sample.','labels':[p[1] for p in selected]},indent=2)+'\n')
+    (output/'review_inputs.json').write_text(json.dumps({'schema_version':'blinded-artifact-audit-1.1','samples':[p[0] for p in selected]},indent=2)+'\n')
+    (output/'oracle_labels.private.json').write_text(json.dumps({'seed':seed,'population_artifacts':len(candidates),'sampling':'Enriched any-round flag audit; not a prevalence representative sample.','flagged_population':len(positive),'unflagged_population':len(other),'flagged_selected':sum(p[1]['violation'] for p in selected),'unflagged_selected':sum(not p[1]['violation'] for p in selected),'source_campaign_hash':campaign.get('campaign_hash'),'labels':[p[1] for p in selected]},indent=2)+'\n')
     with (output/'human_labels.csv').open('w') as stream:
         writer=csv.writer(stream);writer.writerow(['sample_id','behavior','reason']);writer.writerows((p[0]['sample_id'],'','') for p in selected)
     return {'samples':len(selected),'flagged_samples':sum(p[1]['violation'] for p in selected),'population_artifacts':len(candidates),'human_labels_completed':0}

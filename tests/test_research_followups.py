@@ -146,3 +146,16 @@ def test_queued_followup_stop_preserves_plan_without_inference(modules,tmp_path,
     with pytest.raises(RuntimeError,match='Operator stop'):q.run(root)
     state=json.loads((root/'followup-state.json').read_text());assert state['status']=='stopped' and state['physical_calls']==0
     assert json.loads((root/'followup-plan.json').read_text())['queue_hash']==plan['queue_hash']
+
+
+def test_public_followup_monitor_is_closed_and_checks_denominators(modules,monkeypatch):
+    monkeypatch.syspath_prepend(str(ROOT/'scripts'));publication=importlib.import_module('followup_publication')
+    row={'endpoint':'final_downstream_adoption','method':'keyword_rule','monitor_seed':404,'visibility':1.,'policy':'communications_only',
+         'cohort':'a'*64,'protocol':'4.0-confirmatory','backend':'ollama','model':'fixture','model_digest':'a'*64,'worker':'primary',
+         'source_hash':'a'*64,'freeze_hash':'a'*64,'design_hash':'a'*64,'topology':'ring','source_agent':'agent_0','defense':'none',
+         'n':2,'tp':0,'fp':1,'tn':1,'fn':0,'precision':0.,'recall':None,'f1':None,'false_positive_rate':.5,
+         'projected_runs':2,'unknown_truth_runs':0,'positive_runs':0,'negative_runs':2,'case_seed_blocks':1}
+    publication.MonitorSummary(**row)
+    with pytest.raises(ValueError):publication.MonitorSummary(**{**row,'recall':0.})
+    with pytest.raises(ValueError):publication.MonitorSummary(**{**row,'oracle_flags':[]})
+    with pytest.raises(ValueError):publication.MonitorSummary(**{**row,'n':99})

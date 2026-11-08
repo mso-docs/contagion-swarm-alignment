@@ -317,3 +317,16 @@ Primary was explicitly released by the user. Read-only preflight found idle Olla
 The report now has verified additional primary references and explicit hackathon/preexisting-infrastructure provenance. Rebuilt PDF:7main-text pages,11total,188-word abstract. Automated submission checks pass while final author review, template comparison, public-link review and actual submission confirmation remain explicit. Scientific RQ conclusions are not silently expanded with mock or incomplete results.
 
 Final follow-up validation:188pytest tests passed in38.36s;13 focused follow-up tests include capped routing, simulator state separation, private/closed publication, judge abstention, primary allocation and queue stopping. The eight-view JS smoke passed with actual protocol4 summaries included. Public build copied280allowlisted assets. Ruff/Bandit passed. Final PDF/submission audit passed automatic checks (7main pages,188abstract words), while human review remains pending. Primary precheck completed20/20calls before strengthened RQ3; latest status21primary and44secondary completed runs, zero failures.
+
+### Hybrid review checkpoint
+
+- `.venv/bin/python -m pytest -q`:288 passed in40.87s.
+- Local different-family advisory judge:64 validated reviews; frontier spot check:20 validated reviews. Confirmed cloud cost$0.097612; conservative shared-budget debit$0.16209950 of$20, including one retained failed-request reservation. Keys/configuration and full traces stay ignored.
+- Primary protocol4 queue:140/140 completed runs, including four prechecks. The68-run long-task allocation is now collecting; subsequent local quality judging and50-run protocol4.1 decomposition are serialized behind it. No cloud judging is required for these experiment calls.
+- Full protocol4.1 mock:50 runs/186 scripted responses, zero failures. Live decomposition results remain pending. Original compact results and six trained reference captures retain their separate evidence boundaries.
+- `.venv/bin/python scripts/build_paper.py --out results/paper-draft --compiler .cache/report-tools/tectonic --skip-notebook`:actual PDF rebuilt,8 main pages/12 total,188-word abstract. Submission audit automated checks passed; author/template review and submission remain pending.
+- Private16-item hybrid adjudication workspace is ready; human labels remain pending. Model opinions never populate human ground truth or certify general alignment.
+
+See `docs/FRONTIER_REVIEW.md`, `docs/PRIMARY_LONG_SAFEGUARD_PROTOCOL.md`, `docs/RQ3_DECOMPOSITION_PROTOCOL.md` and `report/RESEARCH_READINESS.md` for commands, frozen limits and remaining scientific gates.
+
+Final manual pre-commit run passed all hooks: candidate and full-history Gitleaks, JSON/YAML/TOML/conflict/private-key/size checks, public-snapshot privacy validation, Ruff critical checks and Bandit medium/high checks. Dashboard V8 runtime smoke passed after cohort separation changes; browser visual review remains pending. Explicit dashboard checkpoint export validated343 data files. The initial concurrent export/check attempt was repeated after files stabilized; only the stable successful run is the final validation.

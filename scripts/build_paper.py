@@ -2,6 +2,7 @@
 import argparse
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -23,6 +24,67 @@ def validate_draft_evidence(data):
         raise ValueError('Revise temporal/exposure claims before rebuilding')
     if len(data['rq3_development'])!=8 or len(data['neural'])!=6:
         raise ValueError('Revise pilot coverage claims before rebuilding')
+
+
+def validate_rq3_followup(data,narrative=None):
+    """Validate the separate numeric freeze offline; original raw logs are not required."""
+    import itertools
+    from collections import Counter
+    if data.get('schema_version')!='rq3-followup-evidence-1.0' or data.get('protocol')!='4.0-confirmatory':
+        raise ValueError('Unknown separate RQ3 freeze')
+    rows=data.get('rows')
+    if not isinstance(rows,list) or len(rows)!=64:raise ValueError('Separate RQ3 needs64 unique completed rows')
+    required={'run_id','backend','model','model_digest','worker','freeze_hash','family','case','seed','topology',
+              'condition','executor','context','phase','status','completed_calls','http_attempts',
+              'attempted_forbidden','actual_state_violation','refusal_rate','task_success_rate'}
+    ids=set();matrix=set();identities=set()
+    for row in rows:
+        if not isinstance(row,dict) or not required<=row.keys():raise ValueError('Incomplete separate RQ3 row')
+        name=row['run_id']
+        if not isinstance(name,str) or not re.fullmatch(r'[A-Za-z0-9_-]{1,80}',name) or name in ids:
+            raise ValueError('Duplicate or invalid separate RQ3 run ID')
+        ids.add(name)
+        if any(row[k]!=v for k,v in {'backend':'ollama','worker':'primary','family':'record','phase':'confirmatory','status':'completed'}.items()):
+            raise ValueError('Separate RQ3 contains non-confirmatory or non-live evidence')
+        if type(row['case']) is not int or type(row['seed']) is not int:raise ValueError('Invalid case or seed')
+        if type(row['completed_calls']) is not int or row['completed_calls']!=5 or type(row['http_attempts']) is not int or row['http_attempts']!=5:
+            raise ValueError('Separate RQ3 requires five calls per run')
+        if any(type(row[k]) is not bool for k in ['attempted_forbidden','actual_state_violation']):raise ValueError('Invalid RQ3 behavior flag')
+        for key in ['refusal_rate','task_success_rate']:
+            if type(row[key]) not in {int,float} or not math.isfinite(row[key]) or not 0<=row[key]<=1:raise ValueError('Invalid RQ3 rate')
+        if not isinstance(row['model'],str) or not row['model']:raise ValueError('Missing RQ3 model')
+        for key in ['model_digest','freeze_hash']:
+            if not isinstance(row[key],str) or not re.fullmatch(r'[a-f0-9]{64}',row[key]):raise ValueError('Invalid RQ3 provenance digest')
+        matrix.add((row['case'],row['seed'],row['topology'],row['condition'],row['executor'],row['context']))
+        identities.add((row['model'],row['model_digest'],row['freeze_hash'],row['worker']))
+    expected=set(itertools.product(range(4),[13001],['single','complete'],['none','benign_override'],
+                                   ['deny','permissive_simulator'],['matched_reset','natural_history']))
+    if matrix!=expected or len(identities)!=1:raise ValueError('Separate RQ3 matrix or model cohort mismatch')
+    seals=data.get('source_seal_sha256')
+    if not isinstance(seals,dict) or set(seals)!=ids or any(not isinstance(v,str) or not re.fullmatch(r'[a-f0-9]{64}',v) for v in seals.values()):
+        raise ValueError('Separate RQ3 source seal coverage mismatch')
+    for key in ['analysis_sha256','analysis_script_sha256','source_hash']:
+        if not isinstance(data.get(key),str) or not re.fullmatch(r'[a-f0-9]{64}',data[key]):raise ValueError('Invalid separate RQ3 provenance')
+    derived={'complete_runs':len(rows),'responses':sum(r['completed_calls'] for r in rows),'case_clusters':len({r['case'] for r in rows}),
+             'attempting_runs':sum(r['attempted_forbidden'] for r in rows),'state_violating_runs':sum(r['actual_state_violation'] for r in rows),
+             'runs_with_refusal':sum(r['refusal_rate']>0 for r in rows)}
+    if any(type(data.get(k)) is not int or data[k]!=v for k,v in derived.items()):raise ValueError('Separate RQ3 header counts disagree with rows')
+    mean=sum(r['task_success_rate'] for r in rows)/len(rows)
+    if type(data.get('mean_task_success')) not in {int,float} or not math.isclose(data['mean_task_success'],mean,rel_tol=0,abs_tol=1e-12):
+        raise ValueError('Separate RQ3 task-success header disagrees with rows')
+    if data.get('seeds')!=[13001] or data.get('context_counts')!=dict(Counter(r['context'] for r in rows)):
+        raise ValueError('Separate RQ3 design header mismatch')
+    if any(derived[k] for k in ['attempting_runs','state_violating_runs','runs_with_refusal']) or mean!=1:
+        raise ValueError('Revise separate RQ3 null narrative before rebuilding')
+    if narrative is not None:
+        marker=r'\subsection{Separately frozen responsibility follow-up}'
+        if marker not in narrative:raise ValueError('Separate RQ3 narrative missing')
+        section=narrative.split(marker,1)[1].split(r'\section{',1)[0]
+        count=re.search(r'adds\s+(\d+)\s+held-out\s+record\s+runs\s*\((\d+)\s+responses\)',section)
+        null=re.search(r'All\s+(\d+)\s+runs\s+completed\s+with\s+exact\s+final\s+task\s+success\s+([0-9.]+)\s+and\s+zero\s+protected-update\s+attempts,\s+simulator\s+state\s+violations\s+or\s+scored\s+refusals',section)
+        if not count or tuple(map(int,count.groups()))!=(derived['complete_runs'],derived['responses']) or not null or int(null[1])!=len(rows) or float(null[2])!=mean:
+            raise ValueError('Separate RQ3 narrative counts disagree with freeze')
+    return {**derived,'mean_task_success':mean}
 
 
 def generated_table(data):
@@ -86,6 +148,8 @@ def main():
         notebook.metadata['contagion_source_sha256']=hashlib.sha256((ROOT/'notebooks/paper_figures.ipynb').read_bytes()).hexdigest()
         nbformat.write(notebook,out/'paper_figures.executed.ipynb')
     evidence=ROOT/'report/data/compact_evidence.json';data=json.loads(evidence.read_text());validate_draft_evidence(data)
+    followup=ROOT/'report/data/rq3_followup.json'
+    validate_rq3_followup(json.loads(followup.read_text()),(ROOT/'report/paper.tex').read_text())
     figures=out/'figures';manifest=json.loads((figures/'figure_manifest.json').read_text())
     if manifest['evidence_sha256']!=hashlib.sha256(evidence.read_bytes()).hexdigest():raise ValueError('Notebook figures do not match evidence freeze')
     if manifest.get('analysis_script_sha256')!=hashlib.sha256((ROOT/'scripts/paper_analysis.py').read_bytes()).hexdigest():raise ValueError('Rerun notebook after analysis code changes')
@@ -109,6 +173,8 @@ def main():
     quality['notebook_source_sha256']=hashlib.sha256((ROOT/'notebooks/paper_figures.ipynb').read_bytes()).hexdigest()
     quality['analysis_script_sha256']=hashlib.sha256((ROOT/'scripts/paper_analysis.py').read_bytes()).hexdigest()
     quality['bibliography_sha256']=hashlib.sha256((ROOT/'report/sources.bib').read_bytes()).hexdigest()
+    quality['rq3_followup_sha256']=hashlib.sha256(followup.read_bytes()).hexdigest()
+    quality['build_script_sha256']=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     quality['font_sha256']={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in fonts.glob('*.ttf')}
     (out/'build_manifest.json').write_text(json.dumps(quality,indent=2)+'\n')
     print('LaTeX PDF built:',quality['main_text_pages'],'main-text pages,',quality['total_pages'],'total pages,',quality['abstract_words'],'abstract words. Human review remains required.')
