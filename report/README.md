@@ -11,7 +11,7 @@ Current verified draft: **7main-text pages,13total pages,209abstract words**, be
 .venv/bin/python scripts/build_paper.py
 ```
 
-The project-local Tectonic compiler is under ignored `.cache/report-tools/tectonic`; another installed compiler can be selected with `--compiler`. The build uses the available Arial system font and downloads the open-licensed title font/TeX resources if missing. It executes the notebook through a private local IPC kernel and never performs model inference. Compiler cache/font metadata and the compiled build manifest remain in ignored local outputs.
+The project-local Tectonic compiler is under ignored `.cache/report-tools/tectonic`; another installed compiler can be selected with `--compiler`. At the author's request, the current paper uses **Latin Modern Roman**, the classic Computer Modern-style LaTeX serif, for body and title. Standard TeX font resources are fetched if absent from the compiler cache. This typeface differs from the official Arial/Old Standard template; the template-font checkpoint is preserved locally at `results/paper-template-bf217d7/paper.pdf`. The build records actual embedded PDF font names. It executes the notebook through a private local IPC kernel and never performs model inference. Compiler cache/font metadata and the compiled build manifest remain in ignored local outputs.
 
 Outputs:
 

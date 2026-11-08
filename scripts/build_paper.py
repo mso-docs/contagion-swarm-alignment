@@ -1,4 +1,4 @@
-"""Execute the figure-review notebook and compile the template-matched LaTeX PDF."""
+"""Execute the figure-review notebook and compile the checked LaTeX research PDF."""
 import argparse
 import hashlib
 import json
@@ -161,7 +161,8 @@ def main():
     supplement,supplement_hashes=render(ROOT)
     (out/'generated_supplement.tex').write_text(supplement)
     fonts=out/'fonts';fonts.mkdir(exist_ok=True)
-    if not (fonts/'OldStandard-Bold.ttf').exists():
+    needs_template_font='OldStandard-Bold.ttf' in (out/'paper.tex').read_text()
+    if needs_template_font and not (fonts/'OldStandard-Bold.ttf').exists():
         import httpx
         with httpx.Client(timeout=30,follow_redirects=True) as client:
             for name in ['OldStandard-Bold.ttf','OFL.txt']:
@@ -179,7 +180,11 @@ def main():
     quality['rq3_followup_sha256']=hashlib.sha256(followup.read_bytes()).hexdigest()
     quality['build_script_sha256']=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     quality.update(supplement_hashes)
-    quality['font_sha256']={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in fonts.glob('*.ttf')}
+    quality['font_sha256']={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in fonts.glob('*.ttf')} if needs_template_font else {}
+    from pypdf import PdfReader
+    quality['pdf_font_names']=sorted({str(font.get_object().get('/BaseFont','')) for page in PdfReader(out/'paper.pdf').pages
+                                    for font in page.get('/Resources',{}).get('/Font',{}).values()})
+    quality['typeface']='Official template Arial/Old Standard' if needs_template_font else 'Latin Modern Roman; author-requested template typeface override'
     (out/'build_manifest.json').write_text(json.dumps(quality,indent=2)+'\n')
     print('LaTeX PDF built:',quality['main_text_pages'],'main-text pages,',quality['total_pages'],'total pages,',quality['abstract_words'],'abstract words. Human review remains required.')
 

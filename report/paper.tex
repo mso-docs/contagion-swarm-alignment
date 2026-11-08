@@ -1,8 +1,8 @@
 \documentclass[11pt,letterpaper]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{fontspec}
-\setmainfont{Arial}
-\newfontfamily\titlefont{OldStandard-Bold.ttf}[Path=fonts/]
+\setmainfont{lmroman10-regular.otf}[BoldFont=lmroman10-bold.otf,ItalicFont=lmroman10-italic.otf,BoldItalicFont=lmroman10-bolditalic.otf]
+\newfontfamily\titlefont{lmroman10-bold.otf}
 \usepackage{setspace,titlesec,graphicx,booktabs,array,amsmath,xcolor,hyperref,float}
 \setstretch{1.15}
 \titleformat{\section}{\normalfont\fontsize{20}{24}\selectfont}{\thesection.}{.5em}{}
@@ -132,5 +132,5 @@ Scientific limits include small case diversity, paired dependence, exposure conf
 \section{Reproducibility}
 Model inference produced the recorded experimental outputs. Numerical claims were checked against sealed logs and a frozen analysis bundle; the author must still review scientific interpretation, citations, figure selection and final wording before submission. A selected single-reviewer artifact audit is reported separately; it does not supply independent inter-rater validation or completed repository-quality adjudication.
 
-The official Google Docs template was retrieved through its public DOCX export. This LaTeX adaptation preserves US Letter layout, one-inch margins, 11-point Arial body text and the recommended section structure. The main text is checked against the eight-page cap; references and appendices are separate. The abstract is checked for 150--250 words. Author attribution is supplied by the project author. The original template's guidance text is not included in this manuscript.
+The official Google Docs template was retrieved through its public DOCX export. This author-requested LaTeX variant uses Latin Modern Roman, a Computer Modern-style serif, with US Letter layout, one-inch margins, 11-point body text and the recommended section structure. Its typeface differs from the official Arial/Old Standard template; a template-matched PDF checkpoint is retained separately. The main text is checked against the eight-page cap; references and appendices are separate. The abstract is checked for 150--250 words. Author attribution is supplied by the project author. The original template's guidance text is not included in this manuscript.
 \end{document}

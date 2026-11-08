@@ -15,6 +15,8 @@ RQ3 follow-up: 64 completed protocol 4 runs and 320 responses, four fixed cases 
 
 Current PDF:7main pages,13total,209-word abstract. Automated checks and current-template format extraction pass; final author scientific/visual review and actual submission remain pending. The repository is private with Pages disabled, so public reproducibility links are not yet available. See [the runbook](../docs/SUBMISSION_RUNBOOK.md).
 
+The author requested a classic LaTeX serif: the current PDF uses Latin Modern Roman. The official template's Arial/Old Standard fonts are documented separately, and its prior PDF is retained at `results/paper-template-bf217d7/paper.pdf`. Typeface changes do not establish official-template compliance.
+
 ## Private human review
 
 Generate workspace pages outside the published dashboard:
