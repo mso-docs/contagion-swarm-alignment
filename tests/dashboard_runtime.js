@@ -1,5 +1,5 @@
 /* Lightweight DOM interaction smoke test; browser layout verification is separate. */
-async function dashboardSmoke(source, data, html, research={schema_version:"1.0",studies:[],reviews:[],monitor:[],neural:[],scenarios:[],review_source:"not_run",unreviewed_samples:0}, widgetsSource="", detailFiles={}) {
+async function dashboardSmoke(source, data, html, research={schema_version:"1.0",studies:[],reviews:[],monitor:[],neural:[],scenarios:[],review_source:"not_run",unreviewed_samples:0}, widgetsSource="", detailFiles={}, repositories={schema_version:"repository-public-1.0",runs:[]}) {
   class Element {
     constructor(tag) { this.tagName=tag;this.children=[];this.attributes={};this.listeners={};this.value='';this.textContent='';this.dataset={};this.style={};this.classes=new Set();this.classList={toggle:(name,on)=>{const enabled=on??!this.classes.has(name);enabled?this.classes.add(name):this.classes.delete(name);return enabled;},remove:name=>this.classes.delete(name)}; }
     append(...nodes) { this.children.push(...nodes); }
@@ -15,11 +15,19 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
   class Option extends Element { constructor(text,value){super('option');this.textContent=text;this.value=value;} }
   const widgets=widgetsSource?new Function('document',widgetsSource+'\nreturn EvidenceWidgets;')(document):null;
   const fetched=[];
-  const api=new Function('document','Option','fetch','setInterval','EvidenceWidgets',source+'\nreturn {load,render,renderRound,renderTraces,showView,state,loadResearch,researchState,loadStudyDetail};')(document,Option,async url=>(fetched.push(url),{ok:!url.startsWith('data/studies/')||Boolean(detailFiles[url]),json:async()=>url.startsWith('data/research.json')?research:detailFiles[url]??data}),()=>0,widgets);
-  await api.load();await api.loadResearch();
+  const api=new Function('document','Option','fetch','setInterval','EvidenceWidgets',source+'\nreturn {load,render,renderRound,renderTraces,showView,state,loadResearch,researchState,loadStudyDetail,loadRepositories};')(document,Option,async url=>(fetched.push(url),{ok:!url.startsWith('data/studies/')||Boolean(detailFiles[url]),json:async()=>url.startsWith('data/research.json')?research:url.startsWith('data/repositories.json')?repositories:detailFiles[url]??data}),()=>0,widgets);
+  await api.load();await api.loadResearch();await api.loadRepositories();
   fetched.length=0;await ids.get('refresh').listeners.click();
   if(!fetched.some(u=>u.startsWith('data/results.json'))||!fetched.some(u=>u.startsWith('data/research.json')))throw Error('Refresh must fetch both snapshots');
   if(!ids.get('research-updated').textContent.includes('run attempts'))throw Error('Research freshness missing');
+  if(!ids.get('coverage-heatmap').children.length||!ids.get('coverage-bars').children.length)throw Error('All-task coverage visuals missing');
+  const scatter=ids.get('coverage-scatter').children[0];
+  const point=scatter?.children.find(n=>n.tagName==='circle'&&n.attributes.role==='button');
+  if(!point)throw Error('Run scatterplot is missing recorded attempts');
+  point.listeners.click();if(document.body.dataset.view!=='traces')throw Error('Scatter point did not open its run trace');api.showView('overview');
+  ids.get('coverage-metric').value='calls';ids.get('coverage-metric').listeners.change();
+  if(!ids.get('coverage-summary').textContent.includes('task families'))throw Error('Task coverage denominator missing');
+
   const comparisonCards=ids.get('comparison').children;
   if(!comparisonCards.length)throw Error('Model comparison cards missing');
   const comparisonDetail=comparisonCards[0].children.find(n=>n.tagName==='details');
@@ -47,7 +55,7 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
   const detailRow=research.studies.find(r=>detailFiles[r.detail_file]);
   if(detailRow){await api.loadStudyDetail(detailRow);if(!ids.get('study-detail').children.some(n=>n.textContent==='Assigned task'))throw Error('Task drill-down missing');}
   if(!api.state.runs.length)throw Error('No initial runs rendered');
-  const expected=(data.runs.filter(r=>ids.get('backend').value==='mock'?r.backend==='mock':r.backend!=='mock').length)+(research.studies.filter(r=>ids.get('backend').value==='mock'?r.backend==='mock':r.backend!=='mock').length);
+  const expected=(data.runs.filter(r=>ids.get('backend').value==='mock'?r.backend==='mock':r.backend!=='mock').length)+(research.studies.filter(r=>ids.get('backend').value==='mock'?r.backend==='mock':r.backend!=='mock').length)+(repositories.runs.filter(r=>ids.get('backend').value==='mock'?r.backend==='mock':r.backend!=='mock').length);
   if(api.state.runs.length!==expected)throw Error('Main overview omitted newer study runs');
   if(ids.get('runs-kpi').textContent!==`${api.state.runs.filter(r=>r.status==='completed').length} / ${expected}`)throw Error('Main run counter is stale');
   for(const view of ['models','evaluations','traces','datasets','methods','research','neural','overview']){
@@ -88,5 +96,5 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
 }
 if(typeof module!=='undefined'&&require.main===module){
   const fs=require('node:fs'),path=require('node:path'),root=path.join(__dirname,'..','dashboard');
-  dashboardSmoke(fs.readFileSync(path.join(root,'app.js'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/results.json'),'utf8')),fs.readFileSync(path.join(root,'index.html'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/research.json'),'utf8')),fs.readFileSync(path.join(root,'widgets.js'),'utf8'),Object.fromEntries(fs.existsSync(path.join(root,'data/studies'))?fs.readdirSync(path.join(root,'data/studies')).filter(n=>n.endsWith('.json')).map(n=>['data/studies/'+n,JSON.parse(fs.readFileSync(path.join(root,'data/studies',n),'utf8'))]):[])).then(console.log).catch(error=>{console.error(error);process.exitCode=1;});
+  dashboardSmoke(fs.readFileSync(path.join(root,'app.js'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/results.json'),'utf8')),fs.readFileSync(path.join(root,'index.html'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/research.json'),'utf8')),fs.readFileSync(path.join(root,'widgets.js'),'utf8'),Object.fromEntries(fs.existsSync(path.join(root,'data/studies'))?fs.readdirSync(path.join(root,'data/studies')).filter(n=>n.endsWith('.json')).map(n=>['data/studies/'+n,JSON.parse(fs.readFileSync(path.join(root,'data/studies',n),'utf8'))]):[]),fs.existsSync(path.join(root,'data/repositories.json'))?JSON.parse(fs.readFileSync(path.join(root,'data/repositories.json'),'utf8')):undefined).then(console.log).catch(error=>{console.error(error);process.exitCode=1;});
 }

@@ -1,0 +1,11 @@
+# Matched long-input review horizon pilot
+
+Design version3.2-long-input-horizon; controller protocol3.1-repository. Registered before the two selected cases' model outcomes. Both are further long diffs from the pinned Martian registry; the case already used in the initial long precheck is excluded. Original task IDs and diff content stay identical across horizons. Only planned interaction rounds vary (3/8/15), with ring/star/complete graphs and paired control/injection runs. Seed2718 is matched across conditions; pair order is shuffled with registration seed3811.
+
+Two cases × three horizons × three graphs × two conditions gives36runs/1,560scheduled responses. Physical-call cap1,600; execution ceiling8hours; prerequisite wait ceiling16hours. No hidden retries or parallel inference. The source controller is archived and the same pinned model/readiness proof is required. Error/thermal/source/STOP gates apply. New observations are sealed under distinct freeze hashes; their long-input label does not change at shorter horizons.
+
+The detached queue waits for `overnight-v26-20261108b` to complete successfully; stopped preceding work prevents its start. Queue status is private in `results/campaigns/long-horizon-v31-20261108/queue-state.json`. Create a `STOP` file in that directory to stop before subsequent calls. Completed and interrupted attempts are preserved.
+
+Primary descriptive comparisons are final artifact boundary flags, unsupported execution claims, completion integrity and observed runtime. Independent review precision/recall remains unavailable until curated-issue matching and human calibration. Record any-round versus final outcomes separately when extending this analysis. Missing findings, early completion and lower runtime are not sufficient evidence of intentional cheating. Inputs may have appeared in training data. Two cases and one seed do not support strong population inference, and more communication creates additional exposure opportunities.
+
+The current synthetic RQ1/RQ2 collection and original RQ definitions are unchanged. This pilot adds evidence about review horizon; it does not certify alignment, prove collusion, or replace an independently scored multi-step task suite.

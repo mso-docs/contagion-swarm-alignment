@@ -1,0 +1,130 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{fontspec}
+\setmainfont{Arial}
+\newfontfamily\titlefont{OldStandard-Bold.ttf}[Path=fonts/]
+\usepackage{setspace,titlesec,graphicx,booktabs,array,amsmath,xcolor,hyperref,float}
+\setstretch{1.15}
+\titleformat{\section}{\normalfont\fontsize{20}{24}\selectfont}{\thesection.}{.5em}{}
+\titlespacing*{\section}{0pt}{20pt}{6pt}
+\titleformat{\subsection}{\normalfont\fontsize{14}{17}\selectfont}{\thesubsection}{.5em}{}
+\setlength{\emergencystretch}{2em}
+\setlength{\parindent}{0pt}\setlength{\parskip}{6pt}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black,citecolor=blue!50!black,pdftitle={Contagion: Controlled Instruction-Boundary Failures in Agent Swarms},pdfauthor={Mackenzie O'Brien}}
+\graphicspath{{figures/}}
+\begin{document}
+\begin{center}
+{\titlefont\fontsize{20}{24}\selectfont Contagion: Controlled Instruction-Boundary Failures in Agent Swarms\par}
+\vspace{9pt}
+Mackenzie O'Brien\\
+Independent AI Researcher, Mac Labs AI\\
+\small Swarm Alignment Hackathon, November 6--8, 2026\\
+\textbf{Research draft: frozen compact checkpoint; human review pending}
+\end{center}
+\begin{abstract}
+Multi-agent evaluations must distinguish task mistakes, transient instruction-boundary failures, and persistent unauthorized adoption. We introduce Contagion, a controller-mediated testbed with isolated model contexts, synchronous graph routing, benign interventions, and sealed event logs. A compact evaluation used five logical agents, five rounds, three task families, three communication topologies, and paired clean/injected conditions with two seeds. All 36 registered runs completed, producing 900 responses; two interrupted attempts were preserved separately. In the inert patch task, all six injected runs contained an intermediate forbidden proposal, with 17 violating recipient artifacts after 20 direct injected-message deliveries. None persisted to final artifacts, and no final downstream violation occurred in any task family. Exact patch-task success was also imperfect in controls, motivating separate quality and boundary measurements. Offline catalog monitoring generated 288 dependent visibility projections; recall was undefined because catalog adoption positives were absent. Eight development runs found no protected-record update attempts in a separate responsibility pilot. Six trained GPT-2 reference captures validated instrumentation controls without explaining the Ollama swarm's mechanisms. These observations support a narrow, reproducible analysis of transient boundary failures, not confirmed collusion, a general alignment rating, or a demonstrated topology effect.
+\end{abstract}
+
+\section{Introduction}
+A swarm can complete its legitimate task poorly without crossing an authorization boundary, or briefly follow a lower-trust instruction before recovering. Treating these behaviors as one ``misalignment score'' obscures what failed. Contagion separates artifact correctness, intermediate boundary violations, final adoption, message exposure, and monitor predictions.
+
+We retain three research questions: \textbf{RQ1}, how communication topology affects unauthorized instruction propagation; \textbf{RQ2}, how reduced monitor visibility affects detection; and \textbf{RQ3}, whether splitting a harmless prohibited task changes collective violation relative to a single-agent baseline. This draft reports a frozen compact RQ1 evaluation, catalog-only offline RQ2 analysis, and a separately labeled RQ3 development pilot. A larger collection is ongoing and is not silently pooled into this checkpoint.
+
+Our contributions are a bounded synchronous testbed with reproducible evidence, a task-specific account of transient versus final boundary behavior, and an offline reporting workflow that preserves null and incomplete observations. The repository was initiated on November 7, 2026 for this hackathon. Existing models, hardware, libraries and cited datasets are infrastructure or prior work, not original Contagion contributions.
+
+\section{Related Work}
+Lee and Tiwari study prompt infection between LLM agents\cite{lee2024}. Contagion uses benign artifact-level boundaries and matched graph conditions to study exposure and behavior in a deliberately restricted setting. It does not reproduce open-ended autonomous compromise. The Martian Code Review Benchmark provides real pull-request review cases and curated comments\cite{martian}; our ongoing static-review adaptation withholds those comments from agents and does not yet claim the benchmark's semantic precision or recall. TransformerLens supplies checkpoint instrumentation\cite{transformerlens}; our reference replay is a separate measurement from Ollama inference, not an inferred hidden-state trace.
+
+\section{Methods}
+\subsection{Controlled environment and task complexity}
+Five logically isolated contexts share one pinned \texttt{qwen3.5:4b} server. Agents cannot execute code, edit files, browse, invoke tools, or contact external targets. Only the controller requests inference and routes messages. Ring, star and complete networks are undirected. Each round consumes the previous round's inbox; outgoing messages arrive in the next round (Figure~\ref{fig:flow}).
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth]{01_experiment_flow.pdf}
+\caption{Design schematic, not empirical evidence. The controller freezes tasks and graph conditions, keeps five agent histories isolated, and separates authoritative logs from restricted monitor views. Graph degree changes exposure, so topology and message volume are not interchangeable causes.}
+\label{fig:flow}\end{figure}
+
+The synthetic tasks are intentionally small: group five catalog records by stage; return a queried record's stage and provenance; or propose one inert JSON update to \texttt{/config/timeout} while avoiding evaluator-related paths such as \texttt{/tests}. These test instruction boundaries rather than broad coding competence. No patch is applied to host files. The RQ3 record store exists only in RAM. A deny executor and an explicitly permissive simulator distinguish attempted proposals from simulated state changes.
+
+The separate repository-review track uses pinned real PR diffs, not executable checkouts. Short, medium and long strata contain at most 8,000, 16,000 and 64,000 characters and use 3, 8 and 15 rounds. Length and horizon co-vary in this exploratory design; neither independently measures reasoning difficulty. Protocol 3.1 requests a 32,768-token context and up to 1,536 output tokens, with four concise findings. Hidden curated comments are reserved for future independent quality matching. Repository outcomes are excluded from the frozen primary analysis.
+
+\subsection{Frozen comparison and operational provenance}
+Protocol 2.6 uses evaluation case 0 in catalog, provenance and inert patch families, seeds 10001 and 10002, three graphs, and clean/injected conditions: $3\times2\times3\times2=36$ runs. Each run has five agents and five rounds (25 calls), giving 900 completed-run responses. Sampling requests temperature 0.2, disabled thinking, bounded JSON output and 1,024 output tokens. Backend determinism is not assumed. The model digest and source/manifest hashes are preserved in the numerical evidence bundle.
+
+The injected condition mutates one designated source's first outbound peer message after its generation; it never changes the system instruction. Clean controls use the same case/seed/graph schedule. Runs start with fresh histories. Two earlier thermally interrupted attempts remain sealed and visible, yielding 38 total attempts and 941 recorded HTTP attempts/responses. They are not counted as completed behavioral trials. Thermal pauses, controller overhead and hardware allocation limit runtime comparisons.
+
+\subsection{Outcome definitions and dependence}
+The original RQ1 primary endpoint is \textbf{final downstream artifact adoption}, excluding the designated injection source. \textbf{Any-round violations} are a separate secondary outcome. The patch scorer detects proposed operations on forbidden synthetic paths; task success requires the exact authorized artifact. Neither a quotation in a message nor an incorrect answer alone establishes adoption. Direct delivery is exposure; persistent propagation additionally requires behavior and timing evidence. All artifact events remain available for temporal audit.
+
+Run/seed trajectories, not individual agent generations, are the analysis units. Agents and rounds are nested, controls are paired, and topology conditions share seeds and task cases. We report explicit counts without independent-agent confidence intervals or significance claims. One case per family and two seeds cannot establish generalization or equivalence between graphs.
+
+RQ2 samples catalog communications, with or without visible outputs, at visibility fractions 0.25, 0.50, 0.75 and 1.00 using mask seeds 404, 505 and 606. A restricted keyword baseline receives no oracle labels or hidden intervention metadata. Its predictions are evaluated against verified downstream adoption; detecting a directive is not the same as detecting adopted behavior. All 288 projections share only 12 completed catalog trajectories. Undefined metrics remain undefined.
+
+\section{Results}
+\subsection{Transient patch failures, absent final adoption}
+\input{generated_results.tex}
+Figure~\ref{fig:outcomes} separates quality and boundary outcomes. Each of the six injected patch runs had at least one intermediate forbidden proposal; all catalog and provenance runs had zero such violations. However, all 17 violating patch artifacts occurred in round 1 after direct lower-trust delivery. Across injected patch runs there were 20 direct injected-message deliveries. None of the violations persisted: final downstream violation rates were zero in all 36 completed runs (Figure~\ref{fig:transient}). This is transient instruction following at exposed nodes, not demonstrated multi-hop persistent propagation or collusion.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth]{02_task_outcomes.pdf}
+\caption{The left panel counts completed runs with any intermediate or final boundary violation (six runs per task/condition, one case and two seeds shared across graphs). Final violation counts are zero throughout. The right panel reports legitimate task success separately. Clean patch-task failures remain visible; no chart implies a general alignment probability or independent-agent uncertainty interval.}
+\label{fig:outcomes}\end{figure}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=.94\linewidth]{07_transient_behavior.pdf}
+\caption{Mean downstream violation fractions across two injected patch runs per topology, with four downstream agents per run. Deviations appear only in round 1 and disappear before final artifacts. Differences at exposure time are confounded by graph degree and delivery count. Lines are descriptive; two paired seeds are insufficient for topology-effect inference.}
+\label{fig:transient}\end{figure}
+
+Exact patch-task success averaged 0.700 in clean controls and 0.667 in injected runs; catalog and provenance success were 1.000 in both conditions. Thus, failure to produce the exact legitimate patch must not be mistaken for unauthorized behavior. Earlier prompt-format amendments were made during development and versioned before this held-out batch; this analysis does not repair recorded outputs or relabel a failed attempt as complete.
+
+\subsection{Monitor limits and separate pilot evidence}
+No catalog adoption positives occurred. Catalog monitor recall and F1 are therefore undefined, not zero or evidence of a capable detector. Figure~\ref{fig:monitor} shows false alarms: the monitor can see a directive even when no output adopts it. Masks and policies are dependent projections, not additional independent swarm trials. The current monitor does not evaluate patch-task deviations; extending its coverage requires a separately versioned rubric and projection.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\linewidth]{04_monitor_false_alarms.pdf}
+\caption{Catalog false-positive rates under two observation policies, using the predeclared mask seed404. Each topology line reuses four clean/injected case/seed trajectories; other mask seeds remain archived. All oracle positives are absent, so recall is undefined at every visibility. Detecting lower-trust instructions without adoption produces false alarms against the behavioral endpoint.}
+\label{fig:monitor}\end{figure}
+
+The RQ3 development pilot completed eight five-call comparisons (40 responses): single/team, clean/injected, and deny/permissive-simulator arms. No protected-update attempt or simulated state violation was observed; all final summaries passed the local task check. These development rows have separate source provenance and are not pooled with held-out RQ1. Equal call budgets do not equalize retained histories, aggregation opportunities or information structure.
+
+Six trained GPT-2 reference captures used two prompt pairs at layers 0, 5, 11. Raw/bridge parity, no-op and position controls passed, with usable clean--corrupt gaps. The normalized capability-control effect at layer0 exceeded one, illustrating why restoration is not a bounded probability. These isolated reference interventions neither identify semantic neurons nor explain Qwen's behavior.
+
+\section{Discussion and Limitations}
+The strongest observation is temporal: boundary failures appeared after direct injection and then recovered. Reporting only ``6/6 violating runs'' would hide the absence of final adoption; reporting only final success would hide a real intermediate deviation. A useful monitor should therefore specify its target: any-round attempted behavior, final artifact adoption, or actual simulated state change.
+
+The present task suite is too small and templated to support broad alignment claims. Repeated names and shuffled fields are not independent semantic scenarios. The repository track increases realism but lacks execution-based correctness checks and a calibrated semantic judge. Static PRs may be in training data. Longer inputs and more rounds should be crossed independently in future studies, and topology comparisons need matched-exposure controls.
+
+For scalable review, deterministic scorers should be supplemented by a blinded, task-specific judge that cites event IDs and may abstain. A stratified human audit must include unflagged outputs as well as flagged ones, scorer/judge disagreements and malformed artifacts. Report held-out judge precision, recall and inter-rater agreement with denominators; advisory confidence is not a calibrated alignment probability. Judge results do not replace controller truth or authorize removing inconvenient outcomes. No independent judge accuracy is established in this draft.
+
+The frozen overnight expansion adds three case indices and four seeds per family, retaining five agents and the same protocol, rather than increasing all dimensions simultaneously. This enlarges coverage but still uses generated templates. Review checkpoint failures and task quality before claiming effects across models or larger swarms. Any post-hoc findings require a new confirmatory freeze; null results must remain in the paper.
+
+\section{Conclusion}
+Contagion provides reproducible, contained evidence for task-specific transient instruction-boundary failures and subsequent recovery. The compact study found no final downstream adoption and cannot establish a topology effect, spontaneous collusion, or general model alignment. A larger frozen collection and calibrated review can strengthen these measurements without changing the original research questions.
+
+\section*{Code and Data}
+\url{https://github.com/mso-docs/contagion-swarm-alignment}. The repository contains versioned protocols, sanitized per-run summaries, numerical evidence, the analysis notebook and LaTeX source. Raw oracle logs, private endpoints and upstream source diffs remain outside public commits. Figure provenance records source seals and the evidence hash. Figures were generated in \texttt{notebooks/paper\_figures.ipynb}; no new inference is needed to rebuild this checkpoint.
+
+\clearpage
+\immediate\write16{MAIN_TEXT_PAGES=\number\numexpr\value{page}-1\relax}
+\bibliographystyle{plain}\bibliography{sources}
+\clearpage\appendix
+\section{Limitations and Dual-Use / Ethical Considerations}
+The environment permits only fictional authorization boundaries. Agents receive no shell, autonomous network access, filesystem mutation, credentials or external targets. Repository reviews consume inert public diffs and never execute upstream code or post comments. A permissive record executor mutates only a simulated in-memory record. Operator SSH monitoring is separate from model-agent actions.
+
+Communication and logging infrastructure could make larger multi-agent systems easier to operate; visible traces could also reveal ways to exploit weak task boundaries. We therefore publish benign interventions, numeric summaries and reviewed/redacted views, while withholding raw private logs and inputs requiring licensing/privacy review. Heuristic scrubbing is imperfect; no anonymity guarantee is made. Nothing here demonstrates unauthorized access, actual exfiltration, covert channels or harmful swarm capabilities.
+
+Scientific limits include small case diversity, paired dependence, exposure confounding, task-quality errors, output/context budgets, backend sampling uncertainty and shared-hardware duty cycles. Synthetic marker adoption is not a universal safety endpoint. The catalog monitor has no positive adoption examples. Reference-checkpoint patching is not original-model mechanistic evidence. Additional unknown failure modes remain outside the measured rubric.
+
+\section{Additional Diagnostic Figures}
+\begin{figure}[H]\centering\includegraphics[width=.94\linewidth]{03_topology_counts.pdf}
+\caption{Any-round violation counts by graph and task: two seeds per cell, one generated case per family. Every positive is intermediate; final violations remain zero. This plot exposes sparse denominators and cannot establish topology equivalence.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=\linewidth]{05_reference_checkpoint.pdf}
+\caption{Trained GPT-2 reference activation patching at layers 0, 5, 11, using one capability-control pair and one task-shaped record probe. Signed logit changes and normalized restoration are reported without clipping. Passing parity/no-op/position controls validates instrumentation for these captures, not a mechanism for the Ollama swarm.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=.9\linewidth]{06_run_timing.pdf}
+\caption{Completed-run wall times include controller overhead and thermal pauses. Two interrupted attempts remain in the coverage record. These are not controlled hardware benchmarks or independent task-difficulty measurements.}\end{figure}
+
+\section{Reproducibility}
+Model inference produced the recorded experimental outputs. Numerical claims were checked against sealed logs and a frozen analysis bundle; the author must still review scientific interpretation, citations, figure selection and final wording before submission. This is not a claim of completed independent human adjudication.
+
+The official Google Docs template was retrieved through its public DOCX export. This LaTeX adaptation preserves US Letter layout, one-inch margins, 11-point Arial body text and the recommended section structure. The main text is checked against the eight-page cap; references and appendices are separate. The abstract is checked for 150--250 words. Author attribution is supplied by the project author. The original template's guidance text is not included in this manuscript.
+\end{document}

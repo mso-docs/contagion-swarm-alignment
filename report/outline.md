@@ -1,18 +1,7 @@
-# Contagion submission report outline
+# Submission draft status
 
-Preliminary live findings and limitations are recorded in [RQ1_RESULTS.md](RQ1_RESULTS.md). The official submission PDF is not yet prepared.
+The report is authored in [paper.tex](paper.tex), compiled to `results/paper-draft/paper.pdf`, and follows the inspected official DOCX template layout. The current draft has7main-text pages,11total pages and a188-word abstract. Author attribution is Mackenzie O'Brien, Independent AI Researcher, Mac Labs AI. Final scientific and wording review remains pending; nothing has been submitted.
 
-Greenfield declaration: This repository and implementation were initiated November 7, 2026 for the November 6–8, 2026 Swarm Alignment Hackathon. No preexisting Contagion implementation or precomputed dataset is used. Existing infrastructure, libraries and tools are not claimed as original contributions.
+The paper distinguishes transient round1 patch violations from zero final downstream adoption. It reports36completed RQ1 runs, two preserved interrupted attempts,288dependent RQ2 projections, eight separate RQ3 development runs and six reference-checkpoint captures. New collections are separate checkpoints.
 
-1. Title, actual authors and affiliations (operator to supply).
-2. Abstract, 150–250 words, after real data exists.
-3. Motivation and unchanged RQ1/RQ2/RQ3 definitions.
-4. Verified related work; do not cite unverified leads.
-5. Methods: exact prompt, model/digest, hardware, seeds, call budgets, topology and scoring.
-6. Results: live run counts, failures, paired controls, run-level plots regenerated from logs. Mock plots belong only in a software-validation description.
-7. Discussion: exposure confounding, seed dependence, underpowered pilot, ambiguous artifact review.
-8. Limitations appendix: synthetic task, conservative scorer, backend determinism, missing studies.
-9. Dual-Use / Ethical Considerations appendix: benign synthetic interventions, controller mediation, no external targets or real protected records.
-10. References and reproducibility commands/data availability.
-
-Verify current official submission guidelines and template before packaging the PDF. No PDF or submission-ready research findings are claimed.
+See [report setup and commands](README.md), [frozen numerical evidence](data/compact_evidence.json), `notebooks/paper_figures.ipynb` for reviewed figure candidates, and `notebooks/all_tasks_analysis.ipynb` for expanding inventory. Main text, references and the required limitations/dual-use appendix remain separate. The implementation/report PR stays open for human review.

@@ -11,7 +11,7 @@ function el(tag,text,cls){const node=document.createElement(tag);if(text!=null)n
 function svg(tag,attrs={},text){const node=document.createElementNS(NS,tag);Object.entries(attrs).forEach(([k,v])=>node.setAttribute(k,String(v)));if(text!=null)node.textContent=String(text);return node;}
 function empty(target,text){target.replaceChildren(el('p',text,'empty'));}
 function options(target,values,allLabel){const previous=target.value;target.replaceChildren(new Option(allLabel,'all'),...values.map(v=>new Option(v,v)));target.value=values.includes(previous)?previous:'all';}
-function cohortLabel(run){return run.study_row?`${run.backend} · v${run.protocol_version} · ${run.study_row.task_family}/${run.study_row.split} · ${run.study_row.worker_label} · freeze ${run.study_row.freeze_hash.slice(0,12)}`:`${run.backend} · v${run.protocol_version} · ${run.thinking} thinking · ${run.cohort}`;}
+function cohortLabel(run){return run.study_row?`${run.backend} · v${run.protocol_version} · ${run.study_row.task_family}/${run.study_row.split} · ${run.rounds} rounds · ${run.study_row.worker_label} · freeze ${run.study_row.freeze_hash.slice(0,12)}`:`${run.backend} · v${run.protocol_version} · ${run.thinking} thinking · ${run.cohort}`;}
 function filtered(){return state.snapshot.runs.filter(r=>($('backend').value==='all'||($('backend').value==='mock'?r.backend==='mock':r.backend!=='mock'))&&($('model').value==='all'||r.model===$('model').value)&&($('topology').value==='all'||r.topology===$('topology').value)&&($('condition').value==='all'||r.intervention===$('condition').value));}
 function render(){
  const models=state.snapshot.runs.filter(r=>$('backend').value==='all'||($('backend').value==='mock'?r.backend==='mock':r.backend!=='mock')).map(r=>r.model);
@@ -26,7 +26,7 @@ function render(){
  $('runtime-kpi').textContent=secs(median(state.runs.map(r=>r.duration_seconds)));
  const note=$('dataset-note');const hasMock=state.runs.some(r=>r.backend==='mock');note.classList.toggle('mock',hasMock);
  note.textContent=!state.runs.length?'No runs match these filters. Select mock validation to inspect the software demonstration.':hasMock?'MOCK DATA PRESENT — scripted software validation. It provides no empirical evidence about LLM alignment. Cohorts remain separate below.':'LIVE INFERENCE — all indexed protocols and task families. Cohorts stay separate; N/A means unrecorded or inapplicable. Includes development, timing and integration attempts.';
- renderTable();renderPlots();
+ renderTable();renderPlots();renderTaskCoverage();
  const previous=$('run-select').value;$('run-select').replaceChildren(...state.runs.map(r=>new Option(`${r.model} · ${r.topology} · ${r.intervention==='none'?'control':'injected'} · seed ${r.seed} · ${r.status} · ${r.id.slice(0,6)}`,r.id)));
  if(state.runs.some(r=>r.id===previous))$('run-select').value=previous;
  selectRun();renderObservability();
@@ -66,6 +66,28 @@ function renderTable(){
  }
 }
 $('comparison-search').addEventListener('input',renderTable);
+
+function taskFamily(run){return run.study_row?.task_family??'legacy_summary';}
+function renderTaskCoverage(){
+ const rows=state.runs,families=[...new Set(rows.map(taskFamily))].sort(),models=groups(rows,r=>[r.model,r.backend].join('|')).sort((a,b)=>a[0].model.localeCompare(b[0].model));
+ options($('coverage-task'),families,'All task families');const metric=$('coverage-metric').value||'completed';
+ $('coverage-summary').textContent=`${new Set(rows.map(r=>r.model)).size} model tags · ${families.length} task families · ${rows.filter(r=>r.status==='completed').length}/${rows.length} completed attempts. Legacy task semantics and newer protocols remain distinct.`;
+ const table=el('table'),head=el('tr');head.append(el('th','Model / backend'));families.forEach(f=>head.append(el('th',f.replaceAll('_',' '))));const header=el('thead');header.append(head);table.append(header);const body=el('tbody');
+ const value=g=>metric==='calls'?g.reduce((n,r)=>n+r.completed_calls,0):metric==='attempts'?g.length:g.filter(r=>r.status==='completed').length;
+ const maximum=Math.max(1,...models.flatMap(g=>families.map(f=>value(g.filter(r=>taskFamily(r)===f)))));
+ for(const group of models){const row=el('tr');row.append(el('th',`${group[0].model} / ${group[0].backend}`));for(const family of families){const selected=group.filter(r=>taskFamily(r)===family),cell=el('td'),button=el('button',selected.length?compact(value(selected)):'—','coverage-cell');button.type='button';button.disabled=!selected.length;button.style.background=`rgba(64,156,255,${selected.length?.08+.65*value(selected)/maximum:0})`;button.setAttribute('aria-label',`${group[0].model}, ${family}: ${value(selected)} ${metric}`);button.addEventListener('click',()=>{$('coverage-task').value=family;renderTaskCoverage();});cell.append(button);row.append(cell);}body.append(row);}table.append(body);$('coverage-heatmap').replaceChildren(table);
+ if(!rows.length){['coverage-bars','coverage-scatter'].forEach(id=>empty($(id),'No attempts match the current filters.'));return;}
+ const bar=svg('svg',{viewBox:`0 0 620 ${Math.max(200,families.length*42+25)}`,role:'img','aria-label':'Completed versus interrupted attempt counts by task'}),max=Math.max(1,...families.map(f=>rows.filter(r=>taskFamily(r)===f).length));
+ families.forEach((family,i)=>{const group=rows.filter(r=>taskFamily(r)===family),done=group.filter(r=>r.status==='completed').length,y=20+i*42;bar.append(svg('text',{x:0,y,class:'axis-label'},family.replaceAll('_',' ')),svg('rect',{x:145,y:y-10,width:done/max*340,height:15,fill:'#40bf91',rx:2}),svg('rect',{x:145+done/max*340,y:y-10,width:(group.length-done)/max*340,height:15,fill:'#e59d42',rx:2}),svg('text',{x:495,y:y+2,class:'axis-label'},`${done} complete / ${group.length-done} other`));});$('coverage-bars').replaceChildren(bar);
+ const selected=rows.filter(r=>($('coverage-task').value==='all'||taskFamily(r)===$('coverage-task').value)&&Number.isFinite(r.duration_seconds)&&Number.isFinite(r.completed_calls));
+ if(!selected.length){empty($('coverage-scatter'),'No recorded timing for this selection.');return;}
+ const plot=svg('svg',{viewBox:'0 0 620 300',role:'img','aria-label':'Attempt runtime versus returned model calls; click a point to inspect its trace'}),xmax=Math.max(1,...selected.map(r=>r.completed_calls)),ymax=Math.max(1,...selected.map(r=>r.duration_seconds));
+ for(let i=0;i<=4;i++){const x=62+i*130,y=250-i*52;plot.append(svg('line',{x1:62,y1:y,x2:585,y2:y,class:'gridline'}),svg('text',{x:4,y:y+4,class:'axis-label'},secs(ymax*i/4)),svg('text',{x,y:270,'text-anchor':'middle',class:'axis-label'},Math.round(xmax*i/4)));}plot.append(svg('text',{x:320,y:294,'text-anchor':'middle',class:'axis-label'},'Returned responses'));
+ const palette=['#409cff','#40bf91','#e59d42','#a58bff','#ef7988','#40c5d0'];
+ for(const run of selected){const index=models.findIndex(g=>g[0].model===run.model&&g[0].backend===run.backend),dot=svg('circle',{cx:62+run.completed_calls/xmax*520,cy:250-run.duration_seconds/ymax*208,r:4.5,fill:palette[index%palette.length],opacity:run.status==='completed'?.75:.4,role:'button',tabindex:0});const label=`${run.model} / v${run.protocol_version} / ${taskFamily(run)} / ${run.rounds} rounds / ${run.status}: ${run.completed_calls} responses, ${secs(run.duration_seconds)}`;dot.append(svg('title',{},label));dot.setAttribute('aria-label',label);const inspect=()=>{$('run-select').value=run.id;selectRun();showView('traces');};dot.addEventListener('click',inspect);dot.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();inspect();}});plot.append(dot);}
+ const legend=el('div',null,'coverage-legend');models.forEach((g,i)=>{const item=el('span',`${g[0].model} / ${g[0].backend}`);item.style.color=palette[i%palette.length];legend.append(item);});$('coverage-scatter').replaceChildren(plot,legend);
+}
+['coverage-metric','coverage-task'].forEach(id=>$(id).addEventListener('change',renderTaskCoverage));
 
 function renderPlots(){
  const target=$('adoption-chart');target.replaceChildren();const grouped=groups(state.runs.filter(r=>r.status==='completed'&&r.downstream_adoption_rate!=null),r=>[r.cohort,r.topology,r.intervention].join('|'));

@@ -1,0 +1,24 @@
+{
+  "source": "https://docs.google.com/document/d/1_1_27EyZriMlc8n8EBE2YScaeyMjm-8xjR097nmHXAE/copy",
+  "docx_sha256": "9053bff72f9896df795612d32a601ebb9e35b097c448f4e479a4cc30bc6c01b0",
+  "format": {
+    "paper": "US Letter",
+    "margins_inches": 1,
+    "body_font": "Arial",
+    "body_size_points": 11,
+    "title_font": "Old Standard TT",
+    "title_size_points": 20,
+    "line_spacing": 1.15
+  },
+  "limits": {
+    "main_text_pages": 8,
+    "abstract_min_words": 150,
+    "abstract_max_words": 250
+  },
+  "required": [
+    "author names and affiliations",
+    "limitations and dual-use/ethical appendix",
+    "PDF submission"
+  ],
+  "adaptation": "LaTeX reconstruction of the official public DOCX layout and recommended section structure; guidance text removed."
+}

@@ -12,8 +12,10 @@ This is a readiness assessment, not a declaration that every research hypothesis
 | RQ2 | Separate policies/cohorts; confusion counts and undefined recall | Verified positive adoption cases, more monitor seeds, coverage beyond catalog |
 | RQ3 | Attempts vs simulator state changes remain distinct | Held-out single/team comparisons with matched budgets and recorded information access |
 | Runtime | All-attempt runtime distributions, observed latency/token telemetry | Controlled hardware allocation for performance comparisons; no inferred GPU-hours |
-| Interpretability | Shape/revision checks, configurable patch layer, raw/bridge parity, no-op/gap diagnostics | Trained checkpoint, aligned task pairs, replicated layer/position controls |
+| Interpretability | Six trained GPT-2 reference captures with parity/no-op/position controls | Same-model task behavior linkage and replicated causal controls before swarm mechanism claims |
 | Reviewer | Blinding, cited event evidence, human queue | Held-out human adjudication, agreement/precision/recall and calibration |
 | Public data | Unified evidence index; numeric telemetry derived from logs; privacy gates | Review optional text; private queue/hardware data never enter Pages |
 
 Do not use a grand total of generations as the experimental sample size. Report development, timing, mock and held-out evaluation separately. A zero-event result with three runs remains highly uncertain. Neural magnitudes, generated reasoning text and advisory model confidence are not alignment probabilities.
+
+The compact temporal audit distinguishes17 round1 patch deviations from zero final downstream violations. See `RESEARCH_MEASUREMENT_PLAN.md` and the frozen paper notebook. Intermediate-artifact review is required; final-only review would miss this observation.
