@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -28,16 +29,20 @@ def blocked_path(name):
     path = Path(name)
     if path.is_absolute() or '..' in path.parts or any(ord(c) < 32 for c in name):
         return True
-    private = {'.git', '.venv', '.venv-interp', '.venv-worker', '.cache', '.aws', '.ssh', 'results', 'site-dist', 'security-reports'}
+    private = {'.git', '.venv', '.venv-interp', '.venv-worker', '.cache', '.aws', '.ssh', 'results', 'site-dist', 'security-reports', 'logs', 'traces'}
     if any(part.casefold() in private for part in path.parts):
         return True
     if path.name.casefold().startswith('.env') and path.name != '.env.example':
         return True
-    if path.name.endswith(('.redact.txt', '.pem', '.key', '.p12', '.pfx', '.eval')) or path.name in {'id_rsa', 'id_ed25519', 'credentials'}:
+    if path.name.casefold().endswith(('.redact.txt', '.pem', '.key', '.p12', '.pfx', '.eval')) or path.name.casefold() in {'id_rsa', 'id_ed25519', 'credentials'}:
         return True
-    if path.suffix == '.jsonl' and not re.fullmatch(r'tests/fixtures/mock_run/[^/]+/events\.jsonl', name):
+    if path.suffix.casefold() in {'.log', '.sqlite', '.sqlite3', '.db', '.safetensors', '.har'}:
         return True
-    if name.startswith('dashboard/data/') and name not in {'dashboard/data/results.json', 'dashboard/data/research.json'}:
+    if re.fullmatch(r'(?:trace|traces|events|request_history|raw_response)(?:[._-].*)?\.json', path.name, re.I):
+        return True
+    if path.suffix.casefold() == '.jsonl' and not re.fullmatch(r'tests/fixtures/mock_run/[^/]+/events\.jsonl', name):
+        return True
+    if name.startswith('dashboard/data/') and name not in {'dashboard/data/results.json', 'dashboard/data/research.json', 'dashboard/data/repositories.json'} and not re.fullmatch(r'dashboard/data/studies/[a-f0-9]{16}\.json',name):
         return True
     return False
 
@@ -45,8 +50,32 @@ def blocked_path(name):
 def private_values(root, env):
     # Parse .env as data. Do not source it or echo values.
     sys.path.insert(0, str(ROOT / 'scripts'))
-    from run_pilot import load_env
-    values = load_env(root / '.env', env)
+    values = dict(env)
+    # Additional private dotenv files may hold judge keys or secondary endpoints.
+    # Parse assignments as data without executing or expanding shell syntax.
+    for path in sorted(root.glob('.env*')):
+        if path.name == '.env.example':
+            continue
+        if path.is_symlink():
+            raise ValueError('Private dotenv must not be a symlink')
+        if not path.is_file():
+            continue
+        for line in path.read_text().splitlines():
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            line = re.sub(r'^export\s+', '', line)
+            key, separator, value = line.partition('=')
+            if not separator or not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]*', key.strip()):
+                raise ValueError('Invalid private dotenv assignment')
+            parts = shlex.split(value, comments=True, posix=True)
+            if len(parts) > 1:
+                raise ValueError('Invalid private dotenv quoting')
+            # Preserve every secret across files even when key names overlap.
+            parsed = parts[0] if parts else ''
+            values.setdefault(key.strip(), parsed)
+            values[f'PRIVATE_{path.name}_{key.strip()}'] = parsed
+    values.update(env)
     result = {v for k, v in values.items() if v and len(v) >= 8 and re.search(r'KEY|TOKEN|SECRET|PASSWORD|CREDENTIAL', k, re.I)}
     endpoint = values.get('CONTAGION_BASE_URL')
     if endpoint:
@@ -61,7 +90,19 @@ def private_values(root, env):
     for key in ['HOME']:
         if env.get(key):
             result.add(env[key])
+    for key, value in values.items():
+        if key.startswith('PRIVATE_') and value and re.search(r'URL|HOST|SERVER_ID|PROJECT_DIR', key, re.I):
+            result.add(value)
+            host = urlsplit(value).hostname if '://' in value else value.rsplit('@', 1)[-1]
+            if host and host not in {'localhost', '127.0.0.1', '::1'}:
+                result.add(host)
+    for path in root.glob('*.redact.txt'):
+        if path.is_symlink():
+            raise ValueError('Private denylist must not be a symlink')
+        result.update(line.strip() for line in path.read_text().splitlines() if line.strip() and not line.lstrip().startswith('#'))
     result.add(str(root.resolve()))
+    for index, value in enumerate(sorted(result)):
+        values[f'PRIVATE_REDACTION_SECRET_{index}'] = value
     return result, values
 
 
@@ -80,8 +121,12 @@ def read_candidate(root, name, mode):
 def check(root, mode, scan=False, env=None):
     root = Path(root).resolve()
     known, values = private_values(root, dict(os.environ) if env is None else env)
+    from scan_privacy import findings as privacy_findings
     blobs, findings = {}, []
     for name in candidates(root, mode):
+        if privacy_findings(name):
+            findings.append((name, 'private identifier in filename'))
+            continue
         if blocked_path(name):
             findings.append((name, 'private or unapproved publication path'))
             continue
@@ -98,6 +143,15 @@ def check(root, mode, scan=False, env=None):
         if any(value.encode() in data or value in name for value in known):
             findings.append((name, 'known private configuration value'))
             continue
+        from scan_privacy import scan_blob
+        try:
+            privacy = scan_blob(data, public=name.startswith('dashboard/data/'), known=known)
+        except (UnicodeError, ValueError):
+            findings.append((name, 'privacy lint could not validate text input'))
+            continue
+        if privacy:
+            findings.append((name, 'privacy lint: ' + ', '.join(sorted(privacy))))
+            continue
         blobs[name] = data
     # Validate the actual index version of public data, not an unstaged clean copy.
     public = blobs.get('dashboard/data/results.json')
@@ -110,6 +164,13 @@ def check(root, mode, scan=False, env=None):
                 validate_snapshot(path, env=values)
         except Exception:
             findings.append(('dashboard/data/results.json', 'public schema/privacy validation failed'))
+    repository=blobs.get('dashboard/data/repositories.json')
+    if repository is not None:
+        try:
+            from repository_publication import validate_repository_snapshot
+            with tempfile.TemporaryDirectory() as temp:
+                path=Path(temp)/'repositories.json';path.write_bytes(repository);validate_repository_snapshot(path,values)
+        except Exception:findings.append(('dashboard/data/repositories.json','repository metadata schema/privacy validation failed'))
     research = blobs.get('dashboard/data/research.json')
     if research is not None:
         try:
@@ -117,11 +178,22 @@ def check(root, mode, scan=False, env=None):
             with tempfile.TemporaryDirectory() as temp:
                 path = Path(temp) / 'research.json'
                 path.write_bytes(research)
-                validate_research_snapshot(path, env=values)
+                snapshot=validate_research_snapshot(path, env=values)
+                if snapshot.suite is not None or snapshot.resources is not None:
+                    raise ValueError('Private operational telemetry cannot be committed')
         except Exception:
             findings.append(('dashboard/data/research.json', 'public research schema/privacy validation failed'))
+    for name,data in blobs.items():
+        if name.startswith('dashboard/data/studies/'):
+            try:
+                from contagion.research_publication import validate_study_detail
+                with tempfile.TemporaryDirectory() as temp:
+                    path=Path(temp)/Path(name).name;path.write_bytes(data)
+                    validate_study_detail(path,env=values)
+            except Exception:
+                findings.append((name,'study detail privacy/schema validation failed'))
     for name, reason in findings:
-        safe = '[redacted path]' if any(value in name for value in known) else ascii(name)
+        safe = '[redacted path]' if any(value in name for value in known) or privacy_findings(name) else ascii(name)
         print(f'Blocked {safe}: {reason}', file=sys.stderr)
     if findings:
         return 1

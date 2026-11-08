@@ -1,5 +1,48 @@
 # Build status — November 7, 2026
 
+## Researcher readiness and unified live dashboard
+
+The default localhost root now combines all indexed protocol-1 and protocol-2 evidence across overview/model/evaluation/trace/dataset views. Current inventory: **61 live attempts / 945 returned responses** (20 legacy RQ1 / 500 responses; 41 newer development/timing/integration attempts / 445 responses). Another 134 protocol-2 mock studies remain separately labeled. Grand totals are evidence inventory, not independent research sample sizes. The local service discovers sealed studies every15s and optionally polls sanitized secondary snapshots every60s into ignored staging; private progress/hardware fields are stripped. Browser caching is disabled locally, asset changes trigger reload, and synchronization health is visible. No versioned end-user URL is required.
+
+Exported available study timestamps, source hashes, actual attempt counts, latency/token measurements, message counts, final-agent labels and catalog-specific downstream metrics from checksummed logs. Missing data stays null; noncatalog objective violations never become suffix-adoption labels. Source cohorts and model filters remain separate. Main inventory and eight-view JavaScript smoke checked against actual exported data. Primary untouched; the large suite remains paused.
+
+Research reports now separate strict frozen cohorts, expose denominators/indeterminate outcomes/failed attempts, calculate working-model Wilson intervals and matched control differences, reject ambiguous retry pairs, record provenance hashes and export PNG/SVG/CSV/JSON with explicit figure caps. Original RQ1 adoption/exposure stays separate. Offline RQ2 analysis regenerated **176 dependent projections from 22 existing trajectories**, giving40 cohort/policy/visibility summaries; no new inference is implied and recall remains undefined without positive adoption labels.
+
+Neural validation now checks shapes, duplicate layer/neuron indices, patch positions and immutable trained revisions; patch layer and trained target are explicit. Original-model/bridge parity was measured successfully on secondary CPU random smoke (maximum logit error about6e-8). Raw checksummed capture fetched; public projection contains no token IDs/prompts/tensors. Added no-op/baseline-gap checks and normalized restoration diagnostics. Trained-checkpoint, task-linked replication and SAE evaluation remain pending; random weights are instrumentation only. A decimal/Luhn false positive in privacy lint was corrected with a regression check, without weakening card detection.
+
+Added RESEARCHER_GUIDE.md, MEASUREMENT_AUDIT.md and INTERPRETABILITY_PROTOCOL.md; refreshed the paper workbench and report guide. Latest full pytest: **147 passed**. Bounded mock pair and regenerated analysis completed; cohort reports generated from175 studies/42 strict cohorts plus original RQ1. Security/static gates and final build are rerun after publication settles, since background exports and concurrent edits can invalidate a pre-commit worktree snapshot. Raw logs remain unchanged and ignored. Future source deployments require fresh freezes.
+
+
+## Private progress monitor
+
+Added `scripts/experiment_progress.py` for read-only terminal status on either local machine, local suite/study roots, and optional secondary-only SSH polling. Shows sealed/completed/failed/unsealed runs, planned totals, physical attempts, recorded run time, elapsed window, throughput, remaining/total work estimates and update age. No finish timestamp is shown for stopped/paused/stale workers; estimates are explicitly rough and do not include future pauses. No primary access or inference was performed.
+
+Read-only secondary verification observed the original queue stopped at 5 sealed runs (3 completed, 2 failed), 125/80,680 calls; its rough remaining-work estimate was about 39h39m, not a finish promise. The six later local protocol-2.4 checkpoints are a separate monitored source, 6/6 runs and 60/60 responses. Added `docs/PRIVATE_PROGRESS.md` with commands for both paths.
+
+Removed queue/hardware telemetry from current public data and public suite publication. Remote sync strips older operational fields; commit/build guards reject populated private telemetry. Research result counts and per-run scientific runtimes remain public. Source changes require fresh freezes before future source deployment; the paused remote release is untouched.
+
+Verification: **136 pytest tests passed**, bounded mock pair completed and regenerated analysis, eight-view dashboard DOM smoke passed, Gitleaks worktree/history and all privacy/static gates passed, and the allowlisted Pages build passed. Private progress source/docs are reviewable; runtime status stays in ignored results.
+
+
+## Privacy hardening checkpoint
+
+Added offline `scripts/scan_privacy.py` and integrated it into staged/candidate guards, public build validation, research export/watch publication and a visible GitHub Actions step. Recognizable email, phone, government-ID/payment-card patterns are checked; public JSON receives stricter credential/address/path checks after decoding JSON escapes. Known values come from all root `.env*` files and ignored `*.redact.txt` files. No matched values are printed. More raw artifact extensions/aliases are blocked, including renamed logs, databases, tensors and HAR captures. Existing pre-commit hook is installed; gates inspect staged blobs, not cleaned unstaged copies. Originals remain unchanged.
+
+Observed: 132 pytest tests passed; full Gitleaks worktree/history, publication/privacy, Ruff and Bandit checks passed. Strict audit of 64 public/latest-checkpoint files found no recognized leaks. Standalone public scan checked 37 JSON files with no findings; validated Pages build contains 42 allowlisted files. Local watcher restarted with privacy checks. No remote server access or inference was performed. See `docs/PRIVACY_CHECKS.md`; arbitrary names/addresses or encoded secrets still require denylist/review.
+
+
+## Current checkpoint: dashboard freshness and developer docs
+
+The local public research snapshot now contains 35 sealed study attempts, including all six latest protocol-2.4 checkpoint runs (60 responses, zero parse failures, control task success 1.0). Earlier failed/invalid diagnostics remain visible in separate cohorts. The legacy 20-run snapshot remains separate. The large secondary suite is paused; primary is excluded. Trained-checkpoint neural measurements and calibrated judging remain pending.
+
+Added `scripts/watch_dashboard.py`: periodic local export of selected sealed attempts, checksum validation, preservation of approved evidence and atomic index replacement. Browser Refresh fetches both snapshots; the research view shows export and browser-check times. Local preview HTTP was verified to serve 35 studies. Pages still requires reviewed data to be pushed and a successful build.
+
+Replaced the accumulated README with a concise quick start, research table and developer navigation. Added colorful Mermaid experiment/publication/architecture diagrams and `docs/LIVE_DASHBOARD.md`. Older entries below are historical snapshots, not current blocker statements.
+
+Verification for this checkpoint: `.venv/bin/python -m pytest -q` → **122 passed**; bounded mock pilot → **2 completed runs** with regenerated analysis; JavaScript DOM smoke → **passed**, including dual-snapshot refresh and task drill-down; `scripts/check_all.py` → **all gates passed** (worktree/history Gitleaks, publication/privacy, syntax, Ruff and Bandit). Validated static build → **42 allowlisted files**. No inference was started or resumed during this dashboard/documentation update.
+
+## Historical implementation log
+
 Latest: dashboard/export/Pages workflow implemented; 57 tests passed. Live Qwen matrix completed 18/18 runs / 450 responses; separate Nemotron ring pilot completed 2/2 runs / 50 responses. Public snapshot contains 20 live and 18 separate mock runs. No suffix adoption was observed in live data. Historical setup blockers below describe earlier state; see the latest dashboard section.
 
 The full CONTAGION_AGENT_MVP_SPEC.md was read before implementation. Initial inspection found an existing Git repository containing only the specification and a placeholder README; no implementation was imported. The existing repository was retained. No remote machines, credentials, listeners, firewalls or infrastructure were modified.
@@ -223,3 +266,15 @@ Final repository suite:111 tests passed. Candidate/history Gitleaks, known-priva
 Primary readiness follow-up:operator enabled public-key SSH and read-only preflight passed. Linux aarch64/Python3.12.3 with121.7GiB RAM and2708GiB free disk; approved project directory not yet created. Service query returned no explicit numeric Ollama overrides. No primary install, service change or load test performed. Authentication blocker is resolved.
 
 CI follow-up:fixed seeded setuptools79.0.1 by explicitly bootstrapping pinned84.1.0 in CI and worker environments; pyproject build requirements now require the patched release line. Shared bootstrap file is included in transfer bundles and Docker build. Both current advisory audits (recorded requirements and installed environment) returned no known vulnerabilities; no ignore list was introduced. Original local checks did not prove the Python3.11 runner's dependency health. CI status remains pending until the fixed head's workflow finishes.
+
+### Repository review track
+
+Implemented `repository_benchmark.py`, `run_repository_study.py` and `repository_publication.py`. Pinned dataset import and source hashes; 60/20/20 long/medium/short freeze; no upstream execution or agent tools. Six real-diff mock runs completed with 260 scripted responses and sealed logs. Independent quality matching and collusion adjudication are not yet implemented; both stay explicitly unavailable. See `REPOSITORY_BENCHMARKS.md` for commands, costs and validity limits. Live repository inference is gated behind the compact checkpoint proof.
+
+Repository-track validation: `.venv/bin/python -m pytest -q` — **163 passed**; focused repository/dashboard/publication suite — 23 passed; critical Ruff checks and medium/high Bandit checks passed. Dashboard build copied 229 allowlisted files, and privacy scan checked 224 files with no findings. Local automatic sync reports six repository mock runs, eight neural captures and healthy secondary fetches. This does not imply live repository-model evaluation or public deployment.
+
+### Compact completion / draft release preparation
+
+`run_campaign.py promote` passed with165 pytest tests and all candidate/history secret scans, privacy/schema checks, critical Ruff and Bandit gates. Readiness schema1.1 discloses interrupted attempts and requires complete, unique registered-condition coverage plus a later valid successor for each inference-budget interruption. Model/parse failures cannot be waived. Campaign progress now uses completed scheduled calls for remaining-work estimates. Runtime STOP/source guards cover repository checkpoints too. Skill validator and18 focused campaign/repository/progress tests passed after these script changes; final commit hooks are still required before push.
+
+Overnight plan consists of three bounded1,800-call family blocks (216runs /5,400responses total) and a sequential checkpoint supervisor; registered hypotheses and limitations are in `OVERNIGHT_PROTOCOL.md`. Initial compact outcomes are in `report/COMPACT_RESULTS.md`. Reference-checkpoint captures and simulator/RQ2 evidence remain separate measurements.

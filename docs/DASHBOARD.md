@@ -1,5 +1,7 @@
 # Experiment observatory and public data
 
+For current local export, remote sync, separate snapshot counts and refresh troubleshooting, start with [Live dashboard updates](LIVE_DASHBOARD.md). The commands below also document the original protocol-1 export path.
+
 The dashboard in `dashboard/` is a static website for GitHub Pages. It uses local CSS/JavaScript/SVG, no CDN, no analytics, no server/API credentials, and no calls to the inference server. It shows per-model/protocol/sampling cohorts, network and treatment; completed/failed attempts; run-level adoption points; strict downstream clean-answer adherence; task success; runtime; call latency; available generation token counts/throughput; exposure; round-by-round network states; and searchable scrubbed event traces. Missing telemetry is N/A, never invented.
 
 ## Run and export
@@ -41,13 +43,15 @@ Export includes responses, artifacts, delivered/generated messages, intervention
 
 ## Privacy boundary
 
+[Privacy lint and commit protection](PRIVACY_CHECKS.md) adds offline PII scans and blocks accidental staging of raw artifacts.
+
 Raw oracle events/configs/manifests stay unchanged in ignored `results/` for auditability. Only the exporter creates public data. Public models use closed schemas with an explicit field allowlist. All public free-text trace fields and model labels pass through a scrubber. It removes known credential values from the local environment/.env, configured endpoint/hostname, local username/home paths, extra private denylist strings, common token formats, authorization/cookie assignments, URLs, email, IP addresses, common hostnames, shell host prompts, local paths, PEM key blocks and number patterns resembling identifiers. Valid model/protocol/source hashes are deliberately retained for reproducibility.
 
 Use `--redact-file private.redact.txt` for extra exact strings, one per line, such as personal names or organization identifiers. `*.redact.txt`, `.env`, `.env.*` (except `.env.example`) and raw results are ignored. The parser reads .env as data without shell execution or expansion. Do not put secrets into tracked YAML or dashboard code.
 
 **Heuristic redaction cannot guarantee removal of arbitrary names, addresses, encoded secrets or sensitive facts.** Summary-only mode avoids the principal free-text risk. Review opt-in traces before pushing to a public repository: removing data later from the deployed page does not remove it from Git history. Exported text may be altered by redaction; scientific scores are computed from private original events before redaction. Redaction counts are replacements, not numbers of unique secrets.
 
-The build validates the public schema and scans allowed free-text fields again for recognized sensitive patterns. It copies exactly index.html, style.css, app.js, data/results.json and .nojekyll into a fresh artifact. Extra raw files or .env files in the source directory are never copied. The frontend inserts trace text via textContent and has a restrictive content security policy; model-generated HTML is displayed as text.
+The build validates the public schema and scans allowed free-text fields again for recognized sensitive patterns. It copies allowlisted frontend assets, validated public snapshots and only referenced study-detail shards into a fresh artifact. Extra raw files or .env files in the source directory are never copied. The frontend inserts trace text via textContent and has a restrictive content security policy; model-generated HTML is displayed as text.
 
 ## Preview and GitHub Pages
 

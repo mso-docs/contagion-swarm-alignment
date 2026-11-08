@@ -3,6 +3,7 @@ on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, synchronize, reopened, edited, ready_for_review, converted_to_draft]
   workflow_dispatch:
   schedule:
     - cron: '23 9 * * 1'
@@ -31,6 +32,14 @@ jobs:
           .venv/bin/python -m pip install -r requirements-security.txt -e '.[test]'
       - name: Secret history, candidate files, public-data policy and static checks
         run: .venv/bin/python scripts/check_all.py
+      - name: Validate pull request title and description
+        if: github.event_name == 'pull_request'
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: .venv/bin/python scripts/check_change_message.py --kind pr
+      - name: Scan public traces for secrets and recognizable PII
+        run: .venv/bin/python scripts/scan_privacy.py
       - name: Audit recorded runtime dependency versions
         run: .venv/bin/python -m pip_audit --disable-pip --no-deps -r requirements.lock.txt --cache-dir .cache/pip-audit --progress-spinner off
       - name: Audit installed runtime and security tools

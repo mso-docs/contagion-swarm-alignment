@@ -14,13 +14,13 @@ from .events import EventRecorder, read_events, utc
 from .inference import CallBudgetExhausted
 from .models import SamplingConfig
 from .storage import allocate, seal, source_fingerprint, verify, write_json
-from .tasks import TaskArtifact, ToyRecordStore, make_case, mock_task_response, task_score
+from .tasks import task_response_schema, task_instruction, TaskArtifact, ToyRecordStore, make_case, mock_task_response, task_score
 from .topology import study_adjacency
 
 
 class StudyPlan(BaseModel):
     model_config = ConfigDict(extra='forbid', frozen=True)
-    protocol_version: Literal['2.0','2.1'] = '2.0'
+    protocol_version: Literal['2.0','2.1','2.2','2.3','2.4','2.5','2.6'] = '2.0'
     split: Literal['development','evaluation'] = 'development'
     research_question: Literal['rq1','rq3'] = 'rq1'
     families: list[Literal['catalog','provenance','patch','record']] = ['catalog','provenance','patch']
@@ -78,7 +78,7 @@ class StudyPlan(BaseModel):
 
 class RunSnapshot(BaseModel):
     model_config=ConfigDict(extra='forbid',frozen=True)
-    protocol_version: Literal['2.0','2.1'] = '2.0'
+    protocol_version: Literal['2.0','2.1','2.2','2.3','2.4','2.5','2.6'] = '2.0'
     plan: StudyPlan
     family: Literal['catalog','provenance','patch','record']
     case_index: int
@@ -107,7 +107,7 @@ def selected_cases(plan):
 
 def freeze_plan(plan, path):
     cases,registry_hash=selected_cases(plan)
-    content={'plan':plan.model_dump(),'registry_hash':registry_hash,'selected_scenario_ids':[c.case_id for c in cases],'task_hashes':{c.case_id:digest({'system':c.instruction,'payload':c.payload,'expected':c.expected,'challenge':c.challenge}) for c in cases},
+    content={'plan':plan.model_dump(),'registry_hash':registry_hash,'selected_scenario_ids':[c.case_id for c in cases],'task_hashes':{c.case_id:digest({'system':task_instruction(c,plan.protocol_version),'response_schema':task_response_schema(c,plan.protocol_version),'payload':c.payload,'expected':c.expected,'challenge':c.challenge}) for c in cases},
              'source_hash':source_fingerprint()}
     record={**content,'freeze_hash':digest(content),'frozen_utc':utc()}
     Path(path).parent.mkdir(parents=True,exist_ok=True)
@@ -124,7 +124,7 @@ def verify_freeze(plan, path):
     if registry_hash!=record['registry_hash'] or [c.case_id for c in cases]!=record['selected_scenario_ids']:
         raise ValueError('Scenario database or selected schedule changed')
     for c in cases:
-        if record['task_hashes'].get(c.case_id)!=digest({'system':c.instruction,'payload':c.payload,'expected':c.expected,'challenge':c.challenge}):
+        if record['task_hashes'].get(c.case_id)!=digest({'system':task_instruction(c,plan.protocol_version),'response_schema':task_response_schema(c,plan.protocol_version),'payload':c.payload,'expected':c.expected,'challenge':c.challenge}):
             raise ValueError('Frozen task changed')
     return record
 
@@ -141,7 +141,7 @@ async def run_case(plan, family, index, seed, topology, intervention, provider, 
     if plan.research_question=='rq3':
         schedule=[['agent_0']]*5 if topology=='single' else [list(graph)[:4],['agent_4']]
     else:schedule=[list(graph)]*plan.rounds
-    histories={a:[{'role':'system','content':case.instruction}] for a in graph}
+    histories={a:[{'role':'system','content':task_instruction(case,plan.protocol_version)}] for a in graph}
     inbox={a:[] for a in graph}
     store=ToyRecordStore(plan.executor=='permissive_simulator')
     recorder=EventRecorder(directory/'events.jsonl',directory.name)
@@ -174,7 +174,7 @@ async def run_case(plan, family, index, seed, topology, intervention, provider, 
                     from dataclasses import replace
                     scoring_case=replace(case,payload=payload,expected={'summary':sorted(r['name'] for r in payload['catalog'])})
                 histories[name].append({'role':'user','content':canonical({'task':payload,'neighbor_messages':incoming,'round':round_no})})
-                sampling=SamplingConfig(model=plan.model,seed=seed+calls,temperature=plan.temperature,max_output_tokens=plan.max_output_tokens,thinking=plan.thinking)
+                sampling=SamplingConfig(model=plan.model,seed=seed+calls,temperature=plan.temperature,max_output_tokens=plan.max_output_tokens,thinking=plan.thinking,response_schema=task_response_schema(case,plan.protocol_version))
                 recorder.emit('inference_requested',round_no,agent_id=name,metadata={'messages':copy.deepcopy(histories[name]),'sampling':sampling.model_dump(),'subtask_index':step})
                 calls+=1;call_start=time.monotonic()
                 def audit(kind,metadata):
@@ -207,7 +207,7 @@ async def run_case(plan, family, index, seed, topology, intervention, provider, 
                     for receiver in graph[name]:pending[receiver].append({'sender_id':name,'receiver_id':receiver,'content':text})
             if status!='completed':break
             inbox=pending
-        if failures and status=='completed':status='failed'
+        if failures and status=='completed' and not(plan.protocol_version in {'2.2','2.3','2.4','2.5','2.6'} and all(f=='parse_failure' for f in failures)):status='failed'
     except (Exception,asyncio.CancelledError,KeyboardInterrupt) as exc:
         status='failed';failures.append(type(exc).__name__);recorder.emit('run_failure',metadata={'reason':type(exc).__name__})
     if hasattr(provider,'audit'):provider.audit=None
@@ -220,6 +220,8 @@ async def run_case(plan, family, index, seed, topology, intervention, provider, 
     final=artifacts[-1]['metadata']['score'] if artifacts else None
     outcome={'run_id':directory.name,'task_case':case.case_id,'status':status,
              'any_violation':any(e['metadata']['score']['violation'] for e in artifacts),
+             'parse_failures':sum(e['event_type']=='parse_failure' for e in events),
+             'unscorable_final_agents':sum(x['behavior']=='unscorable' for x in labels),
              'downstream_final_violation_rate':sum(e['metadata']['score']['violation'] for a,e in last.items() if a!='agent_0')/max(1,len(graph)-1) if topology!='single' else None,
              'task_success_rate':(float(final['task_success']) if final else 0) if plan.research_question=='rq3' else sum(x['task_success'] for x in labels)/len(graph),
              'refusal_rate':sum(e['metadata']['score']['behavior']=='refusal' for e in artifacts)/max(1,len(artifacts)) if plan.research_question=='rq3' else sum(x['behavior']=='refusal' for x in labels)/len(graph),
@@ -232,14 +234,14 @@ async def run_case(plan, family, index, seed, topology, intervention, provider, 
                'duration_seconds':time.monotonic()-clock,'protocol_version':plan.protocol_version,'source_hash':source_fingerprint(),
                'freeze_hash':freeze_hash,'config_hash':digest(config.model_dump()),'model_identity':provider.identity,
                'attempted_model_calls':calls,'completed_model_calls':sum(e['event_type']=='inference_response' for e in events),
-               'http_attempts':http_calls,'failures':failures,'graph':graph,'scheduled_rounds':len(schedule),
+               'http_attempts':http_calls,'parse_failures':sum(e['event_type']=='parse_failure' for e in events),'failures':failures,'graph':graph,'scheduled_rounds':len(schedule),
                'observed_rounds':max((e['round']+1 for e in artifacts),default=0),
                'information_budget_note':'RQ3: equal five calls/max tokens; single retains serial history, team routes local messages to aggregator. Context structure is an explicit confound.'})
     seal(directory)
     return directory
 
 
-async def run_plan(plan,provider,root,freeze,shard_index=0,shard_count=1):
+async def run_plan(plan,provider,root,freeze,shard_index=0,shard_count=1,continue_on_failure=False,on_run=None):
     if not 1<=shard_count<=64 or not 0<=shard_index<shard_count:
         raise ValueError('Invalid worker shard index/count')
     if shard_count>1 and provider.identity['backend']!='mock' and not provider.identity.get('digest'):
@@ -247,7 +249,8 @@ async def run_plan(plan,provider,root,freeze,shard_index=0,shard_count=1):
     record=verify_freeze(plan,freeze)
     root=Path(root);root.mkdir(parents=True,exist_ok=True)
     assignment={'freeze_hash':record['freeze_hash'],'shard_index':shard_index,'shard_count':shard_count,
-                'model_digest':provider.identity.get('digest'),'backend':provider.identity['backend']}
+                'model_digest':provider.identity.get('digest'),'backend':provider.identity['backend'],
+                'worker_label':provider.identity.get('worker_label','unspecified')}
     assignment_path=root/'shard_assignment.json'
     if assignment_path.exists():
         if json.loads(assignment_path.read_text())!=assignment:
@@ -269,7 +272,8 @@ async def run_plan(plan,provider,root,freeze,shard_index=0,shard_count=1):
                     path=await run_case(plan,case.family,index,seed,topology,intervention,provider,root,record['freeze_hash'])
                     used+=json.loads((path/'manifest.json').read_text())['attempted_model_calls']
                     paths.append(path)
-                    if json.loads((path/'manifest.json').read_text())['status']!='completed':
+                    if on_run:on_run(path)
+                    if json.loads((path/'manifest.json').read_text())['status']!='completed' and not continue_on_failure:
                         raise ValueError('Study run failed; stopped before further calls')
 
     return paths
@@ -281,8 +285,8 @@ def summarize_study(source):
         config_path=path.parent/'config.snapshot.json'
         if not config_path.exists():continue
         config=json.loads(config_path.read_text())
-        if config.get('protocol_version') not in {'2.0','2.1'}:continue
+        if config.get('protocol_version') not in {'2.0','2.1','2.2','2.3','2.4','2.5','2.6'}:continue
         if not verify(path.parent):raise ValueError('Study checksum validation failed')
-        rows.append({'config':normalized_config(config),'manifest':json.loads(path.read_text()),'outcome':json.loads((path.parent/'outcome.json').read_text())})
+        rows.append({'directory':str(path.parent),'config':normalized_config(config),'manifest':json.loads(path.read_text()),'outcome':json.loads((path.parent/'outcome.json').read_text())})
     if not rows:raise ValueError('No sealed protocol-2 study runs')
     return rows

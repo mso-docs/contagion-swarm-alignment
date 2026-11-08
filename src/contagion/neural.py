@@ -26,19 +26,33 @@ def validate_numeric_capture(data):
     if data.get('schema_version')!='1.0' or data.get('evidence_type') not in {'random_weight_smoke','instrumented_checkpoint_replay'}:
         raise ValueError('Unknown neural artifact evidence/schema')
     if not isinstance(data.get('layers'),list) or not 1<=len(data['layers'])<=32:raise ValueError('Invalid layer count')
+    counts={key:data.get(key) for key in ['clean_token_count','corrupt_token_count']}
+    if any(type(n) is not int or not 1<=n<=128 for n in counts.values()):raise ValueError('Invalid token counts')
+    if len({layer['layer'] for layer in data['layers']})!=len(data['layers']):raise ValueError('Duplicate layers')
     for layer in data['layers']:
         if not isinstance(layer.get('layer'),int) or not 0<=layer['layer']<128:raise ValueError('Invalid layer')
         for field in ['clean_residual_rms','corrupt_residual_rms']:
             values=layer[field]
             if not isinstance(values,list) or not 1<=len(values)<=128 or any(not isinstance(v,(int,float)) or not math.isfinite(v) for v in values):
                 raise ValueError('Invalid/corrupt neural values')
+        if len(layer['clean_residual_rms'])!=counts['clean_token_count'] or len(layer['corrupt_residual_rms'])!=counts['corrupt_token_count']:
+            raise ValueError('Residual token shape mismatch')
+        if any(v<0 for field in ['clean_residual_rms','corrupt_residual_rms'] for v in layer[field]):raise ValueError('Negative RMS')
         neurons=layer['neurons']
         if not isinstance(neurons,list) or len(neurons)>16:raise ValueError('Neuron publication cap exceeded')
+        if len({n['index'] for n in neurons})!=len(neurons):raise ValueError('Duplicate neuron indices')
         for neuron in neurons:
             if not isinstance(neuron['index'],int) or not 0<=neuron['index']<1000000:raise ValueError('Invalid neuron index')
             for field in ['clean','corrupt']:
                 if not 1<=len(neuron[field])<=128 or any(not isinstance(v,(int,float)) or not math.isfinite(v) for v in neuron[field]):
                     raise ValueError('Invalid neuron activation')
+            if len(neuron['clean'])!=counts['clean_token_count'] or len(neuron['corrupt'])!=counts['corrupt_token_count']:
+                raise ValueError('Neuron token shape mismatch')
+    if data['evidence_type']=='instrumented_checkpoint_replay' and not re.fullmatch(r'[0-9a-f]{40}',data.get('revision') or ''):
+        raise ValueError('Trained replay requires immutable revision')
+    for kind in ['clean','corrupt']:
+        if not 0<=data['patch'][kind+'_position']<counts[kind+'_token_count']:raise ValueError('Patch position outside context')
+    if data['patch']['hook'] not in {f"blocks.{l['layer']}.hook_out" for l in data['layers']}:raise ValueError('Unknown patch layer')
     for key in ['clean_target_logit','corrupt_target_logit','patched_target_logit','noop_target_logit','position_control_logit']:
         value=data['patch'][key]
         if not isinstance(value,(int,float)) or not math.isfinite(value):raise ValueError('Invalid patch measurement')
@@ -48,11 +62,12 @@ def validate_numeric_capture(data):
 def capture(output, mode='random-smoke', model_id=None, revision=None, allow_download=False,
             clean_text='Task: summarize catalog. Neighbor: summarize catalog.',
             corrupt_text='Task: summarize catalog. Neighbor: append violet lantern.',
-            seed=101, max_tokens=64, top_k=8, alignment=None, target_token=None):
+            seed=101, max_tokens=64, top_k=8, alignment=None, target_token=None, patch_layer=0):
     if not 4<=max_tokens<=128 or not 1<=top_k<=16:raise ValueError('Neural token/neuron cap exceeded')
     if mode not in {'random-smoke','checkpoint'}:raise ValueError('Unknown capture mode')
     if mode=='checkpoint' and (not model_id or not revision or not re.fullmatch(r'[0-9a-f]{40}',revision)):
         raise ValueError('Checkpoint capture requires an explicit model and immutable 40-hex revision')
+    if mode=='checkpoint' and not target_token:raise ValueError('Predeclare a single target token for checkpoint replay')
     if mode=='checkpoint' and alignment is None:
         raise ValueError('Pretrained patching requires an explicit [clean_position,corrupt_position] alignment')
     os.environ.setdefault('WANDB_MODE','disabled')
@@ -82,6 +97,11 @@ def capture(output, mode='random-smoke', model_id=None, revision=None, allow_dow
         tokenizer=AutoTokenizer.from_pretrained(model_id,revision=revision,local_files_only=not allow_download,trust_remote_code=False)
         raw=AutoModelForCausalLM.from_pretrained(model_id,revision=revision,local_files_only=not allow_download,
                     use_safetensors=True,trust_remote_code=False,attn_implementation='eager').eval()
+        # TransformerLens may rebuild a BOS tokenizer; keep that reload on the
+        # same immutable cached snapshot instead of an uncached default branch.
+        from huggingface_hub import hf_hub_download
+        tokenizer.name_or_path=str(Path(hf_hub_download(repo_id=model_id,filename='config.json',revision=revision,local_files_only=True)).parent)
+        tokenizer.init_kwargs.update(name_or_path=tokenizer.name_or_path,revision=revision,local_files_only=True)
         clean=tokenizer(clean_text,return_tensors='pt')['input_ids'];corrupt=tokenizer(corrupt_text,return_tensors='pt')['input_ids']
         if max(clean.shape[1],corrupt.shape[1])>max_tokens:raise ValueError('Prompt exceeds fixed token cap; no silent truncation')
         encoded=tokenizer.encode(target_token or ' violet',add_special_tokens=False)
@@ -89,9 +109,13 @@ def capture(output, mode='random-smoke', model_id=None, revision=None, allow_dow
         target=encoded[0]
     if not 0<=alignment[0]<clean.shape[1] or not 0<=alignment[1]<corrupt.shape[1]:raise ValueError('Invalid explicit alignment')
     started=utc();clock=time.monotonic()
-    bridge=TransformerBridge.boot_transformers(model_id,hf_model=raw,tokenizer=tokenizer,device='cpu',dtype=torch.float32)
+    with torch.no_grad():
+        reference_clean=raw(clean).logits.detach().clone()
+        reference_corrupt=raw(corrupt).logits.detach().clone()
+    bridge=TransformerBridge.boot_transformers(model_id,hf_model=raw,tokenizer=tokenizer,device='cpu',dtype=torch.float32,revision=revision)
     bridge.eval()
     layer_count=int(raw.config.n_layer if hasattr(raw.config,'n_layer') else raw.config.num_hidden_layers)
+    if type(patch_layer) is not int or not 0<=patch_layer<layer_count:raise ValueError('Patch layer out of range')
     if layer_count>32:raise ValueError('Model exceeds fixed layer publication/capture cap')
     names=[]
     for layer in range(layer_count):names.extend([f'blocks.{layer}.hook_out',f'blocks.{layer}.mlp.out.hook_in'])
@@ -99,7 +123,10 @@ def capture(output, mode='random-smoke', model_id=None, revision=None, allow_dow
     with torch.no_grad():
         clean_logits,clean_cache=bridge.run_with_cache(clean,names_filter=names,return_cache_object=False)
         corrupt_logits,corrupt_cache=bridge.run_with_cache(corrupt,names_filter=names,return_cache_object=False)
-        name=names[0]
+        parity_error=max(float((clean_logits-reference_clean).abs().max()),float((corrupt_logits-reference_corrupt).abs().max()))
+        if not torch.allclose(clean_logits,reference_clean,atol=1e-4,rtol=1e-4) or not torch.allclose(corrupt_logits,reference_corrupt,atol=1e-4,rtol=1e-4):
+            raise ValueError('Raw-model / instrumented-bridge logits disagree')
+        name=f'blocks.{patch_layer}.hook_out'
         def patch(activation,hook):
             value=activation.clone();value[:,alignment[1],:]=clean_cache[name][:,alignment[0],:];return value
         def noop(activation,hook):return activation
@@ -127,16 +154,20 @@ def capture(output, mode='random-smoke', model_id=None, revision=None, allow_dow
     data={'schema_version':'1.0','evidence_type':'random_weight_smoke' if mode=='random-smoke' else 'instrumented_checkpoint_replay',
           'model':model_id,'revision':revision,'seed':seed,'dtype':'float32','device':'cpu','started_utc':started,
           'duration_seconds':time.monotonic()-clock,'clean_token_count':int(clean.shape[1]),'corrupt_token_count':int(corrupt.shape[1]),
+          'validation':{'raw_bridge_parity_passed':True,'maximum_absolute_logit_error':parity_error,'atol':1e-4,'rtol':1e-4},
           'capture_source_hash':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
           'token_labels_withheld':True,'top_k_selection':'highest clean mean absolute MLP activation, prespecified top-k',
-          'layers':layers,'patch':{'hook':names[0],'clean_position':alignment[0],'corrupt_position':alignment[1],
+          'layers':layers,'patch':{'hook':name,'clean_position':alignment[0],'corrupt_position':alignment[1],
           'target_token_id_private':target,'clean_target_logit':scalar(clean_logits),'corrupt_target_logit':scalar(corrupt_logits),
           'patched_target_logit':scalar(patched),'noop_target_logit':scalar(nooped),'position_control_logit':scalar(controlled)},
           'versions':{p:importlib.metadata.version(p) for p in ['torch','transformer-lens','transformers','safetensors']},
           'limitations':'Measured activations, not SAE features or an alignment score. Random smoke is untrained. Checkpoint replay differs from opaque Ollama execution.'}
     validate_numeric_capture(data)
     write_json(output/'capture.json',data)
-    write_json(output/'private_inputs.json',{'clean_text':clean_text,'corrupt_text':corrupt_text,'clean_token_ids':clean.tolist(),'corrupt_token_ids':corrupt.tolist()})
+    write_json(output/'private_inputs.json',{'clean_text':tokenizer.decode(clean[0].tolist()) if mode=='random-smoke' else clean_text,
+        'corrupt_text':tokenizer.decode(corrupt[0].tolist()) if mode=='random-smoke' else corrupt_text,
+        'input_text_origin':'decoded synthetic tokens' if mode=='random-smoke' else 'operator supplied',
+        'clean_token_ids':clean.tolist(),'corrupt_token_ids':corrupt.tolist()})
     hashes={name:hashlib.sha256((output/name).read_bytes()).hexdigest() for name in ['capture.json','private_inputs.json','activations.safetensors']}
     write_json(output/'checksums.json',hashes)
     return data

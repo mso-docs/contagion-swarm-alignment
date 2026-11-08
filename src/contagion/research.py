@@ -41,6 +41,7 @@ async def main_async(args):
     env=environment(args.env_file)
     model=args.model or env.get('CONTAGION_MODEL')
     provider=MockProvider() if args.provider=='mock' else HTTPProvider(env.get('CONTAGION_BASE_URL',''),timeout=60,retries=0,api=args.provider)
+    provider.identity={**provider.identity,'worker_label':getattr(args,'worker_label','unspecified')}
     try:
         if args.provider!='mock':
             if not model:raise ValueError('Choose an installed model explicitly')
@@ -48,7 +49,7 @@ async def main_async(args):
             if env.get('CONTAGION_API_KEY'):
                 provider.client.headers['Authorization']='Bearer '+env['CONTAGION_API_KEY']
             installed=await provider.discover()
-            match=next((m for m in installed if m.get('name',m.get('id'))==model),None)
+            match=next((m for m in installed if model in {m.get('name'),m.get('id')}),None)
             if not match:raise ValueError('Selected model is not installed; nothing pulled')
             provider.identity.update(model=model,digest=match.get('digest'))
             if args.expected_digest and provider.identity['digest']!=args.expected_digest:
@@ -64,7 +65,7 @@ async def main_async(args):
             print(f'{len(paths)} bounded study runs completed')
         else:
             if not 1<=args.max_calls<=1000:raise ValueError('Review call limit must be 1..1000')
-            result=await review_batch(args.source,args.out,provider,model or 'mock-reviewer',args.max_calls,seed=args.seed)
+            result=await review_batch(args.source,args.out,provider,model or 'mock-reviewer',args.max_calls,seed=args.seed,redaction_env=env)
             print(json.dumps(result));print('Reviewer is uncalibrated; no samples automatically cleared')
     finally:
         if hasattr(provider,'close'):await provider.close()
@@ -79,7 +80,7 @@ def main():
     monitor=commands.add_parser('monitor');monitor.add_argument('--source',required=True);monitor.add_argument('--out',required=True);monitor.add_argument('--seed',type=int,default=404);monitor.add_argument('--topology',choices=['ring','star','complete'],default='ring')
     review=commands.add_parser('review');review.add_argument('--source',required=True);review.add_argument('--out',required=True);review.add_argument('--max-calls',type=int,default=100);review.add_argument('--seed',type=int,default=404)
     for command in [study,review]:
-        command.add_argument('--provider',choices=['mock','ollama','openai'],default='mock');command.add_argument('--model');command.add_argument('--env-file');command.add_argument('--expected-digest',help='Require the discovered model digest before inference')
+        command.add_argument('--provider',choices=['mock','ollama','openai'],default='mock');command.add_argument('--model');command.add_argument('--env-file');command.add_argument('--worker-label',choices=['primary','secondary','local','unspecified'],default='unspecified');command.add_argument('--expected-digest',help='Require the discovered model digest before inference')
     calibrate=commands.add_parser('calibrate');calibrate.add_argument('--source',required=True);calibrate.add_argument('--labels',required=True);calibrate.add_argument('--out',required=True)
     args=parser.parse_args()
     try:asyncio.run(main_async(args))

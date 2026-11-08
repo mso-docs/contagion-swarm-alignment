@@ -1,6 +1,8 @@
 # Commit, CI and publication checks
 
-The repository has a README-only initial commit. This implementation is suitable for the first implementation commit after reviewing the candidate file list, public data and Git author identity. The setup described here installs a local hook; it never stages, commits or pushes project files.
+For trace scanning, PII rules and private denylist setup, see [Privacy checks](PRIVACY_CHECKS.md).
+
+Local hooks and GitHub Actions protect commits and publication. Review candidate files, optional trace text and Git author identity before pushing. The setup helper installs hooks; it does not stage, commit or push files.
 
 ## Install on a fresh clone
 
@@ -43,7 +45,7 @@ Initial audit found vulnerabilities in the old local pip 26.1.1; pip was updated
 
 `.github/workflows/pages.yml` runs on pull requests, main pushes, manual dispatch and a weekly schedule. It checks full history, candidate secrets/private files, syntax/security, dependency advisories, pytest, dashboard interactions and the allowlisted static build. Actions and external hook repositories are pinned to verified commit SHAs, with release labels in comments. Checkout fetches full history and does not persist Git credentials.
 
-Only successful main push/manual runs upload and deploy the Pages artifact. Pull requests and scheduled audits never deploy. The deploy job depends on the checks and alone receives pages:write/id-token:write. There is no pull_request_target workflow or paid scanner action. The build copies only index.html, style.css, app.js, data/results.json and .nojekyll. No GitHub job contacts a model endpoint or runs live inference.
+Only successful main push/manual runs upload and deploy the Pages artifact. Pull requests and scheduled audits never deploy. The deploy job depends on the checks and alone receives pages:write/id-token:write. There is no pull_request_target workflow or paid scanner action. The build copies allowlisted frontend assets, validated public snapshots and referenced study-detail shards; private raw files are excluded. No GitHub job contacts a model endpoint or runs live inference.
 
 Dependabot checks pip and GitHub Actions weekly. For enforcement, configure GitHub branch protection/rulesets to require **Security and reproducibility gates**, and enable available secret-scanning/push-protection controls. These remote repository settings were not changed here. Local hooks can be deliberately bypassed; remote CI plus required checks is the second boundary, and public Git history must still be reviewed before pushing.
 

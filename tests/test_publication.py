@@ -155,7 +155,9 @@ def test_static_dashboard_has_all_script_targets_and_no_inline_execution():
     page = Page()
     page.feed((root / 'dashboard/index.html').read_text())
     assert len(page.ids) == len(set(page.ids))
-    assert page.scripts == ['app.js']
+    from urllib.parse import urlsplit
+    assert [urlsplit(src).path for src in page.scripts] == ['widgets.js','app.js']
+    assert all(not urlsplit(src).netloc and not urlsplit(src).scheme for src in page.scripts)
     script = (root / 'dashboard/app.js').read_text()
     assert set(re.findall(r"\$\('([^']+)'\)", script)) <= set(page.ids)
     assert 'innerHTML' not in script and 'eval(' not in script

@@ -81,3 +81,50 @@ def test_dangling_symlink_is_also_blocked(tmp_path):
     root = repo(tmp_path)
     (root / 'dangling.txt').symlink_to(root / 'missing-private-key')
     assert GUARD['check'](root, 'worktree', env={}) == 1
+
+
+@pytest.mark.parametrize('name', ['renamed.log', 'capture.safetensors', 'session.har',
+                                  'experiment.sqlite', 'archive/traces.json', 'logs/output.txt',
+                                  'traces/output.txt'])
+def test_raw_artifact_aliases_are_blocked(name):
+    assert GUARD['blocked_path'](name)
+
+
+def test_personal_email_in_staged_file_is_blocked_without_echo(tmp_path, capsys):
+    root = repo(tmp_path)
+    address = 'researcher' + '@' + 'private-mail.dev'
+    path = stage(root, 'notes.md', 'Contact: ' + address)
+    path.write_text('Clean unstaged replacement')
+    assert GUARD['check'](root, 'staged', env={}) == 1
+    report = capsys.readouterr().err
+    assert 'email' in report
+    assert address not in report
+
+
+def test_alternate_dotenv_and_denylist_are_read_as_data(tmp_path, capsys):
+    root = repo(tmp_path)
+    secret = 'opaque' + 'PrivateJudgeCredential123'
+    person = 'Synthetic' + 'PrivatePerson'
+    (root / '.env.judge').write_text('OPENROUTER_API_KEY=' + secret + '\n')
+    (root / 'private.redact.txt').write_text(person + '\n')
+    stage(root, 'notes.md', secret + '\n' + person)
+    assert GUARD['check'](root, 'staged', env={}) == 1
+    report = capsys.readouterr().err
+    assert secret not in report and person not in report
+
+
+def test_privacy_scan_decodes_json_escapes_and_never_alters_input(monkeypatch):
+    import json
+    monkeypatch.syspath_prepend(str(ROOT / 'scripts'))
+    scanner = runpy.run_path(str(ROOT / 'scripts/scan_privacy.py'))
+    address = 'someone' + '@' + 'private-mail.dev'
+    blob = json.dumps({'content': address}).replace('@', '\\u0040').encode()
+    assert scanner['scan_blob'](blob, public=True)['email'] == 1
+    assert b'\\u0040' in blob
+    assert scanner['findings']('Contact: reader' + '@' + 'example.com') == {}
+    assert scanner['findings']('reader' + '@' + 'example.com', public=True)['email'] == 1
+    pii = ' '.join(['415' + '-555-0134', '123' + '-45-6789', '4111' + ' 1111 1111 1111'])
+    result = scanner['findings'](pii, public=True)
+    assert result['phone'] and result['government_id'] and result['payment_card']
+    assert not scanner['findings']('2026-11-08T01:06:48.920256+00:00', public=True)
+    assert not scanner['findings']('1.959963984540054', public=True)  # Scientific decimal, not a card number.

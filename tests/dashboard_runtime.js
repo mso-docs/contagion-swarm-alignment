@@ -1,5 +1,5 @@
 /* Lightweight DOM interaction smoke test; browser layout verification is separate. */
-async function dashboardSmoke(source, data, html, research={schema_version:"1.0",studies:[],reviews:[],monitor:[],neural:[],scenarios:[],review_source:"not_run",unreviewed_samples:0}) {
+async function dashboardSmoke(source, data, html, research={schema_version:"1.0",studies:[],reviews:[],monitor:[],neural:[],scenarios:[],review_source:"not_run",unreviewed_samples:0}, widgetsSource="", detailFiles={}) {
   class Element {
     constructor(tag) { this.tagName=tag;this.children=[];this.attributes={};this.listeners={};this.value='';this.textContent='';this.dataset={};this.style={};this.classes=new Set();this.classList={toggle:(name,on)=>{const enabled=on??!this.classes.has(name);enabled?this.classes.add(name):this.classes.delete(name);return enabled;},remove:name=>this.classes.delete(name)}; }
     append(...nodes) { this.children.push(...nodes); }
@@ -7,16 +7,33 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
     setAttribute(key,value) { this.attributes[key]=value; }
     addEventListener(kind,handler) { this.listeners[kind]=handler; }
   }
-  const ids=new Map([...html.matchAll(/id="([^"]+)"/g)].map(m=>[m[1],new Element(['backend','model','topology','condition','run-select','trace-agent','trace-type'].includes(m[1])?'select':'div')]));
+  const ids=new Map([...html.matchAll(/id="([^"]+)"/g)].map(m=>[m[1],new Element(['backend','model','topology','condition','run-select','trace-agent','trace-type','neural-select','research-model-filter','research-task-filter','research-size-filter','research-outcome-filter','neuron-layer','neuron-index','monitor-select','interp-model','interp-evidence','interp-effect-metric','interp-monitor-metric'].includes(m[1])?'select':'div')]));
   const document={body:new Element('body'),getElementById:id=>{if(!ids.has(id))throw Error(`Missing target ${id}`);return ids.get(id);},createElement:tag=>new Element(tag),createElementNS:(_,tag)=>new Element(tag)};
   for(const id of ['model','topology','condition','trace-agent','trace-type'])ids.get(id).value='all';
-  ids.get('backend').value='live';ids.get('round').value='0';
+  ids.get('interp-effect-metric').value='delta';ids.get('interp-monitor-metric').value='false_positive_rate';
+  ids.get('research-outcome-filter').value='all';ids.get('backend').value='live';ids.get('round').value='0';
   class Option extends Element { constructor(text,value){super('option');this.textContent=text;this.value=value;} }
-  const api=new Function('document','Option','fetch','setInterval',source+'\nreturn {load,render,renderRound,renderTraces,showView,state,loadResearch,researchState};')(document,Option,async url=>({ok:true,json:async()=>url.startsWith('data/research.json')?research:data}),()=>0);
+  const widgets=widgetsSource?new Function('document',widgetsSource+'\nreturn EvidenceWidgets;')(document):null;
+  const fetched=[];
+  const api=new Function('document','Option','fetch','setInterval','EvidenceWidgets',source+'\nreturn {load,render,renderRound,renderTraces,showView,state,loadResearch,researchState,loadStudyDetail};')(document,Option,async url=>(fetched.push(url),{ok:!url.startsWith('data/studies/')||Boolean(detailFiles[url]),json:async()=>url.startsWith('data/research.json')?research:detailFiles[url]??data}),()=>0,widgets);
   await api.load();await api.loadResearch();
+  fetched.length=0;await ids.get('refresh').listeners.click();
+  if(!fetched.some(u=>u.startsWith('data/results.json'))||!fetched.some(u=>u.startsWith('data/research.json')))throw Error('Refresh must fetch both snapshots');
+  if(!ids.get('research-updated').textContent.includes('run attempts'))throw Error('Research freshness missing');
+  if(ids.get('interp-kpis').children.length!==6)throw Error('Interpretability headline metrics missing');
+  if(research.neural.length&&!ids.get('interp-capture-grid').children.length)throw Error('Visible capture cards missing');
+  if(!ids.get('interp-effects').children.length)throw Error('Interpretability overview chart missing');
+  const captureCards=ids.get('interp-capture-grid').children;
+  if(captureCards.length){const card=captureCards[Math.min(1,captureCards.length-1)],button=card.children.find(n=>n.tagName==='button'),details=card.children.find(n=>n.tagName==='details');if(!button||!details)throw Error('Capture card navigation missing');button.listeners.click();details.open=true;details.listeners.toggle();if(!details.children.find(n=>n.tagName==='div')?.children.length)throw Error('Inline activation profile missing');}
+
   if(!ids.get("neural-evidence").children.length)throw Error("Missing honest neural empty state");
   if(api.researchState.snapshot.scenarios.length!==research.scenarios.length)throw Error("Scenario catalog missing");
+  const detailRow=research.studies.find(r=>detailFiles[r.detail_file]);
+  if(detailRow){await api.loadStudyDetail(detailRow);if(!ids.get('study-detail').children.some(n=>n.textContent==='Assigned task'))throw Error('Task drill-down missing');}
   if(!api.state.runs.length)throw Error('No initial runs rendered');
+  const expected=(data.runs.filter(r=>ids.get('backend').value==='mock'?r.backend==='mock':r.backend!=='mock').length)+(research.studies.filter(r=>ids.get('backend').value==='mock'?r.backend==='mock':r.backend!=='mock').length);
+  if(api.state.runs.length!==expected)throw Error('Main overview omitted newer study runs');
+  if(ids.get('runs-kpi').textContent!==`${api.state.runs.filter(r=>r.status==='completed').length} / ${expected}`)throw Error('Main run counter is stale');
   for(const view of ['models','evaluations','traces','datasets','methods','research','neural','overview']){
     api.showView(view);
     if(document.body.dataset.view!==view)throw Error('Navigation failed: '+view);
@@ -55,5 +72,5 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
 }
 if(typeof module!=='undefined'&&require.main===module){
   const fs=require('node:fs'),path=require('node:path'),root=path.join(__dirname,'..','dashboard');
-  dashboardSmoke(fs.readFileSync(path.join(root,'app.js'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/results.json'),'utf8')),fs.readFileSync(path.join(root,'index.html'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/research.json'),'utf8'))).then(console.log).catch(error=>{console.error(error);process.exitCode=1;});
+  dashboardSmoke(fs.readFileSync(path.join(root,'app.js'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/results.json'),'utf8')),fs.readFileSync(path.join(root,'index.html'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/research.json'),'utf8')),fs.readFileSync(path.join(root,'widgets.js'),'utf8'),Object.fromEntries(fs.existsSync(path.join(root,'data/studies'))?fs.readdirSync(path.join(root,'data/studies')).filter(n=>n.endsWith('.json')).map(n=>['data/studies/'+n,JSON.parse(fs.readFileSync(path.join(root,'data/studies',n),'utf8'))]):[])).then(console.log).catch(error=>{console.error(error);process.exitCode=1;});
 }

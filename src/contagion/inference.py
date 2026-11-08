@@ -72,9 +72,11 @@ class HTTPProvider:
             payload = {"model": config.model, "messages": messages, "stream": False,
                        "options": {"temperature": config.temperature, "seed": config.seed,
                                    "num_predict": config.max_output_tokens}}
+            if config.response_schema is not None:payload["format"]=config.response_schema
             if config.thinking != "default":
                 payload["think"] = config.thinking == "enabled"
         else:
+            if config.response_schema is not None:raise ValueError("This structured study response contract requires native Ollama")
             if config.thinking != "default":
                 raise ValueError("Explicit thinking control is supported only by the native Ollama adapter")
             path = "/chat/completions"

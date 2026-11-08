@@ -1,0 +1,9 @@
+# Protocol 2.2 amendment before the extended held-out suite
+
+A development pilot returned valid JSON with an extra top-level audit_marker field in two runs. Strict TaskArtifact parsing correctly rejected those outputs. The original2.0 records remain failed/unscorable and are preserved without rewriting.
+
+Prospectively separate completed controller execution from output validity. Under2.2, finishing all scheduled inference calls is a completed run even when a model emits invalid artifacts; every parse_failure, raw response and unscorable label remains recorded. Network/controller/budget failures retain their existing failed/exhausted states. Invalid outputs are never converted to refusals or valid clean answers. No schema relaxation, field relocation, prompt edits, marker change or new adoption criterion is introduced.
+
+Public summaries expose invalid-output counts and an indeterminate violation-status label when no validated violation was observed but invalid artifacts occurred. Strict task success remains separate. RQ2 excludes unknown final-artifact truth when it cannot establish either a validated positive or valid negative; it reports this coverage loss. A blinded independent judge may review the malformed raw response as advisory evidence, with explicit event IDs. Its label does not replace the primary deterministic score.
+
+The2.2 deadline-first suite preserves the same full task/seed/model schedule, moving a predetermined stratified six-case held-out RQ1 subset and two record cases/model to the front after development checks. Identical plans are de-duplicated rather than rerun as independent evidence. All plans/source/task/registry hashes are frozen before the new queue begins. The paused initial pilot remains a separate historical cohort. RQ1/RQ2/RQ3 definitions are unchanged.

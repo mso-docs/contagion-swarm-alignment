@@ -78,3 +78,11 @@ def test_remote_capture_timeout_and_private_error_handling(tmp_path,monkeypatch)
     import ast
     ast.parse(remote.REMOTE)
     assert "'results/'+capture_name" in remote.REMOTE
+
+
+def test_suite_administration_rejects_primary_before_ssh(tmp_path,monkeypatch):
+    monkeypatch.syspath_prepend(str(ROOT/'scripts'))
+    remote=module('remote_worker')
+    monkeypatch.setattr(remote,'configuration',lambda *args:(_ for _ in ()).throw(AssertionError('Should not read primary')))
+    for action in ['deploy-suite','suite-status','suite-sync']:
+        with pytest.raises(ValueError,match='secondary'):remote.execute('primary',action,tmp_path/'.env')
