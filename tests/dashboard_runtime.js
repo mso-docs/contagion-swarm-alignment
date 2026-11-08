@@ -32,6 +32,13 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
     if(!ids.get('research-studies').children[0]?.children[1]?.children[2]?.textContent.includes('new-overnight-arrival'))throw Error('Latest research rows are ordered by opaque IDs instead of time');
     if(!ids.get('run-select').children[0]?.textContent.includes('new-overnight-arrival'))throw Error('Newest trace run is not discoverable at the top');
     if(!ids.get('runs-kpi').textContent.endsWith('/ '+(before+221)))throw Error('Overview did not update automatically');
+    const mockStudy={...baseStudy,id:'ffffffffffffffff',backend:'mock',model:'mock-only-arrival',case_id:'mock-only-case',detail_file:null};
+    research.studies=[...originalStudies,mockStudy];await api.refreshSnapshots();
+    const textOf=node=>(node?.textContent??'')+(node?.children??[]).map(textOf).join('');
+    if(textOf(ids.get('research-studies')).includes('mock-only-case'))throw Error('Mocks crowd live research by default');
+    ids.get('research-backend-filter').value='mock';ids.get('research-backend-filter').listeners.change();
+    if(!textOf(ids.get('research-studies')).includes('mock-only-case'))throw Error('Explicit mock research filter lost validation data');
+    ids.get('research-backend-filter').value='live';ids.get('research-backend-filter').listeners.change();
     research.studies=originalStudies;research.generated_utc=originalStamp;await api.refreshSnapshots();
   }
 

@@ -114,6 +114,7 @@ def build(output,paper=ROOT/'results/paper-draft',root=ROOT,smoke=True,snapshot=
     manifest={'schema_version':'research-bundle-1.0','code_revision':revision,'workspace_has_uncommitted_changes':dirty,
               'code_review_status':'Human review pending; revision is not a certification.','source_fingerprint':source_fingerprint(),
               'paper_checks':{k:audit_result[k] for k in ['status','main_text_pages','total_pages','abstract_words']},
+              'paper_rendering':{k:build_manifest.get(k) for k in ['typeface_variant','pdf_font_names','authoring_source_sha256','compiledlatex_source_sha256','pdf_sha256']},
               'offline_smoke':smoke_result,'files':{name:sha(output/name) for name in sorted(copied)},
               'supplemental_snapshot_sha256':snapshot_provenance,
               'tracked_snapshot_hash':fixed_snapshot.snapshot_hash,

@@ -11,6 +11,33 @@ import subprocess
 import sys
 
 ROOT=Path(__file__).resolve().parents[1]
+CLASSIC_MAIN = r'\setmainfont{lmroman10-regular.otf}[BoldFont=lmroman10-bold.otf,ItalicFont=lmroman10-italic.otf,BoldItalicFont=lmroman10-bolditalic.otf]'
+CLASSIC_TITLE = r'\newfontfamily\titlefont{lmroman10-bold.otf}'
+TEMPLATE_MAIN = r'\setmainfont{Arial}'
+TEMPLATE_TITLE = r'\newfontfamily\titlefont{OldStandard-Bold.ttf}[Path=fonts/]'
+
+
+def render_typeface(source, typeface='classic'):
+    """Only the two font declarations differ between compiled variants."""
+    if typeface not in {'classic', 'template'}: raise ValueError('Unknown paper typeface variant')
+    for marker in (CLASSIC_MAIN, CLASSIC_TITLE):
+        if source.count(marker) != 1: raise ValueError('Expected canonical classic font declaration once')
+    if typeface == 'classic': return source
+    return source.replace(CLASSIC_MAIN, TEMPLATE_MAIN).replace(CLASSIC_TITLE, TEMPLATE_TITLE)
+
+
+def pdf_font_names(path):
+    from pypdf import PdfReader
+    return sorted({str(font.get_object().get('/BaseFont', '')) for page in PdfReader(path).pages
+                   for font in page.get('/Resources', {}).get('/Font', {}).values()})
+
+
+def validate_pdf_typeface(names, typeface):
+    if typeface not in {'classic', 'template'}: raise ValueError('Unknown paper typeface variant')
+    required = ('LMRoman10-Regular', 'LMRoman10-Bold') if typeface == 'classic' else ('Arial', 'OldStandard')
+    if not all(any(want in name for name in names) for want in required):
+        raise ValueError('Embedded PDF fonts do not match the declared typeface')
+    return names
 
 
 def validate_draft_evidence(data):
@@ -126,6 +153,7 @@ def main():
     parser.add_argument('--out',type=Path,default=ROOT/'results/paper-draft')
     parser.add_argument('--compiler',type=Path,default=ROOT/'.cache/report-tools/tectonic')
     parser.add_argument('--skip-notebook',action='store_true')
+    parser.add_argument('--typeface',choices=['classic','template'],default='classic')
     args=parser.parse_args();out=args.out.resolve();out.mkdir(parents=True,exist_ok=True)
     os.environ['CONTAGION_PAPER_OUT']=str(out)
     os.environ.setdefault('MPLCONFIGDIR',str(ROOT/'.cache/matplotlib'));os.environ.setdefault('IPYTHONDIR',str(ROOT/'.cache/ipython'))
@@ -155,13 +183,20 @@ def main():
     if manifest.get('analysis_script_sha256')!=hashlib.sha256((ROOT/'scripts/paper_analysis.py').read_bytes()).hexdigest():raise ValueError('Rerun notebook after analysis code changes')
     for name,want in manifest['files'].items():
         if Path(name).name!=name or hashlib.sha256((figures/name).read_bytes()).hexdigest()!=want:raise ValueError('Figure integrity failure')
-    for name in ['paper.tex','sources.bib']:shutil.copyfile(ROOT/'report'/name,out/name)
+    authoring_source=(ROOT/'report/paper.tex').read_text()
+    (out/'paper.tex').write_text(render_typeface(authoring_source,args.typeface))
+    shutil.copyfile(ROOT/'report/sources.bib',out/'sources.bib')
     (out/'generated_results.tex').write_text(generated_table(data))
     from paper_supplement import render
     supplement,supplement_hashes=render(ROOT)
     (out/'generated_supplement.tex').write_text(supplement)
     fonts=out/'fonts';fonts.mkdir(exist_ok=True)
-    needs_template_font='OldStandard-Bold.ttf' in (out/'paper.tex').read_text()
+    needs_template_font=args.typeface=='template'
+    cached_fonts=ROOT/'results/paper-template-bf217d7/fonts'
+    if needs_template_font:
+        for name in ['OldStandard-Bold.ttf','OFL.txt']:
+            if not (fonts/name).exists() and (cached_fonts/name).is_file():
+                shutil.copyfile(cached_fonts/name,fonts/name)
     if needs_template_font and not (fonts/'OldStandard-Bold.ttf').exists():
         import httpx
         with httpx.Client(timeout=30,follow_redirects=True) as client:
@@ -172,6 +207,10 @@ def main():
     quality=inspect_pdf(out/'paper.pdf',out/'paper.log',out/'paper.tex')
     quality.update(evidence_sha256=manifest['evidence_sha256'],pdf_sha256=hashlib.sha256((out/'paper.pdf').read_bytes()).hexdigest(),
                    latex_source_sha256=hashlib.sha256((out/'paper.tex').read_bytes()).hexdigest(),figure_manifest_sha256=hashlib.sha256((figures/'figure_manifest.json').read_bytes()).hexdigest())
+    quality['schema_version']='paper-build-2.0'
+    quality['authoring_source_sha256']=hashlib.sha256((ROOT/'report/paper.tex').read_bytes()).hexdigest()
+    quality['compiledlatex_source_sha256']=quality['latex_source_sha256']
+    quality['typeface_variant']=args.typeface
     from importlib.metadata import distributions
     quality['installed_versions']={d.metadata['Name']:d.version for d in distributions() if d.metadata.get('Name')}
     quality['notebook_source_sha256']=hashlib.sha256((ROOT/'notebooks/paper_figures.ipynb').read_bytes()).hexdigest()
@@ -181,9 +220,7 @@ def main():
     quality['build_script_sha256']=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     quality.update(supplement_hashes)
     quality['font_sha256']={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in fonts.glob('*.ttf')} if needs_template_font else {}
-    from pypdf import PdfReader
-    quality['pdf_font_names']=sorted({str(font.get_object().get('/BaseFont','')) for page in PdfReader(out/'paper.pdf').pages
-                                    for font in page.get('/Resources',{}).get('/Font',{}).values()})
+    quality['pdf_font_names']=validate_pdf_typeface(pdf_font_names(out/'paper.pdf'),args.typeface)
     quality['typeface']='Official template Arial/Old Standard' if needs_template_font else 'Latin Modern Roman; author-requested template typeface override'
     (out/'build_manifest.json').write_text(json.dumps(quality,indent=2)+'\n')
     print('LaTeX PDF built:',quality['main_text_pages'],'main-text pages,',quality['total_pages'],'total pages,',quality['abstract_words'],'abstract words. Human review remains required.')

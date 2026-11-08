@@ -13,7 +13,7 @@ This is an evidence map, not a declaration that every hypothesis is confirmed. O
 
 RQ3 follow-up: 64 completed protocol 4 runs and 320 responses, four fixed cases and one seed; four integration prechecks are excluded. Zero attempted updates, simulator violations and scored refusals do not establish refusal bypass, population safety or equivalence. This evidence is separate from the compact 36-run RQ1 analysis.
 
-Current PDF:7main pages,13total,209-word abstract. Automated checks and current-template format extraction pass; final author scientific/visual review and actual submission remain pending. The repository is private with Pages disabled, so public reproducibility links are not yet available. See [the runbook](../docs/SUBMISSION_RUNBOOK.md).
+Current PDF:7main pages,12total,209-word abstract. Automated checks and current-template format extraction pass; final author scientific/visual review and actual submission remain pending. The repository is private with Pages disabled, so public reproducibility links are not yet available. See [the runbook](../docs/SUBMISSION_RUNBOOK.md).
 
 The author requested a classic LaTeX serif: the current PDF uses Latin Modern Roman. The official template's Arial/Old Standard fonts are documented separately, and its prior PDF is retained at `results/paper-template-bf217d7/paper.pdf`. Typeface changes do not establish official-template compliance.
 

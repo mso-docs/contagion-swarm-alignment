@@ -10,6 +10,13 @@ from contagion.publication import Redactor,sensitive_values
 from contagion.research_publication import Closed,StudyRow,StudyAgent
 from advisory_publication import AdvisoryRow,summaries
 from contagion.storage import verify
+from large_benchmark_monitor import Cell as BenchmarkMonitorCell
+
+
+class BenchmarkMonitorSummary(BenchmarkMonitorCell):
+    analysis_scope:Literal['completed_registered_batches_descriptive','completed_registered_matrix']
+    cutoff_utc:str|None=None
+    report_hash:str=Field(pattern=r'^[a-f0-9]{64}$')
 
 
 class FollowupRun(StudyRow):
@@ -82,7 +89,7 @@ class Snapshot(Closed):
     schema_version:Literal['confirmatory-public-1.0']='confirmatory-public-1.0'
     generated_utc:str
     runs:list[FollowupRun|DecompositionRun]
-    monitor:list[MonitorSummary]=Field(default_factory=list,max_length=4096)
+    monitor:list[MonitorSummary|BenchmarkMonitorSummary]=Field(default_factory=list,max_length=4096)
     reviews:list[AdvisoryRow]=Field(default_factory=list,max_length=10000)
     text_included:Literal[False]=False
 
@@ -134,6 +141,16 @@ def export(source,output,env):
         if raw.get('status')!='completed_registered_batch':raise ValueError('Incomplete monitor export')
         for row in raw['summary']:
             monitors.append(MonitorSummary(**{**row,'model':redact(row['model'])}))
+    from large_benchmark_monitor import validate_report
+    latest={}
+    for path in sorted((Path(source).parent/'reports').glob('*/batch-*/monitor/public.json')):
+        report=validate_report(path);key=(report.source_plan_hash,report.backend)
+        order=(report.analysis_scope=='completed_registered_matrix',report.cutoff_utc or '',path.stat().st_mtime_ns)
+        if key not in latest or order>latest[key][0]:latest[key]=(order,report)
+    for _,report in latest.values():
+        for cell in report.summary:
+            monitors.append(BenchmarkMonitorSummary(**{**cell.model_dump(),'model':redact(cell.model)},
+                analysis_scope=report.analysis_scope,cutoff_utc=report.cutoff_utc,report_hash=report.report_hash))
     snapshot=Snapshot(generated_utc=utc(),runs=rows,monitor=monitors,reviews=summaries(Path(source).parent/'reviews',env));output=Path(output);output.parent.mkdir(parents=True,exist_ok=True)
     temporary=output.with_suffix('.tmp');temporary.write_text(snapshot.model_dump_json(indent=2)+'\n');validate(temporary,env);temporary.replace(output);return snapshot
 

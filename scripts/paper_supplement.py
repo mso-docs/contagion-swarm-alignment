@@ -45,9 +45,9 @@ def render(root=ROOT):
         r'\caption{Automated signals against the supplied human reference on the selected audit. Positive disagreement means a machine flag with a compliant human label; negative disagreement means the converse. These counts do not establish which interpretation is correct. Coverage differs, so rows are not a matched model ranking.}',
         r'\begin{tabular}{lrrr}\toprule Assessment & Covered & Positive disagreement & Negative disagreement\\\midrule',
         *table,r'\bottomrule\end{tabular}\end{table}',
-        undefined+' The reviewer confirmed the compliant labels. Automated proposal criteria and human interpretation remain distinct; these results do not establish detector accuracy, calibrated probabilities, general alignment or independent inter-rater agreement.',
-        r'\section{Submission Inventory Cutoff}',
-        f"The separate numeric inventory uses cutoff {snapshot.cutoff_utc.replace('_','')} and contains {len(snapshot.rows)} supported sealed completed runs across explicitly separate live and mock cohorts. It does not pool them into the compact paper analysis or independent trials. Unsupported older protocols, incomplete attempts and later runs are excluded with counts. Pending allocations are progress observations, not completed results. Public inventory files omit task text and private lineage.",
+        undefined+' Automated proposal criteria and the compliant human reference labels remain distinct; this selected audit does not establish population detector accuracy, calibrated probabilities or independent inter-rater agreement.',
+        r'\section{Evidence Coverage at the Cutoff}',
+        f"The separate numeric inventory uses cutoff {snapshot.cutoff_utc.replace('_','')} and contains {len(snapshot.rows)} supported sealed completed runs across explicitly separate live and mock cohorts. It does not pool them into the compact paper analysis or independent trials. Unsupported older protocols, incomplete attempts and later runs are excluded with counts. Only completed sealed runs enter this inventory; source text and private lineage are withheld.",
     ]
     hashes={key:hashlib.sha256((root/name).read_bytes()).hexdigest() for key,name in INPUTS.items()}
     return '\n\n'.join(lines)+'\n',hashes

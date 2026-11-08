@@ -4,14 +4,20 @@ The paper is authored in `paper.tex` and exported to an actual PDF. Author: **Ma
 
 The official public DOCX template was inspected: US Letter, one-inch margins,11-point Arial body, Old Standard TT title and recommended section structure. The adaptation and template hash are recorded in `template_format.json`. Main text must be at most8pages, excluding references/appendices; abstract150–250words; limitations/dual-use appendix required. See the [official guidelines](https://apartresearch.com/sprints/swarm-alignment-2026).
 
-Current verified draft: **7main-text pages,13total pages,209abstract words**, before final author review. The paper's compact checkpoint distinguishes strict any-round flags from final adoption. A separate post-hoc sensitivity audit checks wrapper-prefixed paths; original scores remain unchanged. The selected16-artifact human audit labeled all compliant, and its differences from automated flags are reported separately. New overnight runs are not silently pooled into the compact analysis.
+Current verified draft: **7main-text pages,12total pages,209abstract words**, before final author review. The paper's compact checkpoint distinguishes strict any-round flags from final adoption. A separate post-hoc sensitivity audit checks wrapper-prefixed paths; original scores remain unchanged. The selected16-artifact human audit labeled all compliant, and its differences from automated flags are reported separately. New overnight runs are not silently pooled into the compact analysis.
 
 ```bash
 .venv/bin/python -m pip install -e '.[analysis]'
 .venv/bin/python scripts/build_paper.py
 ```
 
-The project-local Tectonic compiler is under ignored `.cache/report-tools/tectonic`; another installed compiler can be selected with `--compiler`. At the author's request, the current paper uses **Latin Modern Roman**, the classic Computer Modern-style LaTeX serif, for body and title. Standard TeX font resources are fetched if absent from the compiler cache. This typeface differs from the official Arial/Old Standard template; the template-font checkpoint is preserved locally at `results/paper-template-bf217d7/paper.pdf`. The build records actual embedded PDF font names. It executes the notebook through a private local IPC kernel and never performs model inference. Compiler cache/font metadata and the compiled build manifest remain in ignored local outputs.
+The project-local Tectonic compiler is under ignored `.cache/report-tools/tectonic`; another installed compiler can be selected with `--compiler`. At the author's request, **Latin Modern Roman** remains the default body/title typeface. Use `--typeface classic` explicitly for that variant or `--typeface template` for Arial body and Old Standard title typefaces. Both compile from the same authored source and numerical freezes; only the compiled copy's two font declarations change. Typeface and build details remain here and in metadata rather than the manuscript. Use separate output directories. The build records the authoring-source hash, compiled-source hash, selected variant, PDF hash and actual embedded font names; the audit verifies their consistency. The template build reuses the cached Old Standard font and license when available. It executes the notebook through a private local IPC kernel and never performs model inference. Compiler cache/font metadata and the compiled build manifest remain in ignored local outputs.
+
+```bash
+.venv/bin/python scripts/build_paper.py --typeface classic --out results/paper-classic-final
+.venv/bin/python scripts/build_paper.py --typeface template --out results/paper-template-final
+.venv/bin/python scripts/submission_audit.py --paper-dir results/paper-template-final
+```
 
 Outputs:
 

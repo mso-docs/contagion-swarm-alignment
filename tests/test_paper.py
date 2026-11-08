@@ -100,3 +100,57 @@ def test_submission_audit_detects_stale_separate_rq3_freeze(tmp_path,monkeypatch
     audit.__globals__['inspect_pdf']=lambda *args:{'main_text_pages':7,'total_pages':11,'abstract_words':188}
     result=audit(paper)
     assert result['status']=='stale_build' and result['stale_inputs']==['rq3_followup_sha256']
+
+
+def test_typeface_variants_change_only_font_declarations(monkeypatch):
+    monkeypatch.syspath_prepend(str(ROOT/'scripts'))
+    build=runpy.run_path(str(ROOT/'scripts/build_paper.py'))
+    source=(ROOT/'report/paper.tex').read_text()
+    assert build['render_typeface'](source)==source
+    compiled=build['render_typeface'](source,'template')
+    assert build['TEMPLATE_MAIN'] in compiled and build['TEMPLATE_TITLE'] in compiled
+    restored=compiled.replace(build['TEMPLATE_MAIN'],build['CLASSIC_MAIN']).replace(build['TEMPLATE_TITLE'],build['CLASSIC_TITLE'])
+    assert restored==source
+    assert compiled.split(r'\begin{abstract}',1)[1].split(r'\end{abstract}',1)[0]==source.split(r'\begin{abstract}',1)[1].split(r'\end{abstract}',1)[0]
+    with pytest.raises(ValueError,match='Unknown'):build['render_typeface'](source,'invented')
+    with pytest.raises(ValueError,match='canonical'):build['render_typeface'](source.replace(build['CLASSIC_TITLE'],''),'template')
+
+
+def test_pdf_font_names_must_match_declared_variant(monkeypatch):
+    monkeypatch.syspath_prepend(str(ROOT/'scripts'))
+    build=runpy.run_path(str(ROOT/'scripts/build_paper.py'));validate=build['validate_pdf_typeface']
+    classic=['/ABCDEF+LMRoman10-Regular','/ABCDEF+LMRoman10-Bold']
+    template=['/ABCDEF+ArialMT','/ABCDEF+OldStandardTT-Bold']
+    assert validate(classic,'classic')==classic and validate(template,'template')==template
+    with pytest.raises(ValueError,match='Embedded'):validate(classic,'template')
+    with pytest.raises(ValueError,match='Embedded'):validate(template,'classic')
+
+
+def test_variant_audit_binds_source_transform_pdf_and_fonts(tmp_path,monkeypatch):
+    import hashlib
+    monkeypatch.syspath_prepend(str(ROOT/'scripts'))
+    module=runpy.run_path(str(ROOT/'scripts/submission_audit.py'));audit=module['audit']
+    mapping={'authoring_source_sha256':'report/paper.tex','bibliography_sha256':'report/sources.bib',
+             'analysis_script_sha256':'scripts/paper_analysis.py','notebook_source_sha256':'notebooks/paper_figures.ipynb',
+             'rq3_followup_sha256':'report/data/rq3_followup.json','build_script_sha256':'scripts/build_paper.py'}
+    from paper_supplement import INPUTS
+    mapping.update(INPUTS);manifest={}
+    for key,name in mapping.items():
+        path=tmp_path/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes((ROOT/name).read_bytes())
+        manifest[key]=hashlib.sha256(path.read_bytes()).hexdigest()
+    for name in ['safeguard.json','RQ_ASSESSMENT.md']:
+        (tmp_path/'report/data/submission_snapshot'/name).write_bytes((ROOT/'report/data/submission_snapshot'/name).read_bytes())
+    paper=tmp_path/'built';paper.mkdir();source=(tmp_path/'report/paper.tex').read_text()
+    compiled=module['render_typeface'](source,'template');(paper/'paper.tex').write_text(compiled);(paper/'paper.pdf').write_bytes(b'actual artifact')
+    fonts=['/ABCDEF+ArialMT','/ABCDEF+OldStandardTT-Bold']
+    manifest.update(schema_version='paper-build-2.0',typeface_variant='template',pdf_font_names=fonts,
+                    compiledlatex_source_sha256=hashlib.sha256(compiled.encode()).hexdigest(),
+                    latex_source_sha256=hashlib.sha256(compiled.encode()).hexdigest(),pdf_sha256=hashlib.sha256(b'actual artifact').hexdigest())
+    (paper/'build_manifest.json').write_text(json.dumps(manifest));audit.__globals__['ROOT']=tmp_path
+    audit.__globals__['inspect_pdf']=lambda *args:{'main_text_pages':7,'total_pages':11,'abstract_words':188}
+    audit.__globals__['pdf_font_names']=lambda _:fonts
+    result=audit(paper);assert result['stale_inputs']==[] and result['typeface_variant']=='template'
+    (paper/'paper.tex').write_text(compiled+'\nChanged science text')
+    (paper/'paper.pdf').write_bytes(b'different artifact')
+    result=audit(paper)
+    assert {'compiled_typeface_transform','compiledlatex_source_sha256','pdf_sha256'}<=set(result['stale_inputs'])

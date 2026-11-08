@@ -3,18 +3,35 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-from build_paper import inspect_pdf,validate_rq3_followup
+from build_paper import inspect_pdf,validate_rq3_followup,render_typeface,pdf_font_names,validate_pdf_typeface
 from run_pilot import ROOT
 
 
 def audit(directory):
     directory=Path(directory);checks=inspect_pdf(directory/'paper.pdf',directory/'paper.log',directory/'paper.tex')
     manifest=json.loads((directory/'build_manifest.json').read_text())
-    files={'latex_source_sha256':ROOT/'report/paper.tex','bibliography_sha256':ROOT/'report/sources.bib','analysis_script_sha256':ROOT/'scripts/paper_analysis.py','notebook_source_sha256':ROOT/'notebooks/paper_figures.ipynb',
+    if manifest.get('schema_version')=='paper-build-2.0' and not {'authoring_source_sha256','compiledlatex_source_sha256','typeface_variant','pdf_sha256','pdf_font_names'}<=manifest.keys():
+        raise ValueError('Incomplete variant build manifest')
+    source_key='authoring_source_sha256' if 'authoring_source_sha256' in manifest else 'latex_source_sha256'
+    files={source_key:ROOT/'report/paper.tex','bibliography_sha256':ROOT/'report/sources.bib','analysis_script_sha256':ROOT/'scripts/paper_analysis.py','notebook_source_sha256':ROOT/'notebooks/paper_figures.ipynb',
            'rq3_followup_sha256':ROOT/'report/data/rq3_followup.json','build_script_sha256':ROOT/'scripts/build_paper.py'}
     from paper_supplement import INPUTS,render
     files.update({key:ROOT/name for key,name in INPUTS.items()})
     stale=[key for key,path in files.items() if hashlib.sha256(path.read_bytes()).hexdigest()!=manifest.get(key)]
+    if 'authoring_source_sha256' in manifest:
+        if manifest.get('schema_version')!='paper-build-2.0':raise ValueError('Unknown variant build manifest')
+        variant=manifest.get('typeface_variant')
+        expected=render_typeface((ROOT/'report/paper.tex').read_text(),variant)
+        compiled=directory/'paper.tex';compiled_hash=hashlib.sha256(compiled.read_bytes()).hexdigest()
+        if compiled.read_text()!=expected:stale.append('compiled_typeface_transform')
+        if compiled_hash!=manifest.get('compiledlatex_source_sha256') or compiled_hash!=manifest.get('latex_source_sha256'):
+            stale.append('compiledlatex_source_sha256')
+        if hashlib.sha256((directory/'paper.pdf').read_bytes()).hexdigest()!=manifest.get('pdf_sha256'):
+            stale.append('pdf_sha256')
+        fonts=validate_pdf_typeface(pdf_font_names(directory/'paper.pdf'),variant)
+        if fonts!=manifest.get('pdf_font_names'):stale.append('pdf_font_names')
+        checks.update(typeface_variant=variant,pdf_font_names=fonts,
+                      authoring_source_sha256=manifest['authoring_source_sha256'],compiledlatex_source_sha256=compiled_hash)
     render(ROOT)
     validate_rq3_followup(json.loads((ROOT/'report/data/rq3_followup.json').read_text()),(ROOT/'report/paper.tex').read_text())
     checks.update(status='stale_build' if stale else 'automated_checks_passed_manual_review_pending',stale_inputs=stale,

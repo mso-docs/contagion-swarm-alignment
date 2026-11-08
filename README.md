@@ -8,6 +8,8 @@ For submission, start with the [research readiness map](report/RESEARCH_READINES
 
 The [submission runbook](docs/SUBMISSION_RUNBOOK.md) covers the immutable cutoff snapshot, actual human-audit import, PDF rehearsal and reviewer bundle. The [RQ assessment](docs/RQ_ASSESSMENT.md) lists supported findings and unresolved questions. Repository access is currently private and GitHub Pages is not enabled; the running local dashboard does not imply public availability.
 
+The [long primary runbook](docs/PRIMARY_LARGE_RUNBOOK.md) describes the separately registered264-run/19,320-call static benchmark extension, paired batches, recovery and private progress. Its51long materials include pinned Martian reviews and SWE-bench Verified base-source issue diagnosis. These are benchmark adaptations with an explicit memory window; they do not execute upstream tasks or yield official benchmark scores. Ongoing collection does not update the paper's frozen evidence automatically.
+
 ## Start here
 
 Requires Python 3.11+. Commands run from the repository root; no paid API is required.

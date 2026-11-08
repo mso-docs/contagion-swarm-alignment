@@ -65,6 +65,26 @@ def seed_live_data(source,destination,env=None):
     validate_live_data(destination,env)
 
 
+def active_repository_counters(source):
+    """Include in-flight calls in private progress without exporting unsealed results."""
+    completed=set();attempts=0;active=0
+    for path in Path(source).glob('job-*/*/events.jsonl'):
+        if path.is_symlink() or path.parent.is_symlink():continue
+        manifest=path.parent/'manifest.json'
+        if manifest.is_file() and (path.parent/'checksum.sha256').is_file():
+            data=json.loads(manifest.read_text());attempts+=data['http_attempts']
+            if data['status']=='completed':completed.add(path.parent.parent.name)
+            continue
+        active+=1
+        if path.stat().st_size>64*1024*1024:continue
+        with path.open() as stream:
+            for line in stream:
+                try:event=json.loads(line)
+                except ValueError:break
+                attempts+=event.get('event_type')=='http_attempt'
+    return {'completed_runs':len(completed),'physical_calls':attempts,'active_attempts':active}
+
+
 def private_campaigns(base):
     """Loopback response only: closed numeric progress, never exported to Pages."""
     result=[];stopped={}
@@ -76,10 +96,16 @@ def private_campaigns(base):
                 planned=sum(len(j['plan']['families'])*len(j['plan']['case_indices'])*len(j['plan']['seeds'])*len(j['plan']['topologies'])*len(j['plan']['interventions']) for j in plan['jobs'])
                 row={'kind':'swarm_campaign','status':state['status'],'planned_runs':planned,'planned_calls':plan['planned_calls'],
                      'completed_runs':state.get('completed_runs',0),'physical_calls':state.get('physical_calls',0),'failed_runs':state.get('failed_runs',0)}
-            elif (directory/'primary-long-state.json').is_file():
-                state=json.loads((directory/'primary-long-state.json').read_text())
+            elif (directory/'primary-large-state.json').is_file() or (directory/'primary-long-state.json').is_file():
+                large=(directory/'primary-large-state.json').is_file()
+                state=json.loads((directory/('primary-large-state.json' if large else 'primary-long-state.json')).read_text())
                 row={k:state.get(k,0) for k in ['planned_runs','planned_calls','completed_runs','physical_calls','failed_runs']}
-                row.update(kind='primary_long_queue',status=state['status'])
+                row.update(kind='primary_benchmark_queue' if large else 'primary_long_queue',status=state['status'])
+                row.update(active_repository_counters(Path(base).parent/'repository-runs'/directory.name))
+            elif (directory/'decomposition-state.json').is_file():
+                state=json.loads((directory/'decomposition-state.json').read_text())
+                row={k:state.get(k,0) for k in ['planned_runs','planned_calls','completed_runs','physical_calls','failed_runs']}
+                row.update(kind='rq3_decomposition',status=state['status'])
             elif (directory/'followup-state.json').is_file():
                 state=json.loads((directory/'followup-state.json').read_text())
                 row={k:state[k] for k in ['status','planned_runs','planned_calls','completed_runs','physical_calls','failed_runs']}
@@ -92,7 +118,7 @@ def private_campaigns(base):
                 row={'kind':'long_input_queue','status':state['status'],'planned_runs':state['planned_runs'],'planned_calls':state['planned_calls'],
                      'completed_runs':2*state.get('completed_pairs',0),'physical_calls':state.get('http_attempts',0),'failed_runs':0}
             else:continue
-            if row['status'] not in {'running','cooling','waiting','stopped','failed','budget_exhausted'}:continue
+            if row['status'] not in {'running','cooling','waiting','waiting_for_primary_lease','stopped','failed','budget_exhausted'}:continue
             if any(type(v) is not int or v<0 for k,v in row.items() if k not in {'kind','status'}):continue
             if row['status'] in {'stopped','failed','budget_exhausted'}:
                 stamp=state.get('updated_utc',state.get('started_utc',''))
@@ -110,7 +136,7 @@ def private_campaigns(base):
         except (OSError,ValueError,KeyError,TypeError):continue
     active={row['kind'] for row in result}
     result.extend(value[1] for kind,value in stopped.items() if kind not in active)
-    return sorted(result,key=lambda row:0 if row['status'] in {'running','cooling'} else 1 if row['status']=='waiting' else 2)
+    return sorted(result,key=lambda row:0 if row['status'] in {'running','cooling'} else 1 if row['status'].startswith('waiting') else 2)
 
 
 def sync_derived(output,env):
@@ -151,12 +177,12 @@ def refresh(sources, output, env, state):
         sync_derived(output,env)
         from repository_publication import export_repository_runs
         from followup_publication import export as export_followups
-        export_followups(ROOT/'results/campaigns',output.parent/'followups.json',env)
+        followups=export_followups(ROOT/'results/campaigns',output.parent/'followups.json',env)
         repository=export_repository_runs(ROOT/'results/repository-runs',output.parent/'repositories.json',env)
         state['repository_runs']=len(repository.runs)
         from contagion.research_publication import validate_research_snapshot
         index=validate_research_snapshot(output,env=env)
-        state.update(status='ok', studies=count, neural_captures=len(index.neural), monitor_summaries=len(index.monitor), checked_epoch=time.time(), error=None)
+        state.update(status='ok', studies=count, neural_captures=len(index.neural), monitor_summaries=len(index.monitor)+len(followups.monitor), checked_epoch=time.time(), error=None)
         if changed:
             print(f'Local dashboard synchronized: {count} sealed study attempts.', flush=True)
     except Exception as exc:

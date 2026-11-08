@@ -90,6 +90,22 @@ def duration(value):
     return f'{seconds // 3600}h {(seconds % 3600) // 60:02}m {seconds % 60:02}s'
 
 
+def benchmark_campaign_status(root):
+    root=Path(root);large=(root/'primary-large-plan.json').is_file()
+    plan=json.loads((root/('primary-large-plan.json' if large else 'primary-long-plan.json')).read_text())
+    path=root/('primary-large-state.json' if large else 'primary-long-state.json')
+    state=json.loads(path.read_text()) if path.exists() else {'status':'waiting'}
+    source=ROOT/'results/repository-runs'/root.name
+    measured=local_studies([source]) if source.is_dir() else {}
+    updates=[v for v in [state.get('updated_utc'),measured.get('updated_utc')] if v]
+    completed=sum(json.loads(p.read_text())['completed_model_calls'] for p in source.rglob('manifest.json')
+                  if (p.parent/'checksum.sha256').is_file() and json.loads(p.read_text())['status']=='completed')
+    row={**measured,'status':state['status'],'planned_runs':plan['planned_runs'],'planned_calls':plan['planned_calls'],
+         'scheduled_completed_calls':completed,'updated_utc':max(updates) if updates else None,
+         'registered_execution_cap_seconds':plan['max_wall_seconds'],'phase':state.get('phase','waiting')}
+    return estimates(row)
+
+
 def render(label, row):
     attempts = row.get('completed_runs', 0) + row.get('failed_runs', 0)
     print(f'\n{label} | {row.get("status", "unknown")} | checked {datetime.now(timezone.utc).strftime("%H:%M:%S UTC")}')
@@ -133,6 +149,9 @@ def main():
                 row.update(planned_runs=args.planned_runs, planned_calls=args.planned_calls)
                 results.append(('Local studies', estimates(row)))
             for number, root in enumerate(args.campaign,1):
+                if (root/'primary-large-plan.json').is_file() or (root/'primary-long-plan.json').is_file():
+                    results.append((f'Primary benchmark campaign {number}',benchmark_campaign_status(root)))
+                    continue
                 campaign=json.loads((root/'campaign.json').read_text())
                 if not (root/'state.json').exists() and (root/'overnight.json').exists():
                     supervisor=json.loads((root/'overnight.json').read_text())
