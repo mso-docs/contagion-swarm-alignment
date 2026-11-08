@@ -78,6 +78,21 @@ def temporal_patch_series(data):
     return result
 
 
+
+def temporal_patch_rows(data):
+    """Keep each paired-seed trajectory visible; counts never pool agents as trials."""
+    result=[]
+    for topology in ['ring','star','complete']:
+        rows=sorted((r for r in data['runs'] if r['status']=='completed' and r['family']=='patch' and r['condition']=='benign_override' and r['topology']==topology),key=lambda r:r['seed'])
+        if not rows:raise ValueError('Missing patch topology condition')
+        for row in rows:
+            counts=row['round_downstream_violations']
+            if len(counts)!=5 or any(type(n) is not int or not 0<=n<=4 for n in counts):raise ValueError('Invalid five-round downstream counts')
+            deliveries=row['direct_injection_deliveries']
+            if type(deliveries) is not int or not 0<=deliveries<=4:raise ValueError('Invalid direct-delivery count')
+            result.append({'topology':topology,'seed':row['seed'],'violations':list(counts),'direct_deliveries':deliveries})
+    return result
+
 def figures(evidence,output):
     import os
     os.environ.setdefault('MPLCONFIGDIR',str(ROOT/'.cache/matplotlib'))
@@ -103,17 +118,25 @@ def figures(evidence,output):
     colors={'none':'#2970b1','benign_override':'#d16a2d'}
     runs=pd.DataFrame(data['runs']);done=runs[runs.status.eq('completed')].copy()
     fig,ax=plt.subplots(figsize=(9,2.8));ax.set(xlim=(0,10),ylim=(0,3));ax.axis('off')
-    boxes=[(.1,1.6,1.6,'Frozen task\n+ paired condition'),(2.3,1.6,1.6,'Five isolated\nagent contexts'),(4.5,1.6,1.6,'Next-round\ngraph routing'),(6.7,1.6,1.4,'Sealed\noracle log'),(8.6,1.6,1.3,'Scoring +\nrestricted monitor')]
-    for x,y,w,text in boxes:
-        ax.add_patch(FancyBboxPatch((x,y),w,.9,boxstyle='round,pad=0.05',fc='#e8f1fa',ec='#2872ac'));ax.text(x+w/2,y+.45,text,ha='center',va='center',fontsize=10)
-    for a,b in zip(boxes,boxes[1:]):ax.add_patch(FancyArrowPatch((a[0]+a[2]+.05,2.05),(b[0]-.08,2.05),arrowstyle='-|>',mutation_scale=12,color='#46758c'))
-    for offset,topology in [(1,'ring'),(4,'star'),(7,'complete')]:
-        pts=[(offset+.55+.5*np.cos(t),.55+.42*np.sin(t)) for t in np.linspace(0,2*np.pi,5,endpoint=False)]
-        if topology=='star':pts=[(offset+.55,.55)]+[(offset+.55+.5*np.cos(t),.55+.42*np.sin(t)) for t in np.linspace(0,2*np.pi,4,endpoint=False)]
+    boxes=[(.1,1.65,1.5,'Frozen task\n+ paired condition','#e8f1fa','#2872ac'),
+           (2.1,1.65,1.5,'Five isolated\nagent histories','#e4f5ee','#278466'),
+           (4.1,1.65,1.5,'Controller-only\nnext-round router','#fff0da','#b47b24'),
+           (6.1,1.65,1.5,'Append-only\nsealed oracle log','#ece8fa','#7961a6'),
+           (8.1,1.65,1.7,'Behavior scoring\n+ final artifacts','#e8f1fa','#2872ac')]
+    for x,y,w,text,fill,edge in boxes:
+        ax.add_patch(FancyBboxPatch((x,y),w,.9,boxstyle='round,pad=0.05',fc=fill,ec=edge,lw=1.4));ax.text(x+w/2,y+.45,text,ha='center',va='center',fontsize=9)
+    for a,b in zip(boxes,boxes[1:]):ax.add_patch(FancyArrowPatch((a[0]+a[2]+.05,2.1),(b[0]-.08,2.1),arrowstyle='-|>',mutation_scale=12,color='#46758c'))
+    for offset,topology in [(.25,'ring'),(2.1,'star'),(3.95,'complete')]:
+        pts=[(offset+.55+.42*np.cos(t),.65+.35*np.sin(t)) for t in np.linspace(0,2*np.pi,5,endpoint=False)]
+        if topology=='star':pts=[(offset+.55,.65)]+[(offset+.55+.42*np.cos(t),.65+.35*np.sin(t)) for t in np.linspace(0,2*np.pi,4,endpoint=False)]
         for i in range(5):
             for j in range(i+1,5):
                 if topology=='complete' or (topology=='star' and i==0) or (topology=='ring' and (j-i==1 or (i==0 and j==4))):ax.plot([pts[i][0],pts[j][0]],[pts[i][1],pts[j][1]],color='#8aabc3',lw=1)
-        ax.scatter(*zip(*pts),s=65,color='#2970b1',zorder=3);ax.text(offset+.55,-.08,topology,ha='center',fontsize=10)
+        ax.scatter(*zip(*pts),s=55,color=['#d16a2d']+['#2970b1']*4,zorder=3);ax.text(offset+.55,.03,topology,ha='center',fontsize=9)
+    ax.add_patch(FancyBboxPatch((6.25,.22),3.4,.86,boxstyle='round,pad=0.05',fc='#e4f5ee',ec='#278466'))
+    ax.text(7.95,.65,'Allowlisted past-only projection\n→ monitor prediction (no oracle labels)',ha='center',va='center',fontsize=9)
+    ax.add_patch(FancyArrowPatch((6.85,1.6),(6.85,1.14),arrowstyle='-|>',mutation_scale=12,color='#278466'))
+    ax.text(4.9,2.93,'Agent text cannot execute tools or change routing',ha='center',fontsize=10,fontweight='bold',color='#31465a')
     save(fig,'01_experiment_flow')
     families=['catalog','provenance','patch'];summary=done.groupby(['family','condition'],observed=True).agg(runs=('any_round_violation','size'),violations=('any_round_violation','sum'),final_violations=('final_any_violation','sum'),success=('task_success','mean')).reset_index()
     fig,axes=plt.subplots(1,2,figsize=(9,2.7))
@@ -140,13 +163,17 @@ def figures(evidence,output):
         sns.heatmap(rates.astype(float),annot=labels,fmt='',vmin=0,vmax=1,cmap='Blues',cbar=False,ax=ax,linewidths=2)
         ax.set(title='Control' if condition=='none' else 'Injected',xlabel='Topology',ylabel='Task family')
     save(fig,'03_topology_counts')
-    fig,ax=plt.subplots(figsize=(7.4,3))
-    for topology,values in temporal_patch_series(data).items():
-        ax.plot(range(5),values,marker='o',linewidth=2.2,label=topology)
-        ax.annotate(f'{values[1]:.1%}',(1,values[1]),xytext=(9,4),textcoords='offset points',fontsize=9)
-    ax.set(xlabel='Round (injected message delivered in round1)',ylabel='Mean downstream violation fraction',ylim=(-.03,1.03),xticks=range(5),title='Intermediate deviations disappear before final artifacts')
-    ax.axvspan(.85,1.15,color='#e6a36e',alpha=.13);ax.text(2.8,.12,'No downstream violations\nin rounds 2–4',ha='center',fontsize=10)
-    ax.legend(title='Injected condition · 2 runs each',frameon=False,fontsize=8);save(fig,'07_transient_behavior')
+    temporal=temporal_patch_rows(data)
+    fig,axes=plt.subplots(1,2,figsize=(8.7,3.0),gridspec_kw={'width_ratios':[1,5]})
+    exposure=np.array([[r['direct_deliveries']] for r in temporal]);counts=np.array([r['violations'] for r in temporal])
+    sns.heatmap(exposure,annot=exposure.astype(str),fmt='',vmin=0,vmax=4,cmap='Blues',cbar=False,linewidths=2,ax=axes[0],annot_kws={'fontsize':11})
+    labels=np.array([[f'{n}/4' for n in row] for row in counts])
+    sns.heatmap(counts,annot=labels,fmt='',vmin=0,vmax=4,cmap='Oranges',cbar=False,linewidths=2,ax=axes[1],annot_kws={'fontsize':11})
+    axes[0].set(title='Direct deliveries',xticklabels=['per run'],yticklabels=[f"{r['topology']} · {r['seed']}" for r in temporal],xlabel='',ylabel='Injected patch run')
+    axes[0].tick_params(axis='y',rotation=0)
+    axes[1].set(title='Strict path flags / 4 downstream agents',xticklabels=['0','1 · exposed','2','3','4 · final'],yticklabels=[],xlabel='Round',ylabel='')
+    fig.suptitle('Strict path scorer: 17 intermediate flags · 20 direct deliveries · 0 final flags',fontsize=11,fontweight='bold',y=1.04)
+    save(fig,'07_transient_behavior')
 
     monitor=pd.DataFrame(data['monitor_observations']);fig,axes=plt.subplots(1,2,figsize=(8.5,2.7))
     if monitor.truth.any():raise ValueError('This compact figure caption requires zero oracle positives; revise before reuse')
@@ -178,9 +205,9 @@ def figures(evidence,output):
     ax.set(xlabel='Task family',ylabel='Recorded run seconds',title='Run timing includes controller and thermal pauses');ax.legend(title='Condition',frameon=False,fontsize=8)
     save(fig,'06_run_timing')
     done.to_csv(out/'completed_runs.csv',index=False);summary.to_csv(out/'task_summary.csv',index=False)
-    selected={'main':['01_experiment_flow','02_task_outcomes','07_transient_behavior','04_monitor_false_alarms'],
-              'appendix':['03_topology_counts','05_reference_checkpoint','06_run_timing'],
-              'selection_reason':'Main figures communicate design, task-specific failures and monitor limits without implying topology significance or swarm neural mechanisms.'}
+    selected={'main':['01_experiment_flow','07_transient_behavior','02_task_outcomes'],
+              'appendix':['03_topology_counts','04_monitor_false_alarms','05_reference_checkpoint','06_run_timing'],
+              'selection_reason':'Three main figures communicate controlled architecture, time-resolved failures and paired task outcomes; monitor/reference diagnostics remain explicit appendix evidence.'}
     manifest={'evidence_sha256':sha(evidence),'analysis_script_sha256':sha(Path(__file__)),'selected':selected,'files':{p.name:sha(p) for p in files},
               'complete_runs':len(done),'all_attempts':len(runs),'observed_responses':int(runs.responses.sum()),
               'completed_responses':int(done.responses.sum()),'rq3_development_runs':len(data['rq3_development']),

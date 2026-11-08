@@ -23,3 +23,11 @@ The compact temporal audit distinguishes17 round1 patch deviations from zero fin
 ## Implemented follow-ups (separate evidence)
 
 Protocol4 adds capped-exposure/source-placement RQ1 controls and RQ3 context-policy controls with20calls per simulator condition. `deviation_monitor.py` evaluates intermediate patch proposals without altering final-adoption RQ2. Human/scorer/judge calibration and private golden-based repository adjudication are executable; blank labels remain pending. A linked neural replay planner performs no inference and cannot recover missing Ollama tensors. These close implementation gaps; live results and human validation are still prerequisites for stronger conclusions. See [the registered design](CONFIRMATORY_PROTOCOL.md).
+
+## Submission validity checks
+
+The selected human audit now has16 completed operator-provided compliant labels,17 saved decisions and one correction. Original scorer/local judge/frontier signals include4/16,9/16 and2/11 positive flags respectively. These differences do not establish which interpretation is correct. Retain human labels and automated outputs separately; no positive human class means recall and F1 remain undefined. The selected subset and unequal frontier coverage do not support a population-accuracy or model-ranking claim.
+
+The post-hoc [path-format audit](PRIMARY_RQ1_VALIDITY.md) identifies two wrapper prefixes that the strict canonical scorer treats differently. Compact intermediate proposal counts change from17 to20 under the sensitivity policy; primary counts change from6 to36. Final forbidden proposals remain zero under both definitions. Primary exact final control matches are18/180 versus180/180 after wrapper normalization. Thus low exact-match scores are largely a format convention, not demonstrated inability to identify the requested change. Original scores, controller execution and logs remain unchanged. Intermediate-monitor metrics still use the original declared truth labels; the sensitivity audit does not silently replace their ground truth.
+
+The fixed submission inventory is supplemental to the compact paper freeze. Current-template dimensions/fonts were checked; author scientific and visual review, optional public access decisions and actual submission remain separate gates.

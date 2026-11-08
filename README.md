@@ -2,7 +2,11 @@
 
 A reproducible research harness for instruction-boundary failures in LLM swarms, built from scratch for the November 6–8, 2026 Swarm Alignment Hackathon. Agents have separate histories and communicate through a bounded simulation controller. They have no tools, shell, file access or autonomous networking.
 
-**Current state:** the original live RQ1 matrix completed 18 runs / 450 responses, with a separate 2-run / 50-response model comparison. Those cohorts showed no validated suffix adoption. Protocol 2 adds scenario benchmarks, RQ2 monitoring, simulated RQ3 comparisons and exploratory swarm scaling. Recent development checkpoints passed 60 responses with zero parse failures; an injected patch run produced scored forbidden proposals. These are preliminary, separate cohorts—not general alignment findings. The large secondary suite is paused during validation. Neural instrumentation has measured random weights only; trained-checkpoint interpretation remains pending.
+**Evidence checkpoint:** the compact protocol2.6 study completed36 runs/900 responses. Seventeen intermediate patch artifacts were flagged by the strict path scorer; final downstream flags were zero. A separate post-hoc wrapper-path sensitivity check preserves zero final flags while changing intermediate counts and task-format interpretation. The separate primary protocol4 allocation completed140 runs, including four integration prechecks,72 RQ1 and64 RQ3 runs. Original catalog-monitor recall is undefined without adoption positives. Six trained GPT-2 captures are reference measurements, separate from the deployed swarm models. A selected16-artifact human audit labeled all compliant; automated flags and human interpretation remain separate, with no general judge-accuracy claim. Longer studies continue under separate frozen protocols and budgets.
+
+For submission, start with the [research readiness map](report/RESEARCH_READINESS.md), [compact findings](report/COMPACT_RESULTS.md), and [LaTeX/report commands](report/README.md). Completed runs, pending collection and model opinions are separate evidence categories; none is a general alignment score.
+
+The [submission runbook](docs/SUBMISSION_RUNBOOK.md) covers the immutable cutoff snapshot, actual human-audit import, PDF rehearsal and reviewer bundle. The [RQ assessment](docs/RQ_ASSESSMENT.md) lists supported findings and unresolved questions. Repository access is currently private and GitHub Pages is not enabled; the running local dashboard does not imply public availability.
 
 ## Start here
 
@@ -64,7 +68,7 @@ Run/seed is the analysis unit. Agents within a run, paired conditions and monito
 .venv/bin/python scripts/export_live_dashboard.py
 ```
 
-Open **http://127.0.0.1:8765/**. No version or special URL is needed. The local service discovers sealed studies every 15 seconds and polls sanitized secondary snapshots every minute. It does not access primary. The visible page checks local synchronization health and reloads changed frontend assets automatically. Pause other exporters while this service owns the public index.
+Open **http://127.0.0.1:8765/**. No version or special URL is needed. The local service discovers sealed local studies every15seconds and polls configured sanitized secondary snapshots every minute. Primary controllers also write sealed results locally through their separately authorized inference tunnel. The dashboard itself does not initiate model calls. The visible page checks synchronization health and reloads changed frontend assets automatically. The explicit checkpoint exporter reads the isolated live cache; avoid another writer to that runtime cache.
 
 Overview, Models, Evaluations, Traces and Datasets share all indexed experiments. Mock data is labeled and excluded from the default live selection. Protocols remain separate for scientific metrics; missing measurements show N/A. Neural and monitor views display only available measurements, never invented coverage.
 

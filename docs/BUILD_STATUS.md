@@ -330,3 +330,15 @@ Final follow-up validation:188pytest tests passed in38.36s;13 focused follow-up 
 See `docs/FRONTIER_REVIEW.md`, `docs/PRIMARY_LONG_SAFEGUARD_PROTOCOL.md`, `docs/RQ3_DECOMPOSITION_PROTOCOL.md` and `report/RESEARCH_READINESS.md` for commands, frozen limits and remaining scientific gates.
 
 Final manual pre-commit run passed all hooks: candidate and full-history Gitleaks, JSON/YAML/TOML/conflict/private-key/size checks, public-snapshot privacy validation, Ruff critical checks and Bandit medium/high checks. Dashboard V8 runtime smoke passed after cohort separation changes; browser visual review remains pending. Explicit dashboard checkpoint export validated343 data files. The initial concurrent export/check attempt was repeated after files stabilized; only the stable successful run is the final validation.
+
+### Submission-ready artifact pipeline
+
+- Full suite:318passed in37.72s. New tests cover immutable cutoff validation, source/privacy checks, actual human CSV/history import, closed numeric calibration, pointer sensitivity and paper supplement consistency.
+- Full notebook rebuilt; PDF7main pages/13total/209abstract words. Three primary visuals are architecture, per-run temporal heatmap and paired task outcomes; diagnostics are in appendices. No overfull boxes or unresolved-reference warnings were found in the compilation log.
+- Explicit cutoff snapshot:403supported sealed runs,329Ollama/74mock, separated;172unsupported manifests/four incomplete attempts excluded. Repeated runs/projections are not independent samples. Tracked snapshot excludes private lineage.
+- Actual author audit:16compliant labels,17decisions/one correction, exact CSV/history/queue validation, private0600 originals. Automated scorer/judge flags are reported separately; no override, calibrated accuracy or positive human class is invented.
+- Read-only84-run patch audit: wrapper-sensitive proposal counts20compact/36primary versus17/6strict; zero final flags under both. Primary baseline exact matches versus normalized semantics are separated. Frozen core/controllers/logs unchanged.
+- Current official DOCX format essentials checked; visual author comparison remains pending. Authenticated repository check confirms private/noPages; unauthenticated links404. No publication/visibility settings changed and no submission performed.
+- Commands: `scripts/submission_snapshot.py`, `scripts/import_human_audit.py`, `scripts/submission_rehearsal.py`, `scripts/build_paper.py`, and `scripts/research_bundle.py`. See `docs/SUBMISSION_RUNBOOK.md` for the exact release sequence and remaining author actions.
+
+Final validation passed all manual pre-commit hooks: candidate and complete-history Gitleaks, privacy/publication lint, conflict/JSON/YAML/TOML/private-key/size checks, Ruff and Bandit. The98-file allowlisted bundle passed offline source-copy figure **and supplement** generation. Exact-PDF rehearsal reads16/16 actual labels and retains author/template/access gates; no submission was performed. Core fingerprint remains unchanged and primary long collection continues without failures at the check.

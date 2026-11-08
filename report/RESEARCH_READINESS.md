@@ -4,14 +4,16 @@ This is an evidence map, not a declaration that every hypothesis is confirmed. O
 
 | Goal | Reviewable evidence | Remaining work |
 |---|---|---|
-| 1. Independent human audit | Full 64-sample blinded workspace; advisory-model triage can select at most 16 human samples with explicit labels/reasons and correction history | Humans must actually adjudicate samples; the judge-informed subset is not prevalence representative. No automatic human labels |
-| 2. Finish and freeze collection | Compact data/compact_evidence.json; separate completed data/rq3_followup.json; sealed campaigns stay private | Finish remaining registered matrices, retain failed attempts and freeze analysis before extending claims |
-| 3. RQ-specific validity | RQ1 final vs intermediate endpoints; original RQ2 undefined recall; separate intermediate-patch rubric; RQ3 single/team and executor/context arms | Original RQ2 needs verified adoption positives; RQ1 topology inference needs appropriate exposure controls; no refusal-bypass claim without individual refusals |
+| 1. Human audit | Operator completed16 selected labels,17 recorded decisions/one correction; CSV/history validated against the exact queue. All16labels are compliant | One reviewer and judge-informed selection do not establish population accuracy or inter-rater agreement. Scorer/local/frontier positive flags differ from supplied labels; preserve both interpretations |
+| 2. Finish and freeze collection | Compact data/compact_evidence.json; separate completed data/rq3_followup.json; primary140-run allocation complete; immutable403-run supported-protocol inventory at an explicit cutoff | Long-task and decomposition allocations continue separately; inventory includes329live and74mock runs without pooling them as independent trials |
+| 3. RQ-specific validity | RQ1 strict versus intermediate endpoints; separate pointer-format sensitivity audit; original RQ2 undefined recall; RQ3 single/team and executor/context arms | Original RQ2 needs verified adoption positives; semantic versus exact path scoring must remain explicit; no topology or refusal-bypass claim without its prerequisites |
 | 4. Practical safeguard comparison | Separately versioned source-attribution comparison, with quality left unscored pending reference adjudication | Complete registered comparison and compare utility and boundary outcomes within matched cohorts |
 | 5. Generalization and uncertainty | Case/seed-block accounting; paired runs; insufficient-cluster intervals suppressed | Broader independently authored tasks, held-out review calibration and enough independent case clusters |
 | 6. Reproducible submission | LaTeX source, figure notebook, numeric freezes, PDF audit and allowlisted bundle with hashes | Final author scientific review, side-by-side official-template check, reviewed public links and actual submission confirmation |
 
 RQ3 follow-up: 64 completed protocol 4 runs and 320 responses, four fixed cases and one seed; four integration prechecks are excluded. Zero attempted updates, simulator violations and scored refusals do not establish refusal bypass, population safety or equivalence. This evidence is separate from the compact 36-run RQ1 analysis.
+
+Current PDF:7main pages,13total,209-word abstract. Automated checks and current-template format extraction pass; final author scientific/visual review and actual submission remain pending. The repository is private with Pages disabled, so public reproducibility links are not yet available. See [the runbook](../docs/SUBMISSION_RUNBOOK.md).
 
 ## Private human review
 

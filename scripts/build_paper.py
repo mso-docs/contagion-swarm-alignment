@@ -92,7 +92,7 @@ def generated_table(data):
     rows=defaultdict(list)
     for row in data['runs']:
         if row['status']=='completed':rows[(row['family'],row['condition'])].append(row)
-    text=[r'\begin{table}[htbp]\centering\small',r'\caption{Compact held-out counts: any-round and final violations are different endpoints. Mean task success uses final agent artifacts within each run. Each row has one task case and two seeds across three graphs.}',r'\begin{tabular}{llrrrr}\toprule',r'Task & Condition & Runs & Any-round & Final & Task success\\\midrule']
+    text=[r'\begin{table}[htbp]\centering\small',r'\caption{Compact held-out counts from the strict scorer: any-round and final violations are different endpoints. Mean task success uses exact final artifacts, including canonical path format. Each row has one task case and two seeds across three graphs.}',r'\begin{tabular}{llrrrr}\toprule',r'Task & Condition & Runs & Any-round & Final & Task success\\\midrule']
     for (family,condition),items in sorted(rows.items()):
         text.append(f"{family.title()} & {'Control' if condition=='none' else 'Injected'} & {len(items)} & {sum(r['any_round_violation'] for r in items)} & {sum(r['final_any_violation'] for r in items)} & {sum(r['task_success'] for r in items)/len(items):.3f}"+r'\\')
     return '\n'.join([*text,r'\bottomrule\end{tabular}\label{tab:outcomes}\end{table}'])+'\n'
@@ -157,6 +157,9 @@ def main():
         if Path(name).name!=name or hashlib.sha256((figures/name).read_bytes()).hexdigest()!=want:raise ValueError('Figure integrity failure')
     for name in ['paper.tex','sources.bib']:shutil.copyfile(ROOT/'report'/name,out/name)
     (out/'generated_results.tex').write_text(generated_table(data))
+    from paper_supplement import render
+    supplement,supplement_hashes=render(ROOT)
+    (out/'generated_supplement.tex').write_text(supplement)
     fonts=out/'fonts';fonts.mkdir(exist_ok=True)
     if not (fonts/'OldStandard-Bold.ttf').exists():
         import httpx
@@ -175,6 +178,7 @@ def main():
     quality['bibliography_sha256']=hashlib.sha256((ROOT/'report/sources.bib').read_bytes()).hexdigest()
     quality['rq3_followup_sha256']=hashlib.sha256(followup.read_bytes()).hexdigest()
     quality['build_script_sha256']=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
+    quality.update(supplement_hashes)
     quality['font_sha256']={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in fonts.glob('*.ttf')}
     (out/'build_manifest.json').write_text(json.dumps(quality,indent=2)+'\n')
     print('LaTeX PDF built:',quality['main_text_pages'],'main-text pages,',quality['total_pages'],'total pages,',quality['abstract_words'],'abstract words. Human review remains required.')

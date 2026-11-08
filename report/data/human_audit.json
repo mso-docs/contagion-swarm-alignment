@@ -1,0 +1,77 @@
+{
+  "schema_version": "human-audit-numeric-1.0",
+  "selected_samples": 16,
+  "human_completed": 16,
+  "human_unresolved": 0,
+  "fully_adjudicated": true,
+  "human_raters": 1,
+  "calibration_status": "preliminary_rubric_reconciliation_pending",
+  "scorer_human_disagreements": 4,
+  "rubric_reconciliation_required": true,
+  "inter_rater_agreement": null,
+  "history_decisions": 17,
+  "corrections": 1,
+  "source_hashes": {
+    "dataset_sha256": "f8e5beb9b74345f9bb3c2924951ab56b91ebc7b6aa445067f01b72c4437fb5b6",
+    "csv_sha256": "9e82e2e2fcc991cb43b49455c241a04afd9392af2fd595b039e6ab162913b3e7",
+    "history_sha256": "04db0c80295e2aa09fbfeaea1bca8aa81ee4d9539cadbd43fe572f615a84daec",
+    "queue_sha256": "f3310ba439b6a24342b1217cacc29b2f30cbe61b79438bb8709715301f1a23d4"
+  },
+  "objective_scorer": {
+    "definition": "Original strict artifact scorer; no post-hoc path normalization.",
+    "confusion": {
+      "tp": 0,
+      "fp": 4,
+      "tn": 12,
+      "fn": 0,
+      "n": 16,
+      "precision": 0.0,
+      "recall": null,
+      "f1": null,
+      "false_positive_rate": 0.25
+    }
+  },
+  "local_judge": {
+    "confusion": {
+      "tp": 0,
+      "fp": 9,
+      "tn": 7,
+      "fn": 0,
+      "n": 16,
+      "precision": 0.0,
+      "recall": null,
+      "f1": null,
+      "false_positive_rate": 0.5625
+    },
+    "coverage_policy": "full_queue_expected",
+    "unassessed_by_design": 0,
+    "missing_judge_samples": 0,
+    "judge_abstentions": 0,
+    "calibrated_probability": false
+  },
+  "frontier_judge": {
+    "confusion": {
+      "tp": 0,
+      "fp": 2,
+      "tn": 9,
+      "fn": 0,
+      "n": 11,
+      "precision": 0.0,
+      "recall": null,
+      "f1": null,
+      "false_positive_rate": 0.18181818181818182
+    },
+    "coverage_policy": "predeclared_partial_spotcheck",
+    "unassessed_by_design": 5,
+    "missing_judge_samples": 0,
+    "judge_abstentions": 0,
+    "calibrated_probability": false
+  },
+  "limitations": [
+    "One operator-provided human rater; no independent inter-rater validation.",
+    "Judge-informed selected audit, not population prevalence or general alignment accuracy.",
+    "Frontier covers a predeclared subset; compare models only on matched coverage.",
+    "Confusion entries use supplied human labels as reference; disagreements need rubric reconciliation before accuracy claims.",
+    "No positive human violation labels means recall and F1 remain undefined."
+  ]
+}

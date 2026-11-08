@@ -85,10 +85,15 @@ def test_submission_audit_detects_stale_separate_rq3_freeze(tmp_path,monkeypatch
     mapping={'latex_source_sha256':'report/paper.tex','bibliography_sha256':'report/sources.bib',
              'analysis_script_sha256':'scripts/paper_analysis.py','notebook_source_sha256':'notebooks/paper_figures.ipynb',
              'rq3_followup_sha256':'report/data/rq3_followup.json','build_script_sha256':'scripts/build_paper.py'}
+    from paper_supplement import INPUTS
+    mapping.update(INPUTS)
     manifest={}
     for key,name in mapping.items():
         path=tmp_path/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes((ROOT/name).read_bytes())
         manifest[key]=hashlib.sha256(path.read_bytes()).hexdigest()
+    for name in ['safeguard.json','RQ_ASSESSMENT.md']:
+        source=ROOT/'report/data/submission_snapshot'/name
+        (tmp_path/'report/data/submission_snapshot'/name).write_bytes(source.read_bytes())
     manifest['rq3_followup_sha256']='0'*64
     paper=tmp_path/'built';paper.mkdir();(paper/'build_manifest.json').write_text(json.dumps(manifest))
     audit.__globals__['ROOT']=tmp_path

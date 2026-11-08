@@ -12,13 +12,16 @@ def audit(directory):
     manifest=json.loads((directory/'build_manifest.json').read_text())
     files={'latex_source_sha256':ROOT/'report/paper.tex','bibliography_sha256':ROOT/'report/sources.bib','analysis_script_sha256':ROOT/'scripts/paper_analysis.py','notebook_source_sha256':ROOT/'notebooks/paper_figures.ipynb',
            'rq3_followup_sha256':ROOT/'report/data/rq3_followup.json','build_script_sha256':ROOT/'scripts/build_paper.py'}
+    from paper_supplement import INPUTS,render
+    files.update({key:ROOT/name for key,name in INPUTS.items()})
     stale=[key for key,path in files.items() if hashlib.sha256(path.read_bytes()).hexdigest()!=manifest.get(key)]
+    render(ROOT)
     validate_rq3_followup(json.loads((ROOT/'report/data/rq3_followup.json').read_text()),(ROOT/'report/paper.tex').read_text())
     checks.update(status='stale_build' if stale else 'automated_checks_passed_manual_review_pending',stale_inputs=stale,
         guidelines='https://apartresearch.com/sprints/swarm-alignment-2026',
         deadline='2026-11-08 23:59 AoE = 2026-11-09 06:59 America/New_York',
         manual_requirements=['Author reviews all claims, citations and selected figures.','Side-by-side comparison with current official template; LaTeX is a reconstructed layout.',
-                             'Confirm public reproducibility links resolve to reviewed code/data revision.','Complete human artifact audit and disclose remaining unadjudicated outcomes.',
+                             'Confirm public reproducibility links resolve to reviewed code/data revision.','Disclose selected human/automated divergences and remaining unadjudicated outcomes.',
                              'Submit the PDF through the official form and retain confirmation.'],
         research_status={'rq1':'Compact temporal finding; topology causality unresolved.','rq2':'Original catalog recall undefined; intermediate patch follow-up is a separate post-hoc endpoint.',
                          'rq3':'Separate64-run follow-up completed; zero attempts/state violations/refusals, four case clusters; no refusal-bypass conclusion.','neural':'Reference checkpoint only; no swarm mechanistic claim.'})

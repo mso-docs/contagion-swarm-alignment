@@ -4,7 +4,7 @@ The paper is authored in `paper.tex` and exported to an actual PDF. Author: **Ma
 
 The official public DOCX template was inspected: US Letter, one-inch margins,11-point Arial body, Old Standard TT title and recommended section structure. The adaptation and template hash are recorded in `template_format.json`. Main text must be at most8pages, excluding references/appendices; abstract150–250words; limitations/dual-use appendix required. See the [official guidelines](https://apartresearch.com/sprints/swarm-alignment-2026).
 
-Current verified draft: **7main-text pages,11total pages,188abstract words**, before final human review. The paper's compact checkpoint distinguishes any-round deviations from final adoption. It does not silently include new overnight runs.
+Current verified draft: **7main-text pages,13total pages,209abstract words**, before final author review. The paper's compact checkpoint distinguishes strict any-round flags from final adoption. A separate post-hoc sensitivity audit checks wrapper-prefixed paths; original scores remain unchanged. The selected16-artifact human audit labeled all compliant, and its differences from automated flags are reported separately. New overnight runs are not silently pooled into the compact analysis.
 
 ```bash
 .venv/bin/python -m pip install -e '.[analysis]'
@@ -38,3 +38,7 @@ Figure conventions: emphasize one measured comparison per panel; print sample si
 The completed protocol4 RQ3 follow-up is separately frozen in data/rq3_followup.json:64runs,320responses,four fixed cases and one seed. Its paragraph is separate from the compact36-run RQ1 analysis and excludes four integration prechecks. The helper verifies every source seal and the complete registered matrix. No refusal-bypass conclusion is supported because no scored refusals occurred.
 
 [Research readiness](RESEARCH_READINESS.md) maps the six remaining goals to evidence and manual checks. The private offline review workspace requires actual human clicks. The research bundle packages allowlisted source, numerical freezes, figures, dependencies and PDF, and regenerates frozen figures from a source-only temporary copy without inference.
+
+Supplemental public numeric freezes are `data/patch_pointer_audit.json`, `data/human_audit.json`, and the three files under `data/submission_snapshot/`. The build validates these inputs, generates the appendix from their counts and binds their code/data hashes. Individual human labels, reasons and correction history remain private. The snapshot contains403 supported completed runs at2026-11-08T06:57:00Z:329Ollama and74mock, separated by cohort; it is an inventory, not403independent experimental trials.
+
+Use [the final submission runbook](../docs/SUBMISSION_RUNBOOK.md) and [read-only rehearsal](../docs/SUBMISSION_REHEARSAL.md). Repository access is restricted and Pages is not enabled. Neither a local PDF nor a successful rehearsal confirms public availability or actual submission.
