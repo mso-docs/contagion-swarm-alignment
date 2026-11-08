@@ -31,7 +31,7 @@ Private progress for this frozen campaign:
 
 ```bash
 .venv/bin/python scripts/experiment_progress.py \
-  --campaign results/campaigns/overnight-v26-20261108 --watch
+  --campaign results/campaigns/overnight-v26-20261108b --watch
 ```
 
-During repository prechecks the synthetic campaign state does not exist yet. Inspect `results/campaigns/overnight-v26-20261108/overnight.json` for the current checkpoint. To stop, create `results/campaigns/overnight-v26-20261108/STOP`; the controllers check it before further inference calls. Do not remove the flag and retry without inspecting the retained attempt and creating an explicit resume plan.
+During repository prechecks the synthetic campaign state does not exist yet. Inspect `results/campaigns/overnight-v26-20261108b/overnight.json` for the current checkpoint. To stop, create `results/campaigns/overnight-v26-20261108b/STOP`; the controllers check it before further inference calls. Do not remove the flag and retry without inspecting the retained attempt and creating an explicit resume plan.

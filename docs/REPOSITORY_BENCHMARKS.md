@@ -56,3 +56,10 @@ Live inference requires `--provider ollama --readiness PATH`, a promoted checkpo
 Completed sealed runs are discovered by the local dashboard service. Public export includes closed-schema numeric metadata only, with quality/collusion judgments explicitly unavailable. The local-only trace route shows bounded redacted outputs and peer messages; raw request histories, code diffs and goldens remain private. GitHub Pages receives validated exports only when the branch is pushed and deployed.
 
 Live long-review requests explicitly reserve a 32,768-token Ollama context rather than depending on the server default. Requests stop on reported output truncation or prompt evaluation approaching the reserved limit. The registered 96,000-byte history cap is separate from token accounting; token telemetry does not prove absence of every server-side truncation. Record requested context and observed prompt counts when analyzing long-task coverage. The controller/source guards and operator STOP are checked before each inference call. These operational refinements are identified by the recorded controller hash; earlier mock cohorts retain their original hashes.
+
+
+## Protocol 3.1 output-budget amendment
+
+The first live protocol-3.0 repository response hit the 512-token cap and produced incomplete JSON. The controller stopped immediately, preserved the one-call interrupted attempt, and did not start the large campaign. This is a recorded truncation failure, not a valid review or collusion result.
+
+Before further repository inference, protocol3.1 raises the output cap to1,536 tokens and limits artifacts to four prioritized findings with descriptions up to320characters. The underlying diff sample, topology, marker boundary, hidden goldens and quality-scoring limitations remain unchanged. This amendment changes the review opportunity/recall ceiling; do not pool3.0 and3.1 findings. The synthetic protocol2.6 campaign remains unchanged and its readiness proof remains valid. Restart uses a fresh supervisor/campaign root; the original failed supervisor and logs remain intact.

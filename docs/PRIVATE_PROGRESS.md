@@ -59,7 +59,7 @@ Frozen campaign controllers are supported directly:
 
 ```bash
 .venv/bin/python scripts/experiment_progress.py --campaign results/campaigns/heldout-v26-20261108 --watch
-.venv/bin/python scripts/experiment_progress.py --campaign results/campaigns/overnight-v26-20261108 --watch
+.venv/bin/python scripts/experiment_progress.py --campaign results/campaigns/overnight-v26-20261108b --watch
 ```
 
 The overnight supervisor records its earlier repository-checkpoint phase in the private `overnight.json` beside the campaign freeze. Synthetic progress starts after those checkpoints pass. Remaining-work estimates use completed scheduled calls, preserving retry overhead as overhead rather than claiming it completed new conditions.

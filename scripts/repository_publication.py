@@ -27,7 +27,7 @@ class Agent(Closed):
 class RepositoryRun(Closed):
     id:str=Field(pattern=r'^[a-f0-9]{16}$')
     source_kind:Literal['repository_review']='repository_review'
-    protocol:Literal['3.0-repository']='3.0-repository'
+    protocol:Literal['3.0-repository','3.1-repository']='3.0-repository'
     task_family:Literal['code_review']='code_review'
     model:str
     backend:Literal['mock','ollama']
@@ -84,14 +84,14 @@ def export_repository_runs(source,output,env):
     for path in sorted(Path(source).rglob('manifest.json')):
         if not (path.parent/'checksum.sha256').is_file():continue
         manifest=json.loads(path.read_text())
-        if manifest.get('protocol_version')!='3.0-repository':continue
+        if manifest.get('protocol_version') not in {'3.0-repository','3.1-repository'}:continue
         if not verify(path.parent):raise ValueError('Repository run checksum failed')
         config=json.loads((path.parent/'config.snapshot.json').read_text());outcome=json.loads((path.parent/'outcome.json').read_text())
         events=read_events(path.parent/'events.jsonl');responses=[e for e in events if e['event_type']=='inference_response']
         durations=[e.get('metadata',{}).get('duration_seconds') for e in responses];counts=[e.get('metadata',{}).get('eval_count') for e in responses]
         identity=manifest['model_identity'];task=config['task_metadata']
         rows.append(RepositoryRun(id=hashlib.sha256(manifest['run_id'].encode()).hexdigest()[:16],model=redact(identity['model']),
-            backend=identity['backend'],model_digest=identity.get('digest'),worker_label=identity.get('worker_label','unspecified'),
+            protocol=manifest['protocol_version'],backend=identity['backend'],model_digest=identity.get('digest'),worker_label=identity.get('worker_label','unspecified'),
             agent_count=5,topology=config['topology'],intervention=config['intervention'],seed=config['seed'],status=manifest['status'],
             rounds=config['rounds'],input_length=config['input_length'],input_characters=task['characters'],repository=redact(task['repository']),
             dataset_revision=task['dataset_revision'],case_id=config['task_id'],freeze_hash=config['registry_freeze_hash'],source_hash=manifest['source_hash'],
