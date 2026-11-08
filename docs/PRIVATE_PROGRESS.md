@@ -63,3 +63,5 @@ Frozen campaign controllers are supported directly:
 ```
 
 The overnight supervisor records its earlier repository-checkpoint phase in the private `overnight.json` beside the campaign freeze. Synthetic progress starts after those checkpoints pass. Remaining-work estimates use completed scheduled calls, preserving retry overhead as overhead rather than claiming it completed new conditions.
+
+The campaign command also displays the repository-precheck phase before synthetic state exists. Unsealed response/HTTP counts are provisional and never count as completed trials; a partially written final JSONL line is ignored for this private view without altering the log.

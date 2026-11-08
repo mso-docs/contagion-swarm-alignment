@@ -23,6 +23,8 @@ def plan_runs(suite, base):
 
 def local_studies(sources):
     rows, pending, seen = [], 0, set()
+    pending_calls=pending_attempts=0
+    pending_starts=[];pending_updates=[];pending_seconds=0
     for source in sources:
         if not source.is_dir():
             raise ValueError('Study directory missing')
@@ -33,21 +35,34 @@ def local_studies(sources):
             seen.add(directory)
             if not (directory / 'checksum.sha256').is_file():
                 pending += 1
+                times=[]
+                journal=directory/'events.jsonl'
+                if journal.exists():
+                    for line in journal.read_text().splitlines():
+                        try:event=json.loads(line)
+                        except ValueError:break  # An in-progress tail is provisional, never repaired.
+                        pending_calls+=event.get('event_type')=='inference_response'
+                        pending_attempts+=event.get('event_type')=='http_attempt'
+                        if event.get('timestamp_utc'):times.append(datetime.fromisoformat(event['timestamp_utc']))
+                if times:
+                    pending_starts.append(min(times));pending_updates.append(max(times))
+                    pending_seconds+=max(0,(datetime.now(timezone.utc)-min(times)).total_seconds())
                 continue
             if not verify(directory):
                 raise ValueError('Study integrity check failed')
             rows.append(json.loads((directory / 'manifest.json').read_text()))
     done = sum(r['status'] == 'completed' for r in rows)
-    starts = [datetime.fromisoformat(r['started_utc']) for r in rows]
+    starts = [datetime.fromisoformat(r['started_utc']) for r in rows]+pending_starts
     ends = [datetime.fromisoformat(r['ended_utc']) for r in rows]
     end = datetime.now(timezone.utc) if pending else max(ends, default=None)
     return {'status': 'unsealed_attempts_present' if pending else 'no_active_attempt_observed',
             'completed_runs': done, 'failed_runs': len(rows) - done, 'unsealed_runs': pending,
-            'physical_calls': sum(r.get('http_attempts', r.get('completed_model_calls', 0)) for r in rows),
-            'measured_calls': sum(r.get('completed_model_calls', 0) for r in rows),
-            'recorded_run_seconds': sum(r.get('duration_seconds', 0) for r in rows),
+            'physical_calls': pending_attempts+sum(r.get('http_attempts', r.get('completed_model_calls', 0)) for r in rows),
+            'measured_calls': pending_calls+sum(r.get('completed_model_calls', 0) for r in rows),
+            'provisional_returned_calls':pending_calls,
+            'recorded_run_seconds': pending_seconds+sum(r.get('duration_seconds', 0) for r in rows),
             'elapsed_seconds': (end - min(starts)).total_seconds() if starts and end else 0,
-            'updated_utc': max((r['ended_utc'] for r in rows), default=None)}
+            'updated_utc': max([r['ended_utc'] for r in rows]+[t.isoformat() for t in pending_updates],default=None)}
 
 
 def estimates(row):
@@ -119,6 +134,14 @@ def main():
                 results.append(('Local studies', estimates(row)))
             for number, root in enumerate(args.campaign,1):
                 campaign=json.loads((root/'campaign.json').read_text())
+                if not (root/'state.json').exists() and (root/'overnight.json').exists():
+                    supervisor=json.loads((root/'overnight.json').read_text())
+                    source=ROOT/'results/repository-runs'/root.name
+                    measured=local_studies([source]) if source.is_dir() else {}
+                    row={**measured,'status':supervisor['status'],'planned_calls':supervisor['planned_repository_calls'],'planned_runs':6,
+                         'updated_utc':max(supervisor['updated_utc'],measured.get('updated_utc') or supervisor['updated_utc'])}
+                    results.append((f'Repository prechecks ({supervisor["phase"]}); {campaign["planned_calls"]} campaign calls queued',estimates(row)))
+                    continue
                 state=json.loads((root/'state.json').read_text())
                 measured=local_studies([Path(campaign['run_root'])])
                 planned_runs=sum(len(j['plan']['families'])*len(j['plan']['case_indices'])*len(j['plan']['seeds'])*len(j['plan']['topologies'])*len(j['plan']['interventions']) for j in campaign['jobs'])

@@ -76,3 +76,16 @@ def test_pages_build_rejects_private_queue_progress(tmp_path, monkeypatch):
     with pytest.raises(ValueError, match='Private operational telemetry'):
         build(source, tmp_path / 'public')
     assert not (tmp_path / 'public').exists()
+
+
+def test_live_unsealed_progress_counts_responses_without_claiming_completion(tmp_path,monkeypatch):
+    import json
+    from contagion.events import utc
+    api=monitor(monkeypatch);run=tmp_path/'active';run.mkdir()
+    (run/'config.snapshot.json').write_text('{}')
+    events=[{'event_type':kind,'timestamp_utc':utc()} for kind in ['http_attempt','inference_response','http_attempt']]
+    (run/'events.jsonl').write_text('\n'.join(json.dumps(e) for e in events)+'\n{"partial":')
+    data=api['local_studies']([tmp_path])
+    assert data['unsealed_runs']==1 and data['completed_runs']==0
+    assert data['physical_calls']==2 and data['measured_calls']==1 and data['provisional_returned_calls']==1
+    assert data['elapsed_seconds']>=0 and data['updated_utc']
