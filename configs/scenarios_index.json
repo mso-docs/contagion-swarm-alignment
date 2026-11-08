@@ -1,0 +1,3849 @@
+{
+  "limitations": "384 generated variants of four templates; not 384 independently authored attacks or statistically independent tasks.",
+  "registry_hash": "3d6418ed602cac8b31f3059fc520f10b9fef3a98e9f275dea80c317253848639",
+  "scenario_count": 384,
+  "scenarios": [
+    {
+      "case_id": "development-catalog-000",
+      "category": "instruction_override",
+      "content_hash": "02408188b918c539b92829b39ef9e5be3d559c6e2f0202023868b6feba5cb43b",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 0
+    },
+    {
+      "case_id": "development-catalog-001",
+      "category": "instruction_override",
+      "content_hash": "803bc43c089fd16ba39c51622735999a81133186963c4d4ce277acaeb058ee24",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 1
+    },
+    {
+      "case_id": "development-catalog-002",
+      "category": "instruction_override",
+      "content_hash": "ab191d8b8fe634f00f29ebadba3e898fa12963ab4d29e34f80066f36fb6ea4eb",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 2
+    },
+    {
+      "case_id": "development-catalog-003",
+      "category": "instruction_override",
+      "content_hash": "802f0b8305bd5fe191b6415b6cc0385863ca940aba7b6772613fc011970729e4",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 3
+    },
+    {
+      "case_id": "development-catalog-004",
+      "category": "instruction_override",
+      "content_hash": "c15dca213e538cb3b12f46d123fd35eb86c7e636453ec96a208bfe35b63c27b2",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 4
+    },
+    {
+      "case_id": "development-catalog-005",
+      "category": "instruction_override",
+      "content_hash": "72eefdd46c971e5e627993057d08e32146bb0d2ed781663f80bc449f14393d45",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 5
+    },
+    {
+      "case_id": "development-catalog-006",
+      "category": "instruction_override",
+      "content_hash": "856b87c2f855f78de40080d036a76350f2c68212c115dcd92e3f5a7ed0c4c468",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 6
+    },
+    {
+      "case_id": "development-catalog-007",
+      "category": "instruction_override",
+      "content_hash": "f03805132fcbea8615921bacf9ba9a8c3e44fa2e5f19a7321a1ae9b5007b8617",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 7
+    },
+    {
+      "case_id": "development-catalog-008",
+      "category": "instruction_override",
+      "content_hash": "4d2dd3e994286c2f99b0af55a660ad26e62c0df9bd387d76c37052eb7da9a289",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 8
+    },
+    {
+      "case_id": "development-catalog-009",
+      "category": "instruction_override",
+      "content_hash": "a7f1e847e1701e1a82031f1355c9f19712b94981000cccb99768e2b1caf3af92",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 9
+    },
+    {
+      "case_id": "development-catalog-010",
+      "category": "instruction_override",
+      "content_hash": "40509faa2e713ee410ae20a1961d4691705a455556a6e056c309d7a4b2065cdd",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 10
+    },
+    {
+      "case_id": "development-catalog-011",
+      "category": "instruction_override",
+      "content_hash": "46fdfac4118a8947c28143b6388d677176eec2707e395990dabb844500c02def",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 11
+    },
+    {
+      "case_id": "development-catalog-012",
+      "category": "instruction_override",
+      "content_hash": "e83897a9ed2277f2cee6fe93cc82e6ef6d8e6c386ebca32cec0c2097157dced2",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 12
+    },
+    {
+      "case_id": "development-catalog-013",
+      "category": "instruction_override",
+      "content_hash": "4c088f6939079cd054c02ad767d914c77dbe35a2a8f0f99910e8c1062e2a7e2e",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 13
+    },
+    {
+      "case_id": "development-catalog-014",
+      "category": "instruction_override",
+      "content_hash": "20b155ffa9030487546da61a23a9cd0910c9a397724b66435abae268e59a624c",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 14
+    },
+    {
+      "case_id": "development-catalog-015",
+      "category": "instruction_override",
+      "content_hash": "28f3d68fce60628d06719617d8e970c4c51c05f671464fdfe3d89af20f979354",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 15
+    },
+    {
+      "case_id": "development-catalog-016",
+      "category": "instruction_override",
+      "content_hash": "f78cad3cb3e6d600ef5ba4b9418971eb5ccfcb475512b9720892d05501aa9e6f",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 16
+    },
+    {
+      "case_id": "development-catalog-017",
+      "category": "instruction_override",
+      "content_hash": "334effd152698ba404ea8bc4f256039ce9e2be9e48a80c504ef13a9d306949ac",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 17
+    },
+    {
+      "case_id": "development-catalog-018",
+      "category": "instruction_override",
+      "content_hash": "67fb9966be9dc07b824ce9a166be0a3fced32f242927cb282ce314c719211ed8",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 18
+    },
+    {
+      "case_id": "development-catalog-019",
+      "category": "instruction_override",
+      "content_hash": "3134621014898cc652a4019fa4cc9969ee40c1224f005d50c49fd9041c6a4916",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 19
+    },
+    {
+      "case_id": "development-catalog-020",
+      "category": "instruction_override",
+      "content_hash": "5b6e7c91589d2f336ec627470c2944a7e9d122c1bfbe0543cdb13db2250b69e9",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 20
+    },
+    {
+      "case_id": "development-catalog-021",
+      "category": "instruction_override",
+      "content_hash": "b6f8692ebb26a723b654fcb1c595c76490b7d399a9a0fcbd86497f6e50dfaf3e",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 21
+    },
+    {
+      "case_id": "development-catalog-022",
+      "category": "instruction_override",
+      "content_hash": "e1f02c9b1cc6fe2c1933f64540b03b96db9ac083ec96f6b4e1f6ec934abc71da",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 22
+    },
+    {
+      "case_id": "development-catalog-023",
+      "category": "instruction_override",
+      "content_hash": "fcd0b5001db7aed01bbc3a7d6d6e8b1f66f3e5295e88890959ad6e2298a902ff",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 23
+    },
+    {
+      "case_id": "development-catalog-024",
+      "category": "instruction_override",
+      "content_hash": "05b4a9178e9869223c8fdc69e21347dcaabac78542dc8a2b8f040f8f7a3308fe",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 24
+    },
+    {
+      "case_id": "development-catalog-025",
+      "category": "instruction_override",
+      "content_hash": "897681e8d29f45ccac107504acdfce15360456fd2468fed3a0ecbc53a2b02aa1",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 25
+    },
+    {
+      "case_id": "development-catalog-026",
+      "category": "instruction_override",
+      "content_hash": "72d1c2de28b09b241216760762fe2aeef2fa9ce82eb1f33626f47051cf20b10b",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 26
+    },
+    {
+      "case_id": "development-catalog-027",
+      "category": "instruction_override",
+      "content_hash": "cacc0778cb854f29fcc5b86abcfd377e659ccff10d3b2f3e546a3ce3b98873bb",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 27
+    },
+    {
+      "case_id": "development-catalog-028",
+      "category": "instruction_override",
+      "content_hash": "fba6a5dd22c4145f2015e574fdb495ce0f75fb53c980b6e1e7b06e87811874a6",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 28
+    },
+    {
+      "case_id": "development-catalog-029",
+      "category": "instruction_override",
+      "content_hash": "948c320c184ebda4bd3816fc329dfaf307c780522b17005cac3b4104747bea8d",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 29
+    },
+    {
+      "case_id": "development-catalog-030",
+      "category": "instruction_override",
+      "content_hash": "e08ed9b5cc747a0e0c32f00655bc8d2edf052aebcf07c070c43d8a562616f1d9",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 30
+    },
+    {
+      "case_id": "development-catalog-031",
+      "category": "instruction_override",
+      "content_hash": "a741984690032fbee0a31f9c92767707ec5d8cf88aeca9059b0b6fee67d79474",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 31
+    },
+    {
+      "case_id": "development-catalog-032",
+      "category": "instruction_override",
+      "content_hash": "1db2fb68272a33ea0ffa6d7d2ca94437d5969d822551ead9cea285b03aab8b48",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 32
+    },
+    {
+      "case_id": "development-catalog-033",
+      "category": "instruction_override",
+      "content_hash": "5b72ec24a7408659aba431fb2ed7a1c310d42d54a0e440f8e54e54dc42385158",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 33
+    },
+    {
+      "case_id": "development-catalog-034",
+      "category": "instruction_override",
+      "content_hash": "1d4963322c0daabbd6e222a988435fbecd9297fa09eedd43b6bc9e2728f9e241",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 34
+    },
+    {
+      "case_id": "development-catalog-035",
+      "category": "instruction_override",
+      "content_hash": "d445192236a0ced9a6e3edc052e4aac64082caf2ca5c77604a180cbe12f0d9cb",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 35
+    },
+    {
+      "case_id": "development-catalog-036",
+      "category": "instruction_override",
+      "content_hash": "2fb669fa285b28be86ea88e1e553eeba3b81f25a9df6b74e567cfc3384382c10",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 36
+    },
+    {
+      "case_id": "development-catalog-037",
+      "category": "instruction_override",
+      "content_hash": "099345c03d9074e5d2b68b5dbfd26a67537eb1afe62f108833ec8991e37da217",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 37
+    },
+    {
+      "case_id": "development-catalog-038",
+      "category": "instruction_override",
+      "content_hash": "080b6da13f0347f192f0ad4ad08712a3c5fab53457b014874df95aa5531aa9a5",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 38
+    },
+    {
+      "case_id": "development-catalog-039",
+      "category": "instruction_override",
+      "content_hash": "182f3ca9f1a19ac12119c1c2d81e0c33b84edaf950bdfb18b556cebc7035fc7c",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 39
+    },
+    {
+      "case_id": "development-catalog-040",
+      "category": "instruction_override",
+      "content_hash": "8acbcddb0d4955d847197cb3b3cc88b8ca482caad4bcb67f645d5c9516a2b9f4",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 40
+    },
+    {
+      "case_id": "development-catalog-041",
+      "category": "instruction_override",
+      "content_hash": "1980ec2220b1215a51d86ea26a52764a886de133baeb45ad748fdfa594ea6dbd",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 41
+    },
+    {
+      "case_id": "development-catalog-042",
+      "category": "instruction_override",
+      "content_hash": "6660d9870dcb49cfa738ad44039f54285957b5aa91fd491fc6de484c1fee5c7f",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 42
+    },
+    {
+      "case_id": "development-catalog-043",
+      "category": "instruction_override",
+      "content_hash": "af52d575b6469911206491ea5645fad7d2e11444f2c7d0164b89b45dd41de920",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 43
+    },
+    {
+      "case_id": "development-catalog-044",
+      "category": "instruction_override",
+      "content_hash": "57d7b5172901e590f74ab26cc2cf05aefa56a1af4ac460636d2ad6a816e1eedf",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 44
+    },
+    {
+      "case_id": "development-catalog-045",
+      "category": "instruction_override",
+      "content_hash": "8a4d44a7dd7b641555d4df0aa7dd7598faae8866f0c2a95badda97bdc09b9b73",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 45
+    },
+    {
+      "case_id": "development-catalog-046",
+      "category": "instruction_override",
+      "content_hash": "e39aaad410cc03f92c78bdec22f1e12b8a5aebc46a0a682097cdcaad329d597d",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 46
+    },
+    {
+      "case_id": "development-catalog-047",
+      "category": "instruction_override",
+      "content_hash": "805eb45f5aac6880fd037778b065d50b8fb88ba14369ebe478219d19ae822ab9",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 47
+    },
+    {
+      "case_id": "development-catalog-048",
+      "category": "instruction_override",
+      "content_hash": "80dbed509188dee9a040dd8dab8751f766468109f2e4d4b980c9bfc95d09c4bb",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 48
+    },
+    {
+      "case_id": "development-catalog-049",
+      "category": "instruction_override",
+      "content_hash": "9e0c936085acb9895a3ec0bd32738b8acc5e2717d0b87f87425522b51cb2e028",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 49
+    },
+    {
+      "case_id": "development-catalog-050",
+      "category": "instruction_override",
+      "content_hash": "39716a4a7946f555f9102cc643b8a9859fecd3ff2464dc9f32d4988ca323b10a",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 50
+    },
+    {
+      "case_id": "development-catalog-051",
+      "category": "instruction_override",
+      "content_hash": "003b853ea47131679660e0d9ee3b8076d654218e952c2199419643210dc9c28a",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 51
+    },
+    {
+      "case_id": "development-catalog-052",
+      "category": "instruction_override",
+      "content_hash": "4fe50a11da2cb912c931e1165cc29b8578d6a2ff65a9476768f0dbfab3d2ede6",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 52
+    },
+    {
+      "case_id": "development-catalog-053",
+      "category": "instruction_override",
+      "content_hash": "a94102ef6d37b66eafdb1f6b35ce3ccdc4cdbd8bde179c8f9d768371dd88d4fd",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 53
+    },
+    {
+      "case_id": "development-catalog-054",
+      "category": "instruction_override",
+      "content_hash": "11f6ff68fca81bc840cc3d464ca1b362dd65a067f6c3af0f180c79f623b0ffd2",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 54
+    },
+    {
+      "case_id": "development-catalog-055",
+      "category": "instruction_override",
+      "content_hash": "18ecd5ee8793c4ec6578c580efebe253a608f1b9a5957186563c21d96a4d07bb",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 55
+    },
+    {
+      "case_id": "development-catalog-056",
+      "category": "instruction_override",
+      "content_hash": "3337415adb6fff2af548e5367214339eddcac8692166e8c6973eed4cc8cfc62a",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 56
+    },
+    {
+      "case_id": "development-catalog-057",
+      "category": "instruction_override",
+      "content_hash": "a2034df5952a82ff77617a3af031b0a827c7e7a93410493c284668f605c22d10",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 57
+    },
+    {
+      "case_id": "development-catalog-058",
+      "category": "instruction_override",
+      "content_hash": "4c4610e3d4e19e5cbd3ddda9c28140296a08ed22b46c221b26afab26a5b601fd",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 58
+    },
+    {
+      "case_id": "development-catalog-059",
+      "category": "instruction_override",
+      "content_hash": "07b6dd6238482da8125e66bd493abd1d573708db30891057e66606a55df72142",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 59
+    },
+    {
+      "case_id": "development-catalog-060",
+      "category": "instruction_override",
+      "content_hash": "23bb3cecc0f979dc44f4a27e947d68434d032816a59f0a9db562d7787e7238fb",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 60
+    },
+    {
+      "case_id": "development-catalog-061",
+      "category": "instruction_override",
+      "content_hash": "c190daa3b524fab40adb7a0912de77b40fc2a49c0a49bc99dfe02d5439c22a51",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 61
+    },
+    {
+      "case_id": "development-catalog-062",
+      "category": "instruction_override",
+      "content_hash": "606c708a81e591bdb4b72b6b1d26985a3a36f1d49f057ad4fa999a09a74615a7",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 62
+    },
+    {
+      "case_id": "development-catalog-063",
+      "category": "instruction_override",
+      "content_hash": "bd63da1ee81cf90f6bcd48c215df1388e6f20583c4c151b64191536dba556305",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 63
+    },
+    {
+      "case_id": "development-patch-000",
+      "category": "evaluator_field_tampering",
+      "content_hash": "bff91465fba28fb891a567c81678782dc98951e744422bd3f4031926272618c5",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 0
+    },
+    {
+      "case_id": "development-patch-001",
+      "category": "evaluator_field_tampering",
+      "content_hash": "4928b5cbbcab0559b8cde0d27ccdf22e3afe97ec6ec3a3941a07d1b3dd832a2d",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 1
+    },
+    {
+      "case_id": "development-patch-002",
+      "category": "evaluator_field_tampering",
+      "content_hash": "80673f9415d77ba9b58d2954af93aa12bf50ce60c293b205a1117f282191583f",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 2
+    },
+    {
+      "case_id": "development-patch-003",
+      "category": "evaluator_field_tampering",
+      "content_hash": "ff25f31fd6da9272f242e81bc628aa5186c383ce7515f7dcf1ddd854f619c2af",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 3
+    },
+    {
+      "case_id": "development-patch-004",
+      "category": "evaluator_field_tampering",
+      "content_hash": "d707a41f99d3518db3921f2869e1a488a9758534728ca09c87e456c98b80dac4",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 4
+    },
+    {
+      "case_id": "development-patch-005",
+      "category": "evaluator_field_tampering",
+      "content_hash": "e43a3ba3ccfd9be074334dc6b0d93eee8e3c48016b5cd62d4804aa5840e09c0a",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 5
+    },
+    {
+      "case_id": "development-patch-006",
+      "category": "evaluator_field_tampering",
+      "content_hash": "91282686faff836350ac1c3bd50215c9d84fa1ae3aeda8f735a4e8258c77f0fe",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 6
+    },
+    {
+      "case_id": "development-patch-007",
+      "category": "evaluator_field_tampering",
+      "content_hash": "23f104f290e949e376c47ad3d0e1a19645f349632ab4cd466cf27fe6580d8858",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 7
+    },
+    {
+      "case_id": "development-patch-008",
+      "category": "evaluator_field_tampering",
+      "content_hash": "e62180005362bda7362772e84515d2e104ae40ac13017607423315da660e5f26",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 8
+    },
+    {
+      "case_id": "development-patch-009",
+      "category": "evaluator_field_tampering",
+      "content_hash": "9a7102e6abc61fad7e9e1174deed18509cb1e675732019692e044d2ff3cfedb3",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 9
+    },
+    {
+      "case_id": "development-patch-010",
+      "category": "evaluator_field_tampering",
+      "content_hash": "81842a6b283e1634096c0e24254bd445598f033306a570c91a867eb71c5e97c0",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 10
+    },
+    {
+      "case_id": "development-patch-011",
+      "category": "evaluator_field_tampering",
+      "content_hash": "6884efa65adaae4a118df955ae4df808a730bb28a127e3a6c4777b6e844169ff",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 11
+    },
+    {
+      "case_id": "development-patch-012",
+      "category": "evaluator_field_tampering",
+      "content_hash": "ff2a45919f7eedc9a7146518080596fbc2f9e66999570b672498c63bebf7cb2b",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 12
+    },
+    {
+      "case_id": "development-patch-013",
+      "category": "evaluator_field_tampering",
+      "content_hash": "9372c5d593b8402240c085fca339e36d11283f0fdebe82ac94fe879fc5c4cfe0",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 13
+    },
+    {
+      "case_id": "development-patch-014",
+      "category": "evaluator_field_tampering",
+      "content_hash": "7e50bd18532413808909fcf6ff612424f5bc9011f9bfb9bd7b170415e09875e5",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 14
+    },
+    {
+      "case_id": "development-patch-015",
+      "category": "evaluator_field_tampering",
+      "content_hash": "fdaea22b72197aa64a6ef7e099ba4d60d4918745d3d2ddcddd98fd4311ce2102",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 15
+    },
+    {
+      "case_id": "development-patch-016",
+      "category": "evaluator_field_tampering",
+      "content_hash": "e61d045a295ce46da66fd1cf3a644cb414b22c143717a65e75939d470ca83c35",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 16
+    },
+    {
+      "case_id": "development-patch-017",
+      "category": "evaluator_field_tampering",
+      "content_hash": "22fdbd5628e419fd91207b886cf99a5fc9f6c18f3d0e874b09db422a0adf686f",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 17
+    },
+    {
+      "case_id": "development-patch-018",
+      "category": "evaluator_field_tampering",
+      "content_hash": "9344c9eded8275336ed67cd54c73339427748e56e19f05afbce1a762dfc7cf35",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 18
+    },
+    {
+      "case_id": "development-patch-019",
+      "category": "evaluator_field_tampering",
+      "content_hash": "00a37bec2c29760276b288700eced345d5817acf63283f7baaf68d8afe7e9763",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 19
+    },
+    {
+      "case_id": "development-patch-020",
+      "category": "evaluator_field_tampering",
+      "content_hash": "ec2000b12b250c514eb57d5199b766149648ccd39ac8ea9627eb0fb1bc269f80",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 20
+    },
+    {
+      "case_id": "development-patch-021",
+      "category": "evaluator_field_tampering",
+      "content_hash": "244d4adbb540c16096dfe9bc41c5ff23cca3a4590547541429552b7b780a137c",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 21
+    },
+    {
+      "case_id": "development-patch-022",
+      "category": "evaluator_field_tampering",
+      "content_hash": "327e3bc6ea541821ad154a51102ad225bafb7737bc60c00bdbfbc7223d833353",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 22
+    },
+    {
+      "case_id": "development-patch-023",
+      "category": "evaluator_field_tampering",
+      "content_hash": "6f1e2acb44f786c51100153c850cb3c0e6abfdd1e7e7bd4a17e70e47b5ad747a",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 23
+    },
+    {
+      "case_id": "development-patch-024",
+      "category": "evaluator_field_tampering",
+      "content_hash": "8184c4ae1fc6cc1e47a855a94f4498c9df33b81a6b3419f34b7d01d2f4253e34",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 24
+    },
+    {
+      "case_id": "development-patch-025",
+      "category": "evaluator_field_tampering",
+      "content_hash": "239d10fc40f9a4fa07dea281923a4f21c54a4cb5f90b339f34d4e6e01cbb626d",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 25
+    },
+    {
+      "case_id": "development-patch-026",
+      "category": "evaluator_field_tampering",
+      "content_hash": "aaabfbbe1126661111924d27c0c905b8437a94c7cf639cb9c535db1137e065fd",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 26
+    },
+    {
+      "case_id": "development-patch-027",
+      "category": "evaluator_field_tampering",
+      "content_hash": "8baf9939e90735cb0af568cd26b94b5a681270bd115b3571119dc4d0b9e64fab",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 27
+    },
+    {
+      "case_id": "development-patch-028",
+      "category": "evaluator_field_tampering",
+      "content_hash": "22a1c70b753fb38e274bb8a8660cec6d7e22eda9d7bcbfa7abf62b23328f96e6",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 28
+    },
+    {
+      "case_id": "development-patch-029",
+      "category": "evaluator_field_tampering",
+      "content_hash": "b13bc60c8f70c751920d61e5d4efab5425f846dca660adcc77f0b939b26ce121",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 29
+    },
+    {
+      "case_id": "development-patch-030",
+      "category": "evaluator_field_tampering",
+      "content_hash": "771c137a309fb5c0d3ba0ad620416b06fd6eb4a5a85cea50381caca978682414",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 30
+    },
+    {
+      "case_id": "development-patch-031",
+      "category": "evaluator_field_tampering",
+      "content_hash": "c603d882157f4b4c3c5040c13cd9e5a1cd6f99ceee2ff85407ab69f18c0bc44d",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 31
+    },
+    {
+      "case_id": "development-patch-032",
+      "category": "evaluator_field_tampering",
+      "content_hash": "4d7cb8c5bc39a204c4d1f7fdcf6fdf2c06a48ae8f76caf35c42d34b4cb29b006",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 32
+    },
+    {
+      "case_id": "development-patch-033",
+      "category": "evaluator_field_tampering",
+      "content_hash": "febe1a7c882632a8818d3385f1ee60b044c40a1e8f4d463f204d254d5a96222b",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 33
+    },
+    {
+      "case_id": "development-patch-034",
+      "category": "evaluator_field_tampering",
+      "content_hash": "9bdd0171512a9503ae264f91bf867cf3545472edb5298e88a21681233e7539fc",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 34
+    },
+    {
+      "case_id": "development-patch-035",
+      "category": "evaluator_field_tampering",
+      "content_hash": "a06785799ff29dc75cec8c612076db88266a57ea7eaae5a323d9b42d5cd94b05",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 35
+    },
+    {
+      "case_id": "development-patch-036",
+      "category": "evaluator_field_tampering",
+      "content_hash": "4e85b6ff07b2c6975b377d9d1c8d39d088e89e3921dfe10c30d0147de38a86d5",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 36
+    },
+    {
+      "case_id": "development-patch-037",
+      "category": "evaluator_field_tampering",
+      "content_hash": "2a0018dd2fb22a215c7bbab396196103deac9fa0ff74cf52ecdbe9e0ff8db002",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 37
+    },
+    {
+      "case_id": "development-patch-038",
+      "category": "evaluator_field_tampering",
+      "content_hash": "6a08d911ffd18898eb55cf96dbb0c1113c7a6fb8fbd7acd5c6664f9cf0bf01d3",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 38
+    },
+    {
+      "case_id": "development-patch-039",
+      "category": "evaluator_field_tampering",
+      "content_hash": "2479de54c855582dd113660c20136224fe66644b353458801c0558da516a7251",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 39
+    },
+    {
+      "case_id": "development-patch-040",
+      "category": "evaluator_field_tampering",
+      "content_hash": "0420895869dc06087534747925b0343ef442a36330501f9069770d01d182eed2",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 40
+    },
+    {
+      "case_id": "development-patch-041",
+      "category": "evaluator_field_tampering",
+      "content_hash": "2d99dbb50c244eb81b000c4080847234cac0c1e9804c5854b55bae45f029319e",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 41
+    },
+    {
+      "case_id": "development-patch-042",
+      "category": "evaluator_field_tampering",
+      "content_hash": "14f9f3c22606e357931078514ff2c659904d5c18da974a39110cd326e472522b",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 42
+    },
+    {
+      "case_id": "development-patch-043",
+      "category": "evaluator_field_tampering",
+      "content_hash": "143cf626b37565ab6cb349010ae04940def45fb200b645f7a48bf4f5e2fd6d44",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 43
+    },
+    {
+      "case_id": "development-patch-044",
+      "category": "evaluator_field_tampering",
+      "content_hash": "d41073d7b1efc4dc9d9b3ac8f07ab9b0b8523499a9b910880294190efd8c1638",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 44
+    },
+    {
+      "case_id": "development-patch-045",
+      "category": "evaluator_field_tampering",
+      "content_hash": "07b8d470df054dca2b827181ff921dd799be2455582a035f8ce5042ecdcc04ab",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 45
+    },
+    {
+      "case_id": "development-patch-046",
+      "category": "evaluator_field_tampering",
+      "content_hash": "736bd9d71827f135b7fb5a3fa46a4992b7044c211b5f3e8b57235fcdc7eaf484",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 46
+    },
+    {
+      "case_id": "development-patch-047",
+      "category": "evaluator_field_tampering",
+      "content_hash": "798029e0bd9f8705ebcda39ea0415bd1488b3f846d629eecf65537afce8c3d36",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 47
+    },
+    {
+      "case_id": "development-patch-048",
+      "category": "evaluator_field_tampering",
+      "content_hash": "89328ce4a9a37b185aaf27a48beb1873bbe7c6bdd6c968cae1888bc9f6ca4d3f",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 48
+    },
+    {
+      "case_id": "development-patch-049",
+      "category": "evaluator_field_tampering",
+      "content_hash": "6d5ece2843372d4d4d7cc5b7a56fe9ed0d096692d22bcdfbcffcb07b78a8ede8",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 49
+    },
+    {
+      "case_id": "development-patch-050",
+      "category": "evaluator_field_tampering",
+      "content_hash": "4c368fe9605c1db743170baf1e7bfc54a18e96408fe402ae55bab96efa4b8014",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 50
+    },
+    {
+      "case_id": "development-patch-051",
+      "category": "evaluator_field_tampering",
+      "content_hash": "70b24dadb187e4d88bace6d7cebb1a69c544e2f7be26543fc64d4adca1510788",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 51
+    },
+    {
+      "case_id": "development-patch-052",
+      "category": "evaluator_field_tampering",
+      "content_hash": "8673bcbc6929427ef522b9ad9ef8fbbcab86f2470f836a7824030e21cf0aed27",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 52
+    },
+    {
+      "case_id": "development-patch-053",
+      "category": "evaluator_field_tampering",
+      "content_hash": "c622f953b28704502b6a8e07e25adf168fbf1bb5acd1fc40816e3a2778ed3176",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 53
+    },
+    {
+      "case_id": "development-patch-054",
+      "category": "evaluator_field_tampering",
+      "content_hash": "2ec883bf9f6fbd775f153514bde8c97330334be6f355b59fc3fa9d5bcfc2bab1",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 54
+    },
+    {
+      "case_id": "development-patch-055",
+      "category": "evaluator_field_tampering",
+      "content_hash": "1fca73bb5f8881c4bed369b0f8dff9bf3f639b6f3d82450a0cc9fc869411602c",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 55
+    },
+    {
+      "case_id": "development-patch-056",
+      "category": "evaluator_field_tampering",
+      "content_hash": "fc3ff7270cf654d68d26a2cbef8128afbb0829cb945715da4e8fecae8aa45ae9",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 56
+    },
+    {
+      "case_id": "development-patch-057",
+      "category": "evaluator_field_tampering",
+      "content_hash": "d27839e414fee9f5a69aa2e84e22816790208b7ce151024e2e00aefb27b8e2be",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 57
+    },
+    {
+      "case_id": "development-patch-058",
+      "category": "evaluator_field_tampering",
+      "content_hash": "ed2fce1c9169c1a5d88bfa99ebb890ed9a2109338e0fb1dc2f0933d5807ba400",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 58
+    },
+    {
+      "case_id": "development-patch-059",
+      "category": "evaluator_field_tampering",
+      "content_hash": "15714d65ea656ad883fcc9d4d2dc360b147ef591432679c59349980d4b2f7fc1",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 59
+    },
+    {
+      "case_id": "development-patch-060",
+      "category": "evaluator_field_tampering",
+      "content_hash": "ecf5b5ea15726dbaf341589d5ca0e5d13ae3af8b77968dc4ea314ad2b33f73b0",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 60
+    },
+    {
+      "case_id": "development-patch-061",
+      "category": "evaluator_field_tampering",
+      "content_hash": "5b59d4da5239fc789bd04eef337dda3fd0fb35a28f3c8f92d96128aaaccbe44d",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 61
+    },
+    {
+      "case_id": "development-patch-062",
+      "category": "evaluator_field_tampering",
+      "content_hash": "e83a6ee75081bb25621421c9f894dadb0e16713843026aa863b8cdf81cdc97ed",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 62
+    },
+    {
+      "case_id": "development-patch-063",
+      "category": "evaluator_field_tampering",
+      "content_hash": "82b79213ce027e2571aa93ee71be0c0456593c87eb3bf8c983fbff7771f23d70",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 63
+    },
+    {
+      "case_id": "development-provenance-000",
+      "category": "source_fabrication",
+      "content_hash": "081b427cd3869489b34bfdb1f607d0eb2eda5b03584b3d88dc3ac844ae5752b1",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 0
+    },
+    {
+      "case_id": "development-provenance-001",
+      "category": "source_fabrication",
+      "content_hash": "eb1c06ee5949edd4a050b4eebb2de1b3232e1ae389de5e4b015c4ed9be6dc74f",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 1
+    },
+    {
+      "case_id": "development-provenance-002",
+      "category": "source_fabrication",
+      "content_hash": "c5f7a41264ed90009575f97d798c083eb484c8e09a8d9dfb4cb4a693691aedf1",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 2
+    },
+    {
+      "case_id": "development-provenance-003",
+      "category": "source_fabrication",
+      "content_hash": "57ec47b70c1e09283431b4ca7c4fe46ad71e7f69a5c478d676835a5104d0c72f",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 3
+    },
+    {
+      "case_id": "development-provenance-004",
+      "category": "source_fabrication",
+      "content_hash": "85c5c9fe7d608fa7964fe42d960e48a0fe045c3b6c4a992f2ea2e5227febdd57",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 4
+    },
+    {
+      "case_id": "development-provenance-005",
+      "category": "source_fabrication",
+      "content_hash": "57c2ade6862d12ac25817a47535714552a2ec78d9e96e1b752214871b7f288c4",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 5
+    },
+    {
+      "case_id": "development-provenance-006",
+      "category": "source_fabrication",
+      "content_hash": "808fbcf2a5b8dc4bfbd74937d57ca31d9b47098031969cf4c2a68e810ebd99e8",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 6
+    },
+    {
+      "case_id": "development-provenance-007",
+      "category": "source_fabrication",
+      "content_hash": "53b116b0119d97510a6ddbdd850de33ae72bbf0c4fa1d8618382122271d8f257",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 7
+    },
+    {
+      "case_id": "development-provenance-008",
+      "category": "source_fabrication",
+      "content_hash": "2813a3b29d697e7ebf29a00149b93cac465fa46d5fd7f22459417a7db2378631",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 8
+    },
+    {
+      "case_id": "development-provenance-009",
+      "category": "source_fabrication",
+      "content_hash": "ac2dfce1d0c950c662c08d8ea964245c11555fa4f8b345eb13070c14b535d22a",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 9
+    },
+    {
+      "case_id": "development-provenance-010",
+      "category": "source_fabrication",
+      "content_hash": "2bd3b1f09f92f231f114a78db6d74c3d85309fcec9f386cb3a6cc678955e362b",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 10
+    },
+    {
+      "case_id": "development-provenance-011",
+      "category": "source_fabrication",
+      "content_hash": "9eff0490894ed89fed021ba51c0868fa9fbc71766293081ca80072cc018bcbe0",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 11
+    },
+    {
+      "case_id": "development-provenance-012",
+      "category": "source_fabrication",
+      "content_hash": "f6b2733492c93890e0f3c41f4a26d0f5660b87ac55a71b612ebe70fd80a8e2a3",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 12
+    },
+    {
+      "case_id": "development-provenance-013",
+      "category": "source_fabrication",
+      "content_hash": "ab3c255f34e106c404bdcc73bcc6ee5d417f064a6fdd3eb70ec93be4fd45fc70",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 13
+    },
+    {
+      "case_id": "development-provenance-014",
+      "category": "source_fabrication",
+      "content_hash": "7535c99cb3ffc644ce2d999360d198d9724075703c76244bf7401e4ee9e548d7",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 14
+    },
+    {
+      "case_id": "development-provenance-015",
+      "category": "source_fabrication",
+      "content_hash": "a6b65ec2c1aa6c56ee1179753ddd7c4c99bf364301b9c4a907927386924b3c5b",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 15
+    },
+    {
+      "case_id": "development-provenance-016",
+      "category": "source_fabrication",
+      "content_hash": "2e02bec6c3e75e40a1bbd1502a72ec204f037d449a0b4e38a48f318e3a02a1ae",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 16
+    },
+    {
+      "case_id": "development-provenance-017",
+      "category": "source_fabrication",
+      "content_hash": "4d51f4be3c8e53f130d66e58be8de6a97d7c1b0a0ac705a8eadcdd16dbf792fd",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 17
+    },
+    {
+      "case_id": "development-provenance-018",
+      "category": "source_fabrication",
+      "content_hash": "768edc2a2f3f2b31e93d5f37399f5d6f7b1481d96d01a96c3d834c8301a945f8",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 18
+    },
+    {
+      "case_id": "development-provenance-019",
+      "category": "source_fabrication",
+      "content_hash": "9c7e1c95e1603f78607966d197052144d00ee272b1a4ef73b3c1eeb9b9ed4c16",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 19
+    },
+    {
+      "case_id": "development-provenance-020",
+      "category": "source_fabrication",
+      "content_hash": "cc9caa079232d8e8f23bb9790c3fe6592ddf401c35c88c33468178aa42ad72e8",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 20
+    },
+    {
+      "case_id": "development-provenance-021",
+      "category": "source_fabrication",
+      "content_hash": "b8c09b45d3da909cbfda0076aaa87c65ac8ff5d5a82a953d3eab81add773e7c2",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 21
+    },
+    {
+      "case_id": "development-provenance-022",
+      "category": "source_fabrication",
+      "content_hash": "d2715b86004ae640a8bb2926cdc45a2c6edd885e1f36fed0c3a23a27db700f7d",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 22
+    },
+    {
+      "case_id": "development-provenance-023",
+      "category": "source_fabrication",
+      "content_hash": "9460df03f78066d76d442ce0c7f6bc7b87d96b4b05b2f3cd4a585a0f3946f77a",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 23
+    },
+    {
+      "case_id": "development-provenance-024",
+      "category": "source_fabrication",
+      "content_hash": "ca4e92b07ec7df1216408849971d904bf18f8938232ebe1fed609394c175893d",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 24
+    },
+    {
+      "case_id": "development-provenance-025",
+      "category": "source_fabrication",
+      "content_hash": "d9ff62bef15191fcc79259beaf05d62b9affb8b15f59bf3f6a6825554ac29ebb",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 25
+    },
+    {
+      "case_id": "development-provenance-026",
+      "category": "source_fabrication",
+      "content_hash": "5824d59ac46cc8b514c22d3aed63928f0fa6d27d76cb5aa77b4fc56bef73f810",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 26
+    },
+    {
+      "case_id": "development-provenance-027",
+      "category": "source_fabrication",
+      "content_hash": "cbf1d723b48dceeaf42b923e14e64950c1d54fbac0808e6217baae8e1ef40baf",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 27
+    },
+    {
+      "case_id": "development-provenance-028",
+      "category": "source_fabrication",
+      "content_hash": "bcf61cddc49923c456f355200176c22264abc06f238d901e186b97ffa0c8f21c",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 28
+    },
+    {
+      "case_id": "development-provenance-029",
+      "category": "source_fabrication",
+      "content_hash": "3fba1235e798f9cdf725b237ea09813be9812042fb0639df89f1eafc4d423a32",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 29
+    },
+    {
+      "case_id": "development-provenance-030",
+      "category": "source_fabrication",
+      "content_hash": "b077dacb38bfbc9f707009ee0d8a205621e9e12e1a7d824f5a82948a3d54e5bd",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 30
+    },
+    {
+      "case_id": "development-provenance-031",
+      "category": "source_fabrication",
+      "content_hash": "edcd9a4accbce913c7eff6956daf130ce4d49e533da2b3243147b1a57cc4937a",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 31
+    },
+    {
+      "case_id": "development-provenance-032",
+      "category": "source_fabrication",
+      "content_hash": "0d4fd672d0abee80d00fb4717bf2c5ad138d288b0040ea7a3f8c55ad6e5df81f",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 32
+    },
+    {
+      "case_id": "development-provenance-033",
+      "category": "source_fabrication",
+      "content_hash": "51dc8d7a26f987da6791f9629c3b17ca4f0f9223546ded5792fc15b66a0e5b70",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 33
+    },
+    {
+      "case_id": "development-provenance-034",
+      "category": "source_fabrication",
+      "content_hash": "b1b51e47f0d4494e53161d617e1db73cef11c472038c1ec6ba2ad0361ef89d85",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 34
+    },
+    {
+      "case_id": "development-provenance-035",
+      "category": "source_fabrication",
+      "content_hash": "92cb26bbf278b4f442a6e6bc6bdaaa67c7a227dd71b50143e925d8facbff142c",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 35
+    },
+    {
+      "case_id": "development-provenance-036",
+      "category": "source_fabrication",
+      "content_hash": "ee05ba04f13115eaa97b3aab755fc6ff81b8cc7ae26845734484f2686f5d323e",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 36
+    },
+    {
+      "case_id": "development-provenance-037",
+      "category": "source_fabrication",
+      "content_hash": "0ca19689a552ca9b39068b226253e97d761c419b178f8f64ee89a1ade97ac0ec",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 37
+    },
+    {
+      "case_id": "development-provenance-038",
+      "category": "source_fabrication",
+      "content_hash": "85c648df1c57ad23f18510cd49de09c6560472f973a7df34b8e17d050ad78a14",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 38
+    },
+    {
+      "case_id": "development-provenance-039",
+      "category": "source_fabrication",
+      "content_hash": "f9957bbd518addd7c4ac1428b1456d2f196fcab6125afa0709d1c79a4d86c7d7",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 39
+    },
+    {
+      "case_id": "development-provenance-040",
+      "category": "source_fabrication",
+      "content_hash": "c34d2f1e8ad040bbd2c6107614781c40a3494f455789b16360bb2a6352becbbe",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 40
+    },
+    {
+      "case_id": "development-provenance-041",
+      "category": "source_fabrication",
+      "content_hash": "3942573adbf5b514f9356ca7092cb1963cd04124923908210a6bdc6a12e6f407",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 41
+    },
+    {
+      "case_id": "development-provenance-042",
+      "category": "source_fabrication",
+      "content_hash": "e03d4493518264caea4dd36b2e3c4ddc105e180de322595414fa47b00f643cf9",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 42
+    },
+    {
+      "case_id": "development-provenance-043",
+      "category": "source_fabrication",
+      "content_hash": "ac0928c7dfdc642b94ed06ad2f9ddb854aa2931ad7f7f7a08be388259965d202",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 43
+    },
+    {
+      "case_id": "development-provenance-044",
+      "category": "source_fabrication",
+      "content_hash": "deb2f42512ad91819b7d5af372b41f87bf8320654b55b8bb044cf9056eb302d0",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 44
+    },
+    {
+      "case_id": "development-provenance-045",
+      "category": "source_fabrication",
+      "content_hash": "d5c4db2fd447ea5f12968a85fcfc0a1f637ff8ba1a01f8a63e5ab65d7c8f88f0",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 45
+    },
+    {
+      "case_id": "development-provenance-046",
+      "category": "source_fabrication",
+      "content_hash": "e261731752717ad767ca2f16b5ea824fea858e8adaef254114bb8deecde27566",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 46
+    },
+    {
+      "case_id": "development-provenance-047",
+      "category": "source_fabrication",
+      "content_hash": "043d6a6ba17630d8182261ac3d64024962970958ad74fc590e324261f2afe49f",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 47
+    },
+    {
+      "case_id": "development-provenance-048",
+      "category": "source_fabrication",
+      "content_hash": "348cca8a761d793bc5b2800bf8bfc7f2482f066361c4825b854dcbef79c6b57f",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 48
+    },
+    {
+      "case_id": "development-provenance-049",
+      "category": "source_fabrication",
+      "content_hash": "c32f561112dc4aa9dc6764cf56559005dd5a91dd9af32cfa1725627409bdd904",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 49
+    },
+    {
+      "case_id": "development-provenance-050",
+      "category": "source_fabrication",
+      "content_hash": "73b61fbca178371220cffd2c8a0da344f492655d8ec7234007b4ad15228869aa",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 50
+    },
+    {
+      "case_id": "development-provenance-051",
+      "category": "source_fabrication",
+      "content_hash": "cf5e1c127dfce09b4f61f0bc83d996ba2227bf2baf7d25f143b25ed1c3ab9feb",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 51
+    },
+    {
+      "case_id": "development-provenance-052",
+      "category": "source_fabrication",
+      "content_hash": "5ee437334469aeba1343273f16cb46d4d3b90a0000ae46d18aad4d69a6fa2afe",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 52
+    },
+    {
+      "case_id": "development-provenance-053",
+      "category": "source_fabrication",
+      "content_hash": "3f7ed0a2920295b7176bf38da701985dea478c69a9dfbbc471e6baf07bd478e6",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 53
+    },
+    {
+      "case_id": "development-provenance-054",
+      "category": "source_fabrication",
+      "content_hash": "510f4f0d3208f8d5a903eb669698e357360ed40d3ec5ed3ae4b2f09a8aeb8557",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 54
+    },
+    {
+      "case_id": "development-provenance-055",
+      "category": "source_fabrication",
+      "content_hash": "6647379dfee2a1ca52409a0bd560883443a823b8d56cecc85672332b1681e7e9",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 55
+    },
+    {
+      "case_id": "development-provenance-056",
+      "category": "source_fabrication",
+      "content_hash": "fb8cb4e2cc1c34ee51cda8886328a65c320170c9ddab56a2069e481713ed4016",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 56
+    },
+    {
+      "case_id": "development-provenance-057",
+      "category": "source_fabrication",
+      "content_hash": "6a24983a6fc5261774782ebdfc251fdeec6007a0d361defb3a19cde26e541038",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 57
+    },
+    {
+      "case_id": "development-provenance-058",
+      "category": "source_fabrication",
+      "content_hash": "042821d39abf90c8ac8b5c3e74db29ad16f89919e5f1afed662da56a5965288a",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 58
+    },
+    {
+      "case_id": "development-provenance-059",
+      "category": "source_fabrication",
+      "content_hash": "27a1e5645e931cba2a9292f66d0e7a298c675bc7fb81518a2ff35350a3a86151",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 59
+    },
+    {
+      "case_id": "development-provenance-060",
+      "category": "source_fabrication",
+      "content_hash": "834e7a0c98018d1ebd5f873c6a36edfd510c0e602c3c7b7cc191c4a8ce80b132",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 60
+    },
+    {
+      "case_id": "development-provenance-061",
+      "category": "source_fabrication",
+      "content_hash": "024de015ff11eff1ff86e34f5d68728c88eceed53603d1efd7d99c3f98288629",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 61
+    },
+    {
+      "case_id": "development-provenance-062",
+      "category": "source_fabrication",
+      "content_hash": "604fab3969be9fbc222e253f7f61ab7b1b39a790e395f7639427307cd9aa0b2e",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 62
+    },
+    {
+      "case_id": "development-provenance-063",
+      "category": "source_fabrication",
+      "content_hash": "b497b140ecda31c014ca1ce02dd767f33e1223d0ea61e06b31a2f48cbcc2be8a",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 63
+    },
+    {
+      "case_id": "development-record-000",
+      "category": "protected_state_update",
+      "content_hash": "2f42b842c5c5c28178771959f6f832ac1ccd31cf9f9a889456c45a0ea47da3c3",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 0
+    },
+    {
+      "case_id": "development-record-001",
+      "category": "protected_state_update",
+      "content_hash": "6bb80a700da8cad6822aede53c66712eb7a46eaa4747040ed703bd7741414ddf",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 1
+    },
+    {
+      "case_id": "development-record-002",
+      "category": "protected_state_update",
+      "content_hash": "59ccb82f44ea847eba7cf752c91e9c0787fb8013e21ae932571154258e690c4e",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 2
+    },
+    {
+      "case_id": "development-record-003",
+      "category": "protected_state_update",
+      "content_hash": "2976c528c8f0ddb3c01c35a64fe41545bfcb4a14b5255cdc60bb3e6a460e8018",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 3
+    },
+    {
+      "case_id": "development-record-004",
+      "category": "protected_state_update",
+      "content_hash": "b53e22b68876f329a7182fb869d1b76df15aec82d95d61a0a6084f7820aab5fc",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 4
+    },
+    {
+      "case_id": "development-record-005",
+      "category": "protected_state_update",
+      "content_hash": "99097b6b0d9643455e7b37c3f16d255d2507ee51afe19f58ad5241fd404ae839",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 5
+    },
+    {
+      "case_id": "development-record-006",
+      "category": "protected_state_update",
+      "content_hash": "6a2122ae5b9940625dd9aa0a1c44f403a1d09786b96ab2a35843a56700830729",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 6
+    },
+    {
+      "case_id": "development-record-007",
+      "category": "protected_state_update",
+      "content_hash": "0076d766dfb2a65fdf25d9a9115fc3677cfad2f3334ef65f3add278543019754",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 7
+    },
+    {
+      "case_id": "development-record-008",
+      "category": "protected_state_update",
+      "content_hash": "69688b5a926f64a943302ce1fde78d9c3a45dfad48713ef8a8730dc7e837cd0d",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 8
+    },
+    {
+      "case_id": "development-record-009",
+      "category": "protected_state_update",
+      "content_hash": "9380a38b65f717090a6d2581b17dad921f45beb94f381f89ba0a23833acb141e",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 9
+    },
+    {
+      "case_id": "development-record-010",
+      "category": "protected_state_update",
+      "content_hash": "9cf43f46d5a5d8116b7316fc9780f411a23c2451255401cf14f997d37617c7ac",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 10
+    },
+    {
+      "case_id": "development-record-011",
+      "category": "protected_state_update",
+      "content_hash": "62684f279847c3785e4d6da6f7952e30384d1da1c85d32543b29f85f3e18afe0",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 11
+    },
+    {
+      "case_id": "development-record-012",
+      "category": "protected_state_update",
+      "content_hash": "7b5747185fcfda12a19f3f2ca795fb672f86dca0c5a25232187a11082379a70d",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 12
+    },
+    {
+      "case_id": "development-record-013",
+      "category": "protected_state_update",
+      "content_hash": "30f2dc66cbea23b209d4ce91e746858dea2e5e24663928d41a3bc52b4720a43c",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 13
+    },
+    {
+      "case_id": "development-record-014",
+      "category": "protected_state_update",
+      "content_hash": "6fba8864460a02cf12f4dc3e732da620bb92673365cfc9e2f807872127f3762b",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 14
+    },
+    {
+      "case_id": "development-record-015",
+      "category": "protected_state_update",
+      "content_hash": "82a109564dce2be8b83213d99c768e99fb4c0860084b0c80f9c23c6fa345931b",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 15
+    },
+    {
+      "case_id": "development-record-016",
+      "category": "protected_state_update",
+      "content_hash": "97964b9dbd3300a0a4e34ea2568ccb0d823e1fcfe6730dc7a7f58cb1d1df3950",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 16
+    },
+    {
+      "case_id": "development-record-017",
+      "category": "protected_state_update",
+      "content_hash": "18ca46487ab2e284e76416d46366dbd58066018acf8e40610cd5360e91506041",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 17
+    },
+    {
+      "case_id": "development-record-018",
+      "category": "protected_state_update",
+      "content_hash": "f37cd6a76453d24549fbfd611973a7b82961486e8b29f189e159476020a71ab4",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 18
+    },
+    {
+      "case_id": "development-record-019",
+      "category": "protected_state_update",
+      "content_hash": "77dc1faaf44f718e95825e1815f04f61db6a6c42a13c36f0d939ad7a63d558b3",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 19
+    },
+    {
+      "case_id": "development-record-020",
+      "category": "protected_state_update",
+      "content_hash": "ad0a22ecd5126a45d9db926d833ae6e7901b0b96596bb9a5f94f3427400383c8",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 20
+    },
+    {
+      "case_id": "development-record-021",
+      "category": "protected_state_update",
+      "content_hash": "47ba2e19826f32719c6fa4270dc02ee03e1da9a2b37caf35377353d7fa397f7c",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 21
+    },
+    {
+      "case_id": "development-record-022",
+      "category": "protected_state_update",
+      "content_hash": "dabadf509c8e060f85532d94d5dcd643bab23e7e4f6f36506e977b74207768fd",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 22
+    },
+    {
+      "case_id": "development-record-023",
+      "category": "protected_state_update",
+      "content_hash": "c24ecef8021ed3fa4347574c4ac00e4d2f21964b348bdc201984bf4b0064a267",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 23
+    },
+    {
+      "case_id": "development-record-024",
+      "category": "protected_state_update",
+      "content_hash": "c9da3669d3fb4c423468fab296e53e4913d44ad9682a6b7c13ab2126c5fbf6ae",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 24
+    },
+    {
+      "case_id": "development-record-025",
+      "category": "protected_state_update",
+      "content_hash": "19a88e552328de137fc59295e07330d9aee06d2099b5870f317d7a1677d79caf",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 25
+    },
+    {
+      "case_id": "development-record-026",
+      "category": "protected_state_update",
+      "content_hash": "0e77962b71f9e5da84cade3c5ae9f02302748616a5539d0056ca5c11b8aa2f19",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 26
+    },
+    {
+      "case_id": "development-record-027",
+      "category": "protected_state_update",
+      "content_hash": "884da182b7891bd0e3bc0a475c19ddb34fda08d2a4aa25c9f1c4a4ba171817b9",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 27
+    },
+    {
+      "case_id": "development-record-028",
+      "category": "protected_state_update",
+      "content_hash": "9e47efcb98233fbebf86d0154f4e32f73a2680c5a64ad0973903d149bf7cd6aa",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 28
+    },
+    {
+      "case_id": "development-record-029",
+      "category": "protected_state_update",
+      "content_hash": "ec45b706ed888ae3634e6daad13ada7864850012d1db87f5d0c76ed7a776bf08",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 29
+    },
+    {
+      "case_id": "development-record-030",
+      "category": "protected_state_update",
+      "content_hash": "0d6716cbb7d021dff3814a3bdec3c21056a159714ce5fb944690dd71afc3e4e9",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 30
+    },
+    {
+      "case_id": "development-record-031",
+      "category": "protected_state_update",
+      "content_hash": "83d4e09f1fa53e6ac4af3953888183ad42e2da3184da782cfe3cfb0b3d65d451",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 31
+    },
+    {
+      "case_id": "development-record-032",
+      "category": "protected_state_update",
+      "content_hash": "8754a3c34f99be206cb57a9cf60ec235e06e3f5f194013307501e66731eaaeac",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 32
+    },
+    {
+      "case_id": "development-record-033",
+      "category": "protected_state_update",
+      "content_hash": "c216c244110c0c33ed250b98f0172af482d2868b105b5349d063265856155a49",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 33
+    },
+    {
+      "case_id": "development-record-034",
+      "category": "protected_state_update",
+      "content_hash": "155bf2ea605879f968fc8b69d8064ff3288691fe54faf9aa7463eaee5320da47",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 34
+    },
+    {
+      "case_id": "development-record-035",
+      "category": "protected_state_update",
+      "content_hash": "58399e7d7381fbf3c214e02debddd7fac8fbd2e6998946330d4229c38691d25f",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 35
+    },
+    {
+      "case_id": "development-record-036",
+      "category": "protected_state_update",
+      "content_hash": "d9906d81c690135d68c342aa774b465bd89dbd84ed2e6b824176b314cd3ddd97",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 36
+    },
+    {
+      "case_id": "development-record-037",
+      "category": "protected_state_update",
+      "content_hash": "12236a1d0cafd0f655c841293c7ffad110beb2847286a32aa6919185ad01d4d3",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 37
+    },
+    {
+      "case_id": "development-record-038",
+      "category": "protected_state_update",
+      "content_hash": "9fedd7bc9e07d986c5a616a91e03e0191c64c79a2d5fdc1c8397eab5acaa5358",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 38
+    },
+    {
+      "case_id": "development-record-039",
+      "category": "protected_state_update",
+      "content_hash": "01ed5af50f2d047474b59f256d45dedddfec1862c4fe4fa0445607aebb907434",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 39
+    },
+    {
+      "case_id": "development-record-040",
+      "category": "protected_state_update",
+      "content_hash": "43d1fd89f7d1c3dc4c80f83ec55f80cec5ac81f8f31bbd32402b7ea213e252dd",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 40
+    },
+    {
+      "case_id": "development-record-041",
+      "category": "protected_state_update",
+      "content_hash": "5bc064fa076b6984ce7f61c67baa9c8019d73d08b020a6f55936a7113730407f",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 41
+    },
+    {
+      "case_id": "development-record-042",
+      "category": "protected_state_update",
+      "content_hash": "83a8931db12ce1bfb2ea422835cb21e69b2fe713a23623838ceabb30e3bac81b",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 42
+    },
+    {
+      "case_id": "development-record-043",
+      "category": "protected_state_update",
+      "content_hash": "9ae991cdcf699b6ac22ca068e802aab60690492182995a98db602f801d9c52c4",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 43
+    },
+    {
+      "case_id": "development-record-044",
+      "category": "protected_state_update",
+      "content_hash": "390e469ec89e6aa0514f8444901a7bdea6cb684caed80ca71d2f0eb50abe2fd3",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 44
+    },
+    {
+      "case_id": "development-record-045",
+      "category": "protected_state_update",
+      "content_hash": "67dcff33fc6e64999dc3fc9f75bce22ff9eee0e7dda202e2d1ba465b2bae1616",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 45
+    },
+    {
+      "case_id": "development-record-046",
+      "category": "protected_state_update",
+      "content_hash": "8615c7d395ed5d62b67301f89c93f1c7af8e2ae10484ede2a92cab4aa7f31779",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 46
+    },
+    {
+      "case_id": "development-record-047",
+      "category": "protected_state_update",
+      "content_hash": "feda1fbf66900d485344a4eb52044f545dbb1e49ad2253930b7f90ad30033ada",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 47
+    },
+    {
+      "case_id": "development-record-048",
+      "category": "protected_state_update",
+      "content_hash": "002c3f5410028cb025c2c98f80876492a3b8db0b4ae85924bc1f6efea377b033",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 48
+    },
+    {
+      "case_id": "development-record-049",
+      "category": "protected_state_update",
+      "content_hash": "dc5e26db1cc27cb284654b51f464c873cf0d896a823c37970bd1032ca1bb8684",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 49
+    },
+    {
+      "case_id": "development-record-050",
+      "category": "protected_state_update",
+      "content_hash": "19cd83e9ec12ed7f9c540b2ab6cac7b81c93262902e802a1a3e859f59f00ac0d",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 50
+    },
+    {
+      "case_id": "development-record-051",
+      "category": "protected_state_update",
+      "content_hash": "72d99b267d4b313086183a574a2c3806be731a198cc5aa51b073b174682489cf",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 51
+    },
+    {
+      "case_id": "development-record-052",
+      "category": "protected_state_update",
+      "content_hash": "b18ac90b97122fedfd27185731e7d267ce1132232f4825afd0e230510d2890f0",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 52
+    },
+    {
+      "case_id": "development-record-053",
+      "category": "protected_state_update",
+      "content_hash": "28fc576973ca9ccfd8d602dbfbf480b0abf3b87d5371ec6944e4016a293ac0d8",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 53
+    },
+    {
+      "case_id": "development-record-054",
+      "category": "protected_state_update",
+      "content_hash": "98c04e26cad222f53d50ab1a4506c4ed8c9b034abbfdf6a83df9551ddc1a2f1d",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 54
+    },
+    {
+      "case_id": "development-record-055",
+      "category": "protected_state_update",
+      "content_hash": "a79596908d7a9d8d65fb9b552aa6e0f4e3939db60ce80b51dce22735920dfce1",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 55
+    },
+    {
+      "case_id": "development-record-056",
+      "category": "protected_state_update",
+      "content_hash": "608e3272225107da3f54d4f113c925a1cb0e371d2ed9ce6c99f91f8f49f7656d",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 56
+    },
+    {
+      "case_id": "development-record-057",
+      "category": "protected_state_update",
+      "content_hash": "76d6bddb43e1142b7dfed2c02173811e7f5fc0f53c601c387851be0b9636c668",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 57
+    },
+    {
+      "case_id": "development-record-058",
+      "category": "protected_state_update",
+      "content_hash": "531b6f63e8550a7f99a66b6277220408302b16e98797be99af7559a80dd05284",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 58
+    },
+    {
+      "case_id": "development-record-059",
+      "category": "protected_state_update",
+      "content_hash": "b511285cdc2a172d7e6d347ded96e0efc9d92ada3032f3bbc71080687772cb64",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 59
+    },
+    {
+      "case_id": "development-record-060",
+      "category": "protected_state_update",
+      "content_hash": "553a42128774408f86cf6714674e1563fe7d29932d0efaca143e0a2cf6f25929",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 60
+    },
+    {
+      "case_id": "development-record-061",
+      "category": "protected_state_update",
+      "content_hash": "2030f37fab462ec21a7cf04ff11fcde0ffdce8d0a49930f18eed208b76387545",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 61
+    },
+    {
+      "case_id": "development-record-062",
+      "category": "protected_state_update",
+      "content_hash": "f1702e8df326ebbf3c12df6b0cfb7d8d66ee9c712fb6e90433bf533f373c90e4",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 62
+    },
+    {
+      "case_id": "development-record-063",
+      "category": "protected_state_update",
+      "content_hash": "f61be2622a078dbaf50503ca799c601ef343d11703f108b583f4851edcb7e555",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "development",
+      "template_version": "2.0",
+      "variant_index": 63
+    },
+    {
+      "case_id": "evaluation-catalog-000",
+      "category": "instruction_override",
+      "content_hash": "30261062a5bc010c4c876f007b3e5585a28441da03634b11ac8ac26289f979c9",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 0
+    },
+    {
+      "case_id": "evaluation-catalog-001",
+      "category": "instruction_override",
+      "content_hash": "8709d003065a0606515ca7583015937191f21fdca15ee000abe0f242a2a60b4d",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 1
+    },
+    {
+      "case_id": "evaluation-catalog-002",
+      "category": "instruction_override",
+      "content_hash": "b16740dc6ec12376c8536e4188514274f2f8f8e935032ada0c2588ea6af3dbec",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 2
+    },
+    {
+      "case_id": "evaluation-catalog-003",
+      "category": "instruction_override",
+      "content_hash": "eadf4de05739330945f0b1a72aed12d6dcd6c6411f28e64ca364f7738155c001",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 3
+    },
+    {
+      "case_id": "evaluation-catalog-004",
+      "category": "instruction_override",
+      "content_hash": "cb8a34494849f01ad421b91d3dc55d1cecf0f3c65831fe6cb09485535b7f97bf",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 4
+    },
+    {
+      "case_id": "evaluation-catalog-005",
+      "category": "instruction_override",
+      "content_hash": "5115f69c11dda4551cd0b47473ebe5852ce73b0c910ceba81c9659c4829d0ec6",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 5
+    },
+    {
+      "case_id": "evaluation-catalog-006",
+      "category": "instruction_override",
+      "content_hash": "5c862a08db29fef3f8816eca9066ab04c3ad83b91f56ebb263afc03f0b10f2c9",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 6
+    },
+    {
+      "case_id": "evaluation-catalog-007",
+      "category": "instruction_override",
+      "content_hash": "ecdaf2466a896fc7efcc151e4b53e495b68f528b5b2bcf6429edd7921e4995b4",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 7
+    },
+    {
+      "case_id": "evaluation-catalog-008",
+      "category": "instruction_override",
+      "content_hash": "3d43802bc399e84ef7d0a82a81d80aeb004b750b844567c151978c60b0460831",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 8
+    },
+    {
+      "case_id": "evaluation-catalog-009",
+      "category": "instruction_override",
+      "content_hash": "d2664043de2cc1f51588201e2f0d29f65a8f8101a42ef8d5a742b77b54078a88",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 9
+    },
+    {
+      "case_id": "evaluation-catalog-010",
+      "category": "instruction_override",
+      "content_hash": "8bd8b5b51c77a79919f201ccd50e2c113554ef10c88578efa68ca4388c6f44cd",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 10
+    },
+    {
+      "case_id": "evaluation-catalog-011",
+      "category": "instruction_override",
+      "content_hash": "f384f766cbc385220c36210094de65ecda4c9adab80faadacc62aebd9ec14449",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 11
+    },
+    {
+      "case_id": "evaluation-catalog-012",
+      "category": "instruction_override",
+      "content_hash": "517d0f8c59d7a61fb0ec4f8b3c457d844270db9ef5f1aabfe7678d2c10e03d67",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 12
+    },
+    {
+      "case_id": "evaluation-catalog-013",
+      "category": "instruction_override",
+      "content_hash": "edf82d2b3dca3b771284b5fd29cd1be3ed42cdb53ac781daed262079efc8710d",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 13
+    },
+    {
+      "case_id": "evaluation-catalog-014",
+      "category": "instruction_override",
+      "content_hash": "09fa921fac91eb713fe67a208c7b062d93b74b4ef80f29d71e1f3c5130d3a85b",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 14
+    },
+    {
+      "case_id": "evaluation-catalog-015",
+      "category": "instruction_override",
+      "content_hash": "5f4e480fc8f8e2deccc2233f0fbfb31cd8d7724a24db6c4c8df39314fbf645ed",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 15
+    },
+    {
+      "case_id": "evaluation-catalog-016",
+      "category": "instruction_override",
+      "content_hash": "e023730df0ce544880dee0c4a888b32d56976012e5e4bd6cb2a3f2bd168b99e6",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 16
+    },
+    {
+      "case_id": "evaluation-catalog-017",
+      "category": "instruction_override",
+      "content_hash": "c3a88bd3bc89e15fca5129c95db4ddb365fc59934f68dd97896f2d5a125f18ce",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 17
+    },
+    {
+      "case_id": "evaluation-catalog-018",
+      "category": "instruction_override",
+      "content_hash": "08e8ea3a2eec014eac70618f49a08ba2830c3f6754f0f8cdd1e3659ab3e617bf",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 18
+    },
+    {
+      "case_id": "evaluation-catalog-019",
+      "category": "instruction_override",
+      "content_hash": "872176856f8ad3962311fb2c708f0a6484bf27a6d9511237af4b6d95f333b762",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 19
+    },
+    {
+      "case_id": "evaluation-catalog-020",
+      "category": "instruction_override",
+      "content_hash": "47e8ae1632267fd812bb0811a83c98e72e54fcd8cc1dcd044b10e6a0e01bcd96",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 20
+    },
+    {
+      "case_id": "evaluation-catalog-021",
+      "category": "instruction_override",
+      "content_hash": "2582dca6ae62522e43ef3f0a827589ad893b1073a5081488b7aeba3eef0a3338",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 21
+    },
+    {
+      "case_id": "evaluation-catalog-022",
+      "category": "instruction_override",
+      "content_hash": "92a111417acb372eeaaa5f3bb76f648cff1fe44c82706d7f4f64b8523fa01976",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 22
+    },
+    {
+      "case_id": "evaluation-catalog-023",
+      "category": "instruction_override",
+      "content_hash": "2077fc94cf892b7c46afb4d88537ceb3fbf914b6b9df49d2f920fde7452d9ce6",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 23
+    },
+    {
+      "case_id": "evaluation-catalog-024",
+      "category": "instruction_override",
+      "content_hash": "d0cddf28f4aa337ba9699cea412f1a1d1f339dd0146d43b78817d8e5ea71de92",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 24
+    },
+    {
+      "case_id": "evaluation-catalog-025",
+      "category": "instruction_override",
+      "content_hash": "852ec86ef90a1ad7f452bd14cb0baf3248bce736ed752d295a9cdc1b829c04d2",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 25
+    },
+    {
+      "case_id": "evaluation-catalog-026",
+      "category": "instruction_override",
+      "content_hash": "dd79cfaf168a4df2522893e08e0e62f116ca95913b8642b36a5606be789e6aa4",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 26
+    },
+    {
+      "case_id": "evaluation-catalog-027",
+      "category": "instruction_override",
+      "content_hash": "41d41f404e02c1427490b67b9fad952273a6540ad57e8b48e1dfde61a490997f",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 27
+    },
+    {
+      "case_id": "evaluation-catalog-028",
+      "category": "instruction_override",
+      "content_hash": "f9fc6fdadc8a871e3bca31a26e3ef4a2955e120b48c57de2b478acb31db19e8d",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 28
+    },
+    {
+      "case_id": "evaluation-catalog-029",
+      "category": "instruction_override",
+      "content_hash": "60df794fd6fad29612eeed5dc9d864ecc7b0356e6484f2ce0a5192073166ca9f",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 29
+    },
+    {
+      "case_id": "evaluation-catalog-030",
+      "category": "instruction_override",
+      "content_hash": "ebe11a20cc8fdc0bc3f282f96800d244d23a008debcd3bf9ebd90e74e6f6e028",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 30
+    },
+    {
+      "case_id": "evaluation-catalog-031",
+      "category": "instruction_override",
+      "content_hash": "3ed7761aa5b1eca50ef4c963e135c2718d555f57241fb85b088ae5da57e9d94a",
+      "family": "catalog",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 31
+    },
+    {
+      "case_id": "evaluation-patch-000",
+      "category": "evaluator_field_tampering",
+      "content_hash": "80121c6047217a60ae5abd01957039f5c79037e55a71d7c89b56914234064a00",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 0
+    },
+    {
+      "case_id": "evaluation-patch-001",
+      "category": "evaluator_field_tampering",
+      "content_hash": "4841b80be43a1fb1cc6e6ccd4343d3fbdd84d532ba151f6f51f52840c37c9464",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 1
+    },
+    {
+      "case_id": "evaluation-patch-002",
+      "category": "evaluator_field_tampering",
+      "content_hash": "967d8dd1a9b9f8c5698e15a293c979bfc338c5af1cec16dffdc990a1e966c597",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 2
+    },
+    {
+      "case_id": "evaluation-patch-003",
+      "category": "evaluator_field_tampering",
+      "content_hash": "e4ce99ffd60d164e9a7e58a8ef48587c29098d375ddaab01a665b5f8a93ab8ed",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 3
+    },
+    {
+      "case_id": "evaluation-patch-004",
+      "category": "evaluator_field_tampering",
+      "content_hash": "b83a7c6dbb1ddde940997e690a29e5edaaef439cc0bff24b1b6610a011e38b0d",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 4
+    },
+    {
+      "case_id": "evaluation-patch-005",
+      "category": "evaluator_field_tampering",
+      "content_hash": "87648dfa6e5633bf70131a3f6af0e8d3a29c73495fa73cf5282eb9b62bec9f37",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 5
+    },
+    {
+      "case_id": "evaluation-patch-006",
+      "category": "evaluator_field_tampering",
+      "content_hash": "2bcc628eb840fe7ade70a9a3e90743a394d3cdc09d786d7fb0f7cb439e6fcf15",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 6
+    },
+    {
+      "case_id": "evaluation-patch-007",
+      "category": "evaluator_field_tampering",
+      "content_hash": "fbd9f5f46799d104504c2467e0fd27c5d21703f2afd4b328adf99159cd5cb138",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 7
+    },
+    {
+      "case_id": "evaluation-patch-008",
+      "category": "evaluator_field_tampering",
+      "content_hash": "ae1811bd032b41ec5e760f04e7a4af54af868608138865ccd8b20bd8910116d4",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 8
+    },
+    {
+      "case_id": "evaluation-patch-009",
+      "category": "evaluator_field_tampering",
+      "content_hash": "ad02b57755b414fd37746ee661fc420a6f1d3714d53f665f14de160697fd8bba",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 9
+    },
+    {
+      "case_id": "evaluation-patch-010",
+      "category": "evaluator_field_tampering",
+      "content_hash": "a6f1874ffa472810c2ed8593464e8624fde8ced3a71bb4500d729db6cdd9aba4",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 10
+    },
+    {
+      "case_id": "evaluation-patch-011",
+      "category": "evaluator_field_tampering",
+      "content_hash": "7159991c232e6ffc53455b77641400849936db5f716e84727d633d35b839791d",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 11
+    },
+    {
+      "case_id": "evaluation-patch-012",
+      "category": "evaluator_field_tampering",
+      "content_hash": "1cc73c057a598e189e66d8629a9fd8a9d4e531695f0737379a6211785edc1fc2",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 12
+    },
+    {
+      "case_id": "evaluation-patch-013",
+      "category": "evaluator_field_tampering",
+      "content_hash": "5b460cff3fb08f8a07b6e829e9c50582bceb4e72821ed46d2712c3ead15e8665",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 13
+    },
+    {
+      "case_id": "evaluation-patch-014",
+      "category": "evaluator_field_tampering",
+      "content_hash": "a205bd4299c032ff6827a18d8d6ffb6634193df0284a57c3cb1d2f3648961f41",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 14
+    },
+    {
+      "case_id": "evaluation-patch-015",
+      "category": "evaluator_field_tampering",
+      "content_hash": "67c6e7d424a46857b8744f371e6ffbefe511d1ae4c17034c46103905d5e96919",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 15
+    },
+    {
+      "case_id": "evaluation-patch-016",
+      "category": "evaluator_field_tampering",
+      "content_hash": "1421abdbdebcea2e8ab9b686d15e28c888a340eb99c045867096873a3efe472f",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 16
+    },
+    {
+      "case_id": "evaluation-patch-017",
+      "category": "evaluator_field_tampering",
+      "content_hash": "7541f043932ff6e08b98ea86d72ea1351d2ad4add412d970652a1a713f47bb4e",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 17
+    },
+    {
+      "case_id": "evaluation-patch-018",
+      "category": "evaluator_field_tampering",
+      "content_hash": "0ff169efc39b444bc4a1517f243f5900422bed04ae75f57b698fbfac9dac40e4",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 18
+    },
+    {
+      "case_id": "evaluation-patch-019",
+      "category": "evaluator_field_tampering",
+      "content_hash": "b3a4d541a487e13cb485fa7940dffd22b1bc20dc522c30544ed002fa3f45c59e",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 19
+    },
+    {
+      "case_id": "evaluation-patch-020",
+      "category": "evaluator_field_tampering",
+      "content_hash": "0c2ba38dd702df621fe014c1242f48ba3641ca03bfca765eb6a4bc98eeadd352",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 20
+    },
+    {
+      "case_id": "evaluation-patch-021",
+      "category": "evaluator_field_tampering",
+      "content_hash": "f66ee9b5b27c6e7afa5a71ebf2909e694348d1b84b6e7549fc5a926468afa537",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 21
+    },
+    {
+      "case_id": "evaluation-patch-022",
+      "category": "evaluator_field_tampering",
+      "content_hash": "5d0652110156d746dd7db64550ae0fc85d491fc81d567583cf85fbc391a44698",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 22
+    },
+    {
+      "case_id": "evaluation-patch-023",
+      "category": "evaluator_field_tampering",
+      "content_hash": "63bc9ea2d7d6ddb7151e477b67fef63a6885b95850af58b38bb0eb8fd7299df8",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 23
+    },
+    {
+      "case_id": "evaluation-patch-024",
+      "category": "evaluator_field_tampering",
+      "content_hash": "e956a808c898bc6c456eadf16440251adde1f34168869b6ac47c28387266d1a7",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 24
+    },
+    {
+      "case_id": "evaluation-patch-025",
+      "category": "evaluator_field_tampering",
+      "content_hash": "e08d5659228978237c1f1175d825684b5ef3de58076e56cdef3bd0761303ef5c",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 25
+    },
+    {
+      "case_id": "evaluation-patch-026",
+      "category": "evaluator_field_tampering",
+      "content_hash": "5841cdda8d63aeb6e0880178978ac02d25c9b5a79843a97a050beba64457bc52",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 26
+    },
+    {
+      "case_id": "evaluation-patch-027",
+      "category": "evaluator_field_tampering",
+      "content_hash": "1c446aff9d8a52e5b387bbe22ad415d42523edbe8c5fc11b3458e0936406e22c",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 27
+    },
+    {
+      "case_id": "evaluation-patch-028",
+      "category": "evaluator_field_tampering",
+      "content_hash": "76254e00280dfef0e3d8c3e9801d09ac8c67ca875343bbdbf847c10705027276",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 28
+    },
+    {
+      "case_id": "evaluation-patch-029",
+      "category": "evaluator_field_tampering",
+      "content_hash": "43a3c147f80e9454cb9ef35a08a1a9908941e3501a91b886caaaa15e22391294",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 29
+    },
+    {
+      "case_id": "evaluation-patch-030",
+      "category": "evaluator_field_tampering",
+      "content_hash": "1ae3a4412d5bf4a2f427a41f98f6aced4a4e68499ca35f8bd01179a517ce1727",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 30
+    },
+    {
+      "case_id": "evaluation-patch-031",
+      "category": "evaluator_field_tampering",
+      "content_hash": "21ef583035a39ad02badd08e60910eb3dbd87ba80e4aaf9b767d54366e21fe45",
+      "family": "patch",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 31
+    },
+    {
+      "case_id": "evaluation-provenance-000",
+      "category": "source_fabrication",
+      "content_hash": "41dc1cb83bc66e55b05609a4144a7fe61d1940d9c8838a3d801ddd0a88033045",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 0
+    },
+    {
+      "case_id": "evaluation-provenance-001",
+      "category": "source_fabrication",
+      "content_hash": "c9e5d7cf93ee4686fbbb3a462ae22eb2264f3f76b709f4bd7dff8a142c0741cd",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 1
+    },
+    {
+      "case_id": "evaluation-provenance-002",
+      "category": "source_fabrication",
+      "content_hash": "b3cdae1f69dba916d3562d314b9b48a9e7ccafbc339571b58320089d88289e9e",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 2
+    },
+    {
+      "case_id": "evaluation-provenance-003",
+      "category": "source_fabrication",
+      "content_hash": "12dab79e1ad158d8c71b03011f4b9365adaeb3ddd5b239b29af411ba2a7e2537",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 3
+    },
+    {
+      "case_id": "evaluation-provenance-004",
+      "category": "source_fabrication",
+      "content_hash": "ebdac42398405759b96a177fc8537d67f5fd3ab5d03c71a6448eabebc88ab921",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 4
+    },
+    {
+      "case_id": "evaluation-provenance-005",
+      "category": "source_fabrication",
+      "content_hash": "8bd2dba2e639178cf7a24485e45cbb46030fdf10a89570b1183894d625c49760",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 5
+    },
+    {
+      "case_id": "evaluation-provenance-006",
+      "category": "source_fabrication",
+      "content_hash": "87f55a3fd6942a762cdcb15da8e765f7c7b1d7f910d6545ba204e532c023e3f8",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 6
+    },
+    {
+      "case_id": "evaluation-provenance-007",
+      "category": "source_fabrication",
+      "content_hash": "0b8ff89ce8b3171f384d5a76eebf9e8ef93c5cce7337bfea201fad1088c59022",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 7
+    },
+    {
+      "case_id": "evaluation-provenance-008",
+      "category": "source_fabrication",
+      "content_hash": "c68ad47b025de8d3d2a46e577a155cf617141eb3c3ecf945e53a49ca2f16a38c",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 8
+    },
+    {
+      "case_id": "evaluation-provenance-009",
+      "category": "source_fabrication",
+      "content_hash": "7bdca921858799852447d5b02aa32f84bd7b810d8eab36148b67749bab15fb08",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 9
+    },
+    {
+      "case_id": "evaluation-provenance-010",
+      "category": "source_fabrication",
+      "content_hash": "b29eb40768ced020257905df74df74ac70e22196b3dc2e30bf842ab2a0cc2360",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 10
+    },
+    {
+      "case_id": "evaluation-provenance-011",
+      "category": "source_fabrication",
+      "content_hash": "ceec10765940173e8334f486f7c2524e852d21fea66f5d92b20a671dc10d03bc",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 11
+    },
+    {
+      "case_id": "evaluation-provenance-012",
+      "category": "source_fabrication",
+      "content_hash": "9451156c1a5ae3ad55bc076d414b8b6094e65216219036030f38cdcef6609e66",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 12
+    },
+    {
+      "case_id": "evaluation-provenance-013",
+      "category": "source_fabrication",
+      "content_hash": "210a7a7833ef85f213010208ff4039907d44bebd774f0153f730acdbfe7a3e95",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 13
+    },
+    {
+      "case_id": "evaluation-provenance-014",
+      "category": "source_fabrication",
+      "content_hash": "70af021b088b748cad31df38126bc92a7823bc3039d97da098a292f5389aa6c1",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 14
+    },
+    {
+      "case_id": "evaluation-provenance-015",
+      "category": "source_fabrication",
+      "content_hash": "158ff4a21e19bcf5b00bde262c7a45d3fbbf9d8877929179df7253f0f052ad3f",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 15
+    },
+    {
+      "case_id": "evaluation-provenance-016",
+      "category": "source_fabrication",
+      "content_hash": "8a5a25ecccb1b655c13cc33d7b2d0c5a26c11de6626afafadd3fdf19d2b42467",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 16
+    },
+    {
+      "case_id": "evaluation-provenance-017",
+      "category": "source_fabrication",
+      "content_hash": "71909f3a134e7d67c5b14c426885735d8ef1ae08f56cb88b549ff7d7fe9fe423",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 17
+    },
+    {
+      "case_id": "evaluation-provenance-018",
+      "category": "source_fabrication",
+      "content_hash": "d15054388cc42753fed8fa8a827b34ca9511d5fd1d7dc6646dfe708709e72217",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 18
+    },
+    {
+      "case_id": "evaluation-provenance-019",
+      "category": "source_fabrication",
+      "content_hash": "43b73040927f9f4e5f66c7207889f02c8314705d29b30f1dcbe8d664fcc127d0",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 19
+    },
+    {
+      "case_id": "evaluation-provenance-020",
+      "category": "source_fabrication",
+      "content_hash": "de4324534431e71314abe7b6978a6fd62426c0c8b2f3ba8e88b1bfdec205ac53",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 20
+    },
+    {
+      "case_id": "evaluation-provenance-021",
+      "category": "source_fabrication",
+      "content_hash": "141ced6cc766ccf854ed3477064d052f123d4a1a11b3f521ca3f31d49c29d556",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 21
+    },
+    {
+      "case_id": "evaluation-provenance-022",
+      "category": "source_fabrication",
+      "content_hash": "ef2089d10395bcec4da61b19b2ec4bec11b16969a14cd52141ec5607a722e3c2",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 22
+    },
+    {
+      "case_id": "evaluation-provenance-023",
+      "category": "source_fabrication",
+      "content_hash": "6c4575dd53ba6fd6886b53020044c1ee1396f68cdcf3c6ea422fcfe67352cc1b",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 23
+    },
+    {
+      "case_id": "evaluation-provenance-024",
+      "category": "source_fabrication",
+      "content_hash": "ab427035d7e8909c07fdec336338546308d342e79dbcfdcc9cf3eb49b589d1b7",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 24
+    },
+    {
+      "case_id": "evaluation-provenance-025",
+      "category": "source_fabrication",
+      "content_hash": "c341597de7994f994d27a8203b536c4a312d973d8162b13e4df36f04a916da61",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 25
+    },
+    {
+      "case_id": "evaluation-provenance-026",
+      "category": "source_fabrication",
+      "content_hash": "1ad2da48dd23b6d8a989376ee1228c478cb4c5ed7659bc7c568ba79b0ec238fc",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 26
+    },
+    {
+      "case_id": "evaluation-provenance-027",
+      "category": "source_fabrication",
+      "content_hash": "030fbac13d67b62fbe6b2be5d1d02fb51f43bc4db69a6202858c300fd7dda77e",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 27
+    },
+    {
+      "case_id": "evaluation-provenance-028",
+      "category": "source_fabrication",
+      "content_hash": "40b8c08db02fdcf375b0bc6f29a37814d24a67bc6f4a51c0bfab13a8a4265f6b",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 28
+    },
+    {
+      "case_id": "evaluation-provenance-029",
+      "category": "source_fabrication",
+      "content_hash": "007ae2020f1944b7df6957770db2fc8852a169d1f77a935518e48c235b89aada",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 29
+    },
+    {
+      "case_id": "evaluation-provenance-030",
+      "category": "source_fabrication",
+      "content_hash": "5825b25ca6beab2c71650d16169beac0f29abce349f97c06d101ec59690fd4a5",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 30
+    },
+    {
+      "case_id": "evaluation-provenance-031",
+      "category": "source_fabrication",
+      "content_hash": "aeb0b71a1df2e3ffebb56e9f5d0f850d52363e324e005e3ca0f2d47fabf21943",
+      "family": "provenance",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 31
+    },
+    {
+      "case_id": "evaluation-record-000",
+      "category": "protected_state_update",
+      "content_hash": "14606beb3c5baea252656c18fc56e73a51ce3f25ce6f3ffaec398f8770330c0a",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 0
+    },
+    {
+      "case_id": "evaluation-record-001",
+      "category": "protected_state_update",
+      "content_hash": "c05a2b53ce3f59f0942fc93299aa590a43d505d299db6333a29c432cd5f4e294",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 1
+    },
+    {
+      "case_id": "evaluation-record-002",
+      "category": "protected_state_update",
+      "content_hash": "a519a4a9a801f33a9b5a98c4dc710fe4cc094cfa274ece99f5baa46010c9b976",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 2
+    },
+    {
+      "case_id": "evaluation-record-003",
+      "category": "protected_state_update",
+      "content_hash": "40459289b2d9737b4bcad5be91a7eaf7e94b8cc9c699afbc8b50561d7345441c",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 3
+    },
+    {
+      "case_id": "evaluation-record-004",
+      "category": "protected_state_update",
+      "content_hash": "c65fe4d8908b8c33c31049194803acbb7eabe365361a9ccdf6b1986275ce234a",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 4
+    },
+    {
+      "case_id": "evaluation-record-005",
+      "category": "protected_state_update",
+      "content_hash": "46d3f56025e654d6463ec8e14b5e32fba9ac6f0562b4111d1b4037b960499a71",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 5
+    },
+    {
+      "case_id": "evaluation-record-006",
+      "category": "protected_state_update",
+      "content_hash": "88428908bf326454d7a1b4b3bf28fa5e34179121d33fe497b7cbacdeb9464343",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 6
+    },
+    {
+      "case_id": "evaluation-record-007",
+      "category": "protected_state_update",
+      "content_hash": "e58fda8d86b46debd1814d905bfe85d063e14afeb3749b251d1dfedf1e439a61",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 7
+    },
+    {
+      "case_id": "evaluation-record-008",
+      "category": "protected_state_update",
+      "content_hash": "5cd37343b69eeb7da6461c8e37fca143aae50b367888653614903083e595c2d0",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 8
+    },
+    {
+      "case_id": "evaluation-record-009",
+      "category": "protected_state_update",
+      "content_hash": "fc71271b614c67acdb5ad6582b8dcc19974d342e075d5ca4cef5c25c066a6550",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 9
+    },
+    {
+      "case_id": "evaluation-record-010",
+      "category": "protected_state_update",
+      "content_hash": "5944176b0d3da6811f142cb7f9e84dd2a9299ffa296586419f893cf4150fec1a",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 10
+    },
+    {
+      "case_id": "evaluation-record-011",
+      "category": "protected_state_update",
+      "content_hash": "20b5ac6507f91245babc1326eedb4f92027d74e8cc228a5e3cc11d8512cefbc0",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 11
+    },
+    {
+      "case_id": "evaluation-record-012",
+      "category": "protected_state_update",
+      "content_hash": "2c4c08b8c71fa3a3bd94e92f35d7e655769199713a45a07bc14a7e8f9e51a85d",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 12
+    },
+    {
+      "case_id": "evaluation-record-013",
+      "category": "protected_state_update",
+      "content_hash": "7059aa4b73da4535d7d4a5c2225c4397a0bd8486a279573cddbfd0ca7705f1c5",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 13
+    },
+    {
+      "case_id": "evaluation-record-014",
+      "category": "protected_state_update",
+      "content_hash": "518f5193f6873d5f4590edfcb2a465efec465814a1dd4775e727cc7841a97657",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 14
+    },
+    {
+      "case_id": "evaluation-record-015",
+      "category": "protected_state_update",
+      "content_hash": "8275178da208c17be979fd7091ba48d3f3c67bdcaf4d0402b7bb43af8827820b",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 15
+    },
+    {
+      "case_id": "evaluation-record-016",
+      "category": "protected_state_update",
+      "content_hash": "25d76f9fd7bfcd4890ee75006a2fa7da53d52d6e09e1999158624bbbaaf93417",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 16
+    },
+    {
+      "case_id": "evaluation-record-017",
+      "category": "protected_state_update",
+      "content_hash": "302f73166db55c57764f8701751a53a0b1963de128ae5b0f56ff913a90413d9d",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 17
+    },
+    {
+      "case_id": "evaluation-record-018",
+      "category": "protected_state_update",
+      "content_hash": "510818f5947b39753e733a1eb5741da9470aa95e181713f4882a2fe7e7b32718",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 18
+    },
+    {
+      "case_id": "evaluation-record-019",
+      "category": "protected_state_update",
+      "content_hash": "4acf66b0f1447fd14ed33f3fed56bf31da217a01a2990aab83af57420261f743",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 19
+    },
+    {
+      "case_id": "evaluation-record-020",
+      "category": "protected_state_update",
+      "content_hash": "9ce342df641dc6afa5d17f4d539d12fb7b4bbc57521be67a9f32620a48cc1d24",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 20
+    },
+    {
+      "case_id": "evaluation-record-021",
+      "category": "protected_state_update",
+      "content_hash": "767edfa78592e2591adcf9bab7d330317b72871d3c30959700403957b782eebf",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 21
+    },
+    {
+      "case_id": "evaluation-record-022",
+      "category": "protected_state_update",
+      "content_hash": "0a0bddeeaccec2392612abbb3e6f4ebc2b64ad0a7dd4ff46f1d74a0eeb0e4de1",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 22
+    },
+    {
+      "case_id": "evaluation-record-023",
+      "category": "protected_state_update",
+      "content_hash": "e3e943abeed66b49ff446142f7cde64d4cfb3f9ed918475973a53c6d92933f44",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 23
+    },
+    {
+      "case_id": "evaluation-record-024",
+      "category": "protected_state_update",
+      "content_hash": "17a27268ecbd87fe3136c3884bc1bea04af6a67b960c297bec8ae8e493f06a71",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 24
+    },
+    {
+      "case_id": "evaluation-record-025",
+      "category": "protected_state_update",
+      "content_hash": "2ab9d6e73597f210f649fcbd4ad83832c4c893e96404084a4894fd3633f48a7c",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 25
+    },
+    {
+      "case_id": "evaluation-record-026",
+      "category": "protected_state_update",
+      "content_hash": "9a91055b3c74f4733288936d2c736aaffbe4ab8934a3eb5cc13b162bf934d2fa",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 26
+    },
+    {
+      "case_id": "evaluation-record-027",
+      "category": "protected_state_update",
+      "content_hash": "2600d0c3642cf9d45ff7efe2dd27da68548a61990c9b1f21d131f8353cf02495",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 27
+    },
+    {
+      "case_id": "evaluation-record-028",
+      "category": "protected_state_update",
+      "content_hash": "dd461adc6b4835fbed4b58c8e00e74ad47057ff2bd65bde2011001d3749248c9",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 28
+    },
+    {
+      "case_id": "evaluation-record-029",
+      "category": "protected_state_update",
+      "content_hash": "4143c5aa352628bc3830871874194ea67c2e621089c4a250c2b0cff699820705",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 29
+    },
+    {
+      "case_id": "evaluation-record-030",
+      "category": "protected_state_update",
+      "content_hash": "8d9c22863bf08b3b6872229a9bd3441ab792089ee0be38c1e09edc0d848ac9d7",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 30
+    },
+    {
+      "case_id": "evaluation-record-031",
+      "category": "protected_state_update",
+      "content_hash": "d2dcd42cf50d4d5f11fa6509431c9ef622394c937a4e3efea7e5bcaabbf26ce7",
+      "family": "record",
+      "generation_method": "deterministic_template_variant",
+      "split": "evaluation",
+      "template_version": "2.0",
+      "variant_index": 31
+    }
+  ],
+  "schema_version": "1.0",
+  "template_family_count": 4
+}

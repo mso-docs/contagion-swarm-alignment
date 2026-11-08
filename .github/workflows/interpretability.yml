@@ -1,0 +1,28 @@
+name: TransformerLens offline measurement smoke
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: '3.11'
+      - name: Install isolated supported worker
+        run: python scripts/setup_interpretability.py
+      - name: Capture actual random-model tensors offline (not trained-model evidence)
+        env:
+          HF_HUB_OFFLINE: '1'
+          TRANSFORMERS_OFFLINE: '1'
+          WANDB_MODE: disabled
+        run: .venv-interp/bin/python scripts/capture_neural.py --mode random-smoke --out results/neural-smoke
+      - name: Validate the measured numeric capture
+        run: |
+          .venv-interp/bin/python -c "import json; from pathlib import Path; from contagion.neural import validate_numeric_capture; validate_numeric_capture(json.loads(Path('results/neural-smoke/capture.json').read_text()))"
+      # Private tensors/prompts are deliberately not uploaded or deployed by this workflow.

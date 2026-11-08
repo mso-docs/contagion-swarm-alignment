@@ -1,0 +1,14 @@
+protocol_version: '2.0'
+split: evaluation
+research_question: rq1
+families: [catalog, provenance, patch]
+case_indices: [0]
+seeds: [10101, 10202, 10303]
+topologies: [ring, star, complete]
+interventions: [none, benign_override]
+rounds: 5
+model: mock-v1
+thinking: disabled
+max_output_tokens: 512
+max_model_calls: 25
+max_total_model_calls: 1350

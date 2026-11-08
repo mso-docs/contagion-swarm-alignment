@@ -21,3 +21,7 @@ dashboard/data/*.tmp
 *.key
 *.p12
 *.pfx
+.venv-interp/
+*.safetensors
+
+.venv-worker/

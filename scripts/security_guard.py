@@ -28,7 +28,7 @@ def blocked_path(name):
     path = Path(name)
     if path.is_absolute() or '..' in path.parts or any(ord(c) < 32 for c in name):
         return True
-    private = {'.git', '.venv', '.cache', '.aws', '.ssh', 'results', 'site-dist', 'security-reports'}
+    private = {'.git', '.venv', '.venv-interp', '.venv-worker', '.cache', '.aws', '.ssh', 'results', 'site-dist', 'security-reports'}
     if any(part.casefold() in private for part in path.parts):
         return True
     if path.name.casefold().startswith('.env') and path.name != '.env.example':
@@ -37,7 +37,7 @@ def blocked_path(name):
         return True
     if path.suffix == '.jsonl' and not re.fullmatch(r'tests/fixtures/mock_run/[^/]+/events\.jsonl', name):
         return True
-    if name.startswith('dashboard/data/') and name != 'dashboard/data/results.json':
+    if name.startswith('dashboard/data/') and name not in {'dashboard/data/results.json', 'dashboard/data/research.json'}:
         return True
     return False
 
@@ -54,6 +54,10 @@ def private_values(root, env):
         host = urlsplit(endpoint).hostname
         if host and host not in {'localhost', '127.0.0.1', '::1'}:
             result.add(host)
+    for key in ['PRIMARY_SERVER_ID','SECONDARY_SERVER_ID','PRIMARY_PROJECT_DIR','SECONDARY_PROJECT_DIR']:
+        if values.get(key):result.add(values[key])
+    for key in ['PRIMARY_SERVER_ID','SECONDARY_SERVER_ID']:
+        if values.get(key):result.add(values[key].rsplit('@',1)[-1])
     for key in ['HOME']:
         if env.get(key):
             result.add(env[key])
@@ -106,6 +110,16 @@ def check(root, mode, scan=False, env=None):
                 validate_snapshot(path, env=values)
         except Exception:
             findings.append(('dashboard/data/results.json', 'public schema/privacy validation failed'))
+    research = blobs.get('dashboard/data/research.json')
+    if research is not None:
+        try:
+            from contagion.research_publication import validate_research_snapshot
+            with tempfile.TemporaryDirectory() as temp:
+                path = Path(temp) / 'research.json'
+                path.write_bytes(research)
+                validate_research_snapshot(path, env=values)
+        except Exception:
+            findings.append(('dashboard/data/research.json', 'public research schema/privacy validation failed'))
     for name, reason in findings:
         safe = '[redacted path]' if any(value in name for value in known) else ascii(name)
         print(f'Blocked {safe}: {reason}', file=sys.stderr)
