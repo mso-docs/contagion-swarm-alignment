@@ -42,7 +42,7 @@ def blocked_path(name):
         return True
     if path.suffix.casefold() == '.jsonl' and not re.fullmatch(r'tests/fixtures/mock_run/[^/]+/events\.jsonl', name):
         return True
-    if name.startswith('dashboard/data/') and name not in {'dashboard/data/results.json', 'dashboard/data/research.json', 'dashboard/data/repositories.json'} and not re.fullmatch(r'dashboard/data/studies/[a-f0-9]{16}\.json',name):
+    if name.startswith('dashboard/data/') and name not in {'dashboard/data/results.json', 'dashboard/data/research.json', 'dashboard/data/repositories.json', 'dashboard/data/followups.json'} and not re.fullmatch(r'dashboard/data/studies/[a-f0-9]{16}\.json',name):
         return True
     return False
 
@@ -164,6 +164,13 @@ def check(root, mode, scan=False, env=None):
                 validate_snapshot(path, env=values)
         except Exception:
             findings.append(('dashboard/data/results.json', 'public schema/privacy validation failed'))
+    followups=blobs.get('dashboard/data/followups.json')
+    if followups is not None:
+        try:
+            from followup_publication import validate
+            with tempfile.TemporaryDirectory() as temp:
+                path=Path(temp)/'followups.json';path.write_bytes(followups);validate(path,values)
+        except Exception:findings.append(('dashboard/data/followups.json','follow-up schema/privacy validation failed'))
     repository=blobs.get('dashboard/data/repositories.json')
     if repository is not None:
         try:

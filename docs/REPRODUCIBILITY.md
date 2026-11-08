@@ -12,8 +12,10 @@
 - [x] One live paired pilot inspected; protocol/scorer frozen before batch.
 - [x] Live 18-condition RQ1 matrix and failure accounting.
 - [ ] Hardware details recorded by operator (manifest records controller OS/architecture only).
-- [ ] RQ2 implementation and leakage tests; RQ3 simulator comparison if priority gates pass.
-- [ ] Verified primary-source bibliography, official template check, research PDF and appendices.
+- [x] RQ2 implementation/leakage tests; separate RQ3 development simulator comparison.
+- [ ] Strengthened follow-up live results and human calibration.
+- [x] Verified primary-source bibliography, reconstructed official layout, compiled research PDF and appendices.
+- [ ] Final human side-by-side template and scientific review.
 - [ ] Sanitized empirical data reviewed before publication.
 
 Follow README commands. The small included mock fixture under tests/fixtures/mock_run can be analyzed without inference. All generated results elsewhere are git-ignored. Do not merge mock/live sources. A checksum verifies bytes, not the truth of a scientific claim. Live pilot/batch availability is recorded in BUILD_STATUS.md; the included fixture remains mock-only.

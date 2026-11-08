@@ -10,11 +10,11 @@
 \titleformat{\subsection}{\normalfont\fontsize{14}{17}\selectfont}{\thesubsection}{.5em}{}
 \setlength{\emergencystretch}{2em}
 \setlength{\parindent}{0pt}\setlength{\parskip}{6pt}
-\hypersetup{colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black,citecolor=blue!50!black,pdftitle={Contagion: Controlled Instruction-Boundary Failures in Agent Swarms},pdfauthor={Mackenzie O'Brien}}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,urlcolor=blue!50!black,citecolor=blue!50!black,pdftitle={Contagion: Transient Instruction-Boundary Failures in Agent Swarms},pdfauthor={Mackenzie O'Brien}}
 \graphicspath{{figures/}}
 \begin{document}
 \begin{center}
-{\titlefont\fontsize{20}{24}\selectfont Contagion: Controlled Instruction-Boundary Failures in Agent Swarms\par}
+{\titlefont\fontsize{20}{24}\selectfont Contagion: Transient Instruction-Boundary Failures in Agent Swarms\par}
 \vspace{9pt}
 Mackenzie O'Brien\\
 Independent AI Researcher, Mac Labs AI\\
@@ -33,7 +33,7 @@ We retain three research questions: \textbf{RQ1}, how communication topology aff
 Our contributions are a bounded synchronous testbed with reproducible evidence, a task-specific account of transient versus final boundary behavior, and an offline reporting workflow that preserves null and incomplete observations. The repository was initiated on November 7, 2026 for this hackathon. Existing models, hardware, libraries and cited datasets are infrastructure or prior work, not original Contagion contributions.
 
 \section{Related Work}
-Lee and Tiwari study prompt infection between LLM agents\cite{lee2024}. Contagion uses benign artifact-level boundaries and matched graph conditions to study exposure and behavior in a deliberately restricted setting. It does not reproduce open-ended autonomous compromise. The Martian Code Review Benchmark provides real pull-request review cases and curated comments\cite{martian}; our ongoing static-review adaptation withholds those comments from agents and does not yet claim the benchmark's semantic precision or recall. TransformerLens supplies checkpoint instrumentation\cite{transformerlens}; our reference replay is a separate measurement from Ollama inference, not an inferred hidden-state trace.
+Hammond et al. distinguish miscoordination, conflict and collusion\cite{hammond2025}; our boundary labels do not identify all three. AI Control studies oversight under intentional subversion\cite{greenblatt2024}; our agents are not assumed to be strategically subversive. Lee and Tiwari study prompt infection between LLM agents\cite{lee2024}. Contagion uses benign artifact-level boundaries and matched graph conditions to study exposure and behavior in a deliberately restricted setting. It does not reproduce open-ended autonomous compromise. The Martian Code Review Benchmark provides real pull-request review cases and curated comments\cite{martian}; our ongoing static-review adaptation withholds those comments from agents and does not yet claim the benchmark's semantic precision or recall. TransformerLens supplies checkpoint instrumentation\cite{transformerlens}; our reference replay is a separate measurement from Ollama inference, not an inferred hidden-state trace.
 
 \section{Methods}
 \subsection{Controlled environment and task complexity}
@@ -82,7 +82,7 @@ No catalog adoption positives occurred. Catalog monitor recall and F1 are theref
 
 \begin{figure}[htbp]\centering
 \includegraphics[width=\linewidth]{04_monitor_false_alarms.pdf}
-\caption{Catalog false-positive rates under two observation policies, using the predeclared mask seed404. Each topology line reuses four clean/injected case/seed trajectories; other mask seeds remain archived. All oracle positives are absent, so recall is undefined at every visibility. Detecting lower-trust instructions without adoption produces false alarms against the behavioral endpoint.}
+\caption{Catalog false-positive rates under two observation policies, using the predeclared mask seed404. Each topology row reuses four clean/injected case/seed trajectories; other mask seeds remain archived. All oracle positives are absent, so recall is undefined at every visibility. Detecting lower-trust instructions without adoption produces false alarms against the behavioral endpoint.}
 \label{fig:monitor}\end{figure}
 
 The RQ3 development pilot completed eight five-call comparisons (40 responses): single/team, clean/injected, and deny/permissive-simulator arms. No protected-update attempt or simulated state violation was observed; all final summaries passed the local task check. These development rows have separate source provenance and are not pooled with held-out RQ1. Equal call budgets do not equalize retained histories, aggregation opportunities or information structure.
@@ -102,7 +102,7 @@ The frozen overnight expansion adds three case indices and four seeds per family
 Contagion provides reproducible, contained evidence for task-specific transient instruction-boundary failures and subsequent recovery. The compact study found no final downstream adoption and cannot establish a topology effect, spontaneous collusion, or general model alignment. A larger frozen collection and calibrated review can strengthen these measurements without changing the original research questions.
 
 \section*{Code and Data}
-\url{https://github.com/mso-docs/contagion-swarm-alignment}. The repository contains versioned protocols, sanitized per-run summaries, numerical evidence, the analysis notebook and LaTeX source. Raw oracle logs, private endpoints and upstream source diffs remain outside public commits. Figure provenance records source seals and the evidence hash. Figures were generated in \texttt{notebooks/paper\_figures.ipynb}; no new inference is needed to rebuild this checkpoint.
+\url{https://github.com/mso-docs/contagion-swarm-alignment}. All Contagion-specific implementation began during this sprint on November 7, 2026. Existing hardware, Ollama and third-party libraries were preexisting infrastructure. The repository contains versioned protocols, sanitized per-run summaries, numerical evidence, the analysis notebook and LaTeX source. Raw oracle logs, private endpoints and upstream source diffs remain outside public commits. Figure provenance records source seals and the evidence hash. Figures were generated in \texttt{notebooks/paper\_figures.ipynb}; no new inference is needed to rebuild this checkpoint.
 
 \clearpage
 \immediate\write16{MAIN_TEXT_PAGES=\number\numexpr\value{page}-1\relax}

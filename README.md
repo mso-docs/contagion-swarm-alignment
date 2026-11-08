@@ -98,3 +98,5 @@ See [LaTeX paper and notebooks](report/README.md), [measurement plan](docs/RESEA
 ```
 
 Raw logs, private requests, credentials and tensors stay ignored. Public exports use closed schemas and heuristic redaction; review optional text before pushing. Reviewers are advisory and uncalibrated. Generated thinking is text, not a neural measurement. Random-weight activations validate instrumentation, not learned features or alignment. There are no claimed SAE meanings, fabricated SHAP values or general alignment scores.
+
+Research follow-ups, human review commands and neural coverage limits: [Confirmatory protocol](docs/CONFIRMATORY_PROTOCOL.md). Check the PDF with `.venv/bin/python scripts/submission_audit.py`; automated checks do not replace author review or submission confirmation.

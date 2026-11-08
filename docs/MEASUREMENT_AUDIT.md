@@ -19,3 +19,7 @@ This is a readiness assessment, not a declaration that every research hypothesis
 Do not use a grand total of generations as the experimental sample size. Report development, timing, mock and held-out evaluation separately. A zero-event result with three runs remains highly uncertain. Neural magnitudes, generated reasoning text and advisory model confidence are not alignment probabilities.
 
 The compact temporal audit distinguishes17 round1 patch deviations from zero final downstream violations. See `RESEARCH_MEASUREMENT_PLAN.md` and the frozen paper notebook. Intermediate-artifact review is required; final-only review would miss this observation.
+
+## Implemented follow-ups (separate evidence)
+
+Protocol4 adds capped-exposure/source-placement RQ1 controls and RQ3 context-policy controls with20calls per simulator condition. `deviation_monitor.py` evaluates intermediate patch proposals without altering final-adoption RQ2. Human/scorer/judge calibration and private golden-based repository adjudication are executable; blank labels remain pending. A linked neural replay planner performs no inference and cannot recover missing Ollama tensors. These close implementation gaps; live results and human validation are still prerequisites for stronger conclusions. See [the registered design](CONFIRMATORY_PROTOCOL.md).

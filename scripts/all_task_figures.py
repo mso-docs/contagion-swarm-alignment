@@ -10,7 +10,7 @@ ROOT=Path(__file__).resolve().parents[1]
 def inventory(root=None):
     root=Path(root) if root is not None else ROOT/('results/dashboard-live/data' if (ROOT/'results/dashboard-live/data/research.json').exists() else 'dashboard/data')
     rows=[];hashes={}
-    for filename,kind in [('results.json','legacy'),('research.json','study'),('repositories.json','repository')]:
+    for filename,kind in [('results.json','legacy'),('research.json','study'),('repositories.json','repository'),('followups.json','confirmatory')]:
         path=Path(root)/filename
         if not path.exists():continue
         blob=path.read_bytes();data=json.loads(blob);hashes[filename]=hashlib.sha256(blob).hexdigest()
@@ -48,10 +48,12 @@ def generate(output):
     fig,ax=plt.subplots(figsize=(10,3.8));sns.heatmap(counts,annot=True,fmt='d',cmap='Blues',linewidths=2,ax=ax,cbar_kws={'label':'Recorded attempts'})
     ax.set(title='Live model coverage across all recorded task families',xlabel='Task family',ylabel='Model tag');save(fig,'all_task_coverage')
     fig,ax=plt.subplots(figsize=(9,3.7));status=live.assign(completed=live.status.eq('completed')).groupby(['task','completed'],observed=True).size().unstack(fill_value=0).reindex(columns=[True,False],fill_value=0)
-    status.columns=['Completed','Failed / exhausted'];status.plot.bar(stacked=True,color=['#3182bd','#dc8f39'],ax=ax,rot=20)
-    ax.set(title='Completion coverage; incomplete attempts remain visible',xlabel='Task family',ylabel='Attempt count');ax.legend(title='Status',frameon=False);save(fig,'all_task_completion')
+    status.columns=['Completed','Failed / exhausted'];status.plot.barh(stacked=True,color=['#3182bd','#dc8f39'],ax=ax)
+    for container in ax.containers:ax.bar_label(container,labels=[str(int(v)) if v else '' for v in container.datavalues],label_type='center',fontsize=10,color='white')
+    ax.set(title='Completion coverage; incomplete attempts remain visible',ylabel='Task family',xlabel='Attempt count');ax.legend(title='Status',frameon=False);save(fig,'all_task_completion')
     fig,ax=plt.subplots(figsize=(9,4.4));sns.scatterplot(data=live,x='calls',y='runtime',hue='model',style='task',alpha=.65,ax=ax)
-    ax.set(title='Every live attempt: response count versus runtime',xlabel='Returned responses',ylabel='Wall time (seconds; includes pauses)');ax.legend(bbox_to_anchor=(1.02,1),loc='upper left',frameon=False,fontsize=8);save(fig,'all_task_runtime')
+    ax.set_xscale('symlog',linthresh=10);ax.set_yscale('symlog',linthresh=10)
+    ax.set(title='Every live attempt · symmetric-log axes reveal short and long runs',xlabel='Returned responses',ylabel='Wall time (seconds; includes pauses)');ax.legend(bbox_to_anchor=(1.02,1),loc='upper left',frameon=False,fontsize=8);save(fig,'all_task_runtime')
     frame.to_csv(out/'inventory.csv',index=False)
     manifest={'source_sha256':hashes,'live_attempts':len(live),'mock_attempts':int(frame.backend.eq('mock').sum()),
         'live_model_tags':int(live.model.nunique()),'live_task_families':int(live.task.nunique()),'files':figures,

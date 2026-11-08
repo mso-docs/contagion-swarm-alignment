@@ -18,7 +18,7 @@ def export(source,destination,env):
     (ROOT/'results').mkdir(exist_ok=True)
     with TemporaryDirectory(prefix='dashboard-checkpoint-',dir=ROOT/'results') as temporary:
         checkpoint=Path(temporary)
-        for name in ['results.json','research.json','repositories.json']:
+        for name in ['results.json','research.json','repositories.json','followups.json']:
             path=source/name
             if not path.exists():continue
             if path.is_symlink():raise ValueError('Snapshot symlink rejected')

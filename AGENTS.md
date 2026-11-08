@@ -17,3 +17,5 @@ The user has additionally authorized project-local worker setup on servers named
 ## Required commit and PR writing skill
 
 For every request to commit, draft/create/update a PR, or write their messages, read and apply [commit-pr-writing](skills/commit-pr-writing/SKILL.md) before submitting metadata. This requirement persists as the draft PR grows. Honor `.github/pull_request_template.md`; keep validation and research claims accurate. Repository hooks validate commit subjects, and CI validates basic PR structure; these checks supplement the skill's substantive review.
+
+The user released primary for experimentation on November8,2026. Primary uses a separate loopback tunnel and exclusive primary controller lease; secondary keeps its existing queue/lease. Begin new primary allocations with bounded prechecks and preserve worker/model/source cohorts. This release authorizes existing Ollama inference, not service, driver, firewall or credential changes. Protocol4 follow-ups are separate from the frozen protocol2.6 campaign.

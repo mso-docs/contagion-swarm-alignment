@@ -18,7 +18,7 @@ from security_guard import private_values
 from watch_dashboard import publish
 
 ASSETS = {'/', '/index.html', '/app.js', '/style.css', '/widgets.js',
-          '/data/results.json', '/data/research.json', '/data/repositories.json'}
+          '/data/results.json', '/data/research.json', '/data/repositories.json', '/data/followups.json'}
 
 
 DERIVED_SIGNATURE=None
@@ -30,7 +30,8 @@ def validate_live_data(directory,env=None):
     from repository_publication import validate_repository_snapshot
     from scan_privacy import scan_blob
     directory=Path(directory)
-    validators={'results.json':validate_snapshot,'research.json':validate_research_snapshot,'repositories.json':validate_repository_snapshot}
+    from followup_publication import validate as validate_followups
+    validators={'followups.json':validate_followups,'results.json':validate_snapshot,'research.json':validate_research_snapshot,'repositories.json':validate_repository_snapshot}
     for name,validator in validators.items():
         path=directory/name
         if not path.exists():continue
@@ -51,7 +52,7 @@ def seed_live_data(source,destination,env=None):
     """Seed once; Git checkout/stash never rewinds the running view."""
     source=Path(source);destination=Path(destination);validate_live_data(source,env)
     destination.mkdir(parents=True,exist_ok=True)
-    for name in ['results.json','research.json','repositories.json']:
+    for name in ['results.json','research.json','repositories.json','followups.json']:
         target=destination/name
         if target.exists() or not (source/name).is_file():continue
         if (source/name).is_symlink():raise ValueError('Snapshot source must not be a symlink')
@@ -75,6 +76,13 @@ def private_campaigns(base):
                 planned=sum(len(j['plan']['families'])*len(j['plan']['case_indices'])*len(j['plan']['seeds'])*len(j['plan']['topologies'])*len(j['plan']['interventions']) for j in plan['jobs'])
                 row={'kind':'swarm_campaign','status':state['status'],'planned_runs':planned,'planned_calls':plan['planned_calls'],
                      'completed_runs':state.get('completed_runs',0),'physical_calls':state.get('physical_calls',0),'failed_runs':state.get('failed_runs',0)}
+            elif (directory/'followup-state.json').is_file():
+                state=json.loads((directory/'followup-state.json').read_text())
+                row={k:state[k] for k in ['status','planned_runs','planned_calls','completed_runs','physical_calls','failed_runs']}
+                row['kind']='confirmatory_queue'
+                manifests=list(directory.glob('rq*/run-*/manifest.json'))
+                row['completed_runs']=sum(json.loads(p.read_text())['status']=='completed' for p in manifests)
+                row['physical_calls']=sum(json.loads(p.read_text())['http_attempts'] for p in manifests)
             elif (directory/'queue-state.json').is_file():
                 state=json.loads((directory/'queue-state.json').read_text())
                 row={'kind':'long_input_queue','status':state['status'],'planned_runs':state['planned_runs'],'planned_calls':state['planned_calls'],
@@ -129,6 +137,8 @@ def refresh(sources, output, env, state):
         changed, count = publish(sources, output, env, include_text=True)
         sync_derived(output,env)
         from repository_publication import export_repository_runs
+        from followup_publication import export as export_followups
+        export_followups(ROOT/'results/campaigns',output.parent/'followups.json',env)
         repository=export_repository_runs(ROOT/'results/repository-runs',output.parent/'repositories.json',env)
         state['repository_runs']=len(repository.runs)
         from contagion.research_publication import validate_research_snapshot
@@ -203,14 +213,19 @@ def handler_type(directory, state, data_directory=None):
             return super().translate_path(path)
         def do_GET(self):
             path = urlsplit(self.path).path
-            if re.fullmatch(r'/__private_repository/[a-f0-9]{16}',path):
+            if re.fullmatch(r'/__private_(?:repository|followup)/[a-f0-9]{16}',path):
                 host=urlsplit('http://'+self.headers.get('Host',''))
                 if host.hostname not in {'127.0.0.1','localhost'} or host.port!=self.server.server_port or host.username or host.password:
                     self.send_error(403);return
                 try:
-                    from repository_publication import private_detail
+                    if path.startswith('/__private_followup/'):
+                        from followup_publication import private_detail
+                        detail_root=ROOT/'results/campaigns'
+                    else:
+                        from repository_publication import private_detail
+                        detail_root=ROOT/'results/repository-runs'
                     _,env=private_values(ROOT,dict(os.environ))
-                    data=json.dumps(private_detail(ROOT/'results/repository-runs',path.rsplit('/',1)[-1],env)).encode()
+                    data=json.dumps(private_detail(detail_root,path.rsplit('/',1)[-1],env)).encode()
                     self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(data)));self.end_headers();self.wfile.write(data)
                 except Exception:self.send_error(404)
                 return

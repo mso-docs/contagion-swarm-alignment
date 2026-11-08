@@ -37,6 +37,10 @@ def build(source, output):
                 validate_study_detail(path)
                 assets += (row.detail_file,)
         assets += ('data/research.json',)
+    followups=source/'data/followups.json'
+    if followups.exists() or followups.is_symlink():
+        from followup_publication import validate
+        _,values=private_values(ROOT,dict(os.environ));validate(followups,values);assets+=('data/followups.json',)
     repository=source/'data/repositories.json'
     if repository.exists() or repository.is_symlink():
         from repository_publication import validate_repository_snapshot

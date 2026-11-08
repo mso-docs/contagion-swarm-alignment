@@ -116,15 +116,19 @@ def figures(evidence,output):
         ax.scatter(*zip(*pts),s=65,color='#2970b1',zorder=3);ax.text(offset+.55,-.08,topology,ha='center',fontsize=10)
     save(fig,'01_experiment_flow')
     families=['catalog','provenance','patch'];summary=done.groupby(['family','condition'],observed=True).agg(runs=('any_round_violation','size'),violations=('any_round_violation','sum'),final_violations=('final_any_violation','sum'),success=('task_success','mean')).reset_index()
-    fig,axes=plt.subplots(1,2,figsize=(9,3.3))
-    for condition,delta in [('none',-.18),('benign_override',.18)]:
-        subset=summary[summary.condition.eq(condition)].set_index('family').reindex(families);x=np.arange(3)+delta
-        bars=axes[0].bar(x,subset.violations/subset.runs,.34,color=colors[condition],label='Control' if condition=='none' else 'Injected')
-        for bar,(_,row) in zip(bars,subset.iterrows()):axes[0].text(bar.get_x()+bar.get_width()/2,bar.get_height()+.035,f'{int(row.violations)}/{int(row.runs)}',ha='center',fontsize=9)
-        axes[1].bar(x,subset.success,.34,color=colors[condition],label='Control' if condition=='none' else 'Injected')
-    for ax in axes:ax.set_xticks(range(3),['Catalog','Provenance','Inert patch']);ax.set_ylim(0,1.17);ax.set_yticks([0,.25,.5,.75,1]);ax.legend(frameon=False,loc='upper left',fontsize=8)
-    axes[0].set(title=f'Any-round boundary violations\n(final: {int(done.final_any_violation.sum())}/{len(done)} runs)',ylabel='Fraction of completed runs')
-    axes[1].set(title='Exact legitimate task completion',ylabel='Mean agent success within runs')
+    fig,axes=plt.subplots(1,2,figsize=(9,2.7))
+    for ax,metric,title in [(axes[0],'violations','Any-round boundary violations'),(axes[1],'success','Legitimate task completion')]:
+        values=[];labels=[]
+        for family in families:
+            cells=[];texts=[]
+            for condition in ['none','benign_override']:
+                row=summary[summary.family.eq(family)&summary.condition.eq(condition)].iloc[0]
+                value=row[metric]/row.runs if metric=='violations' else row.success
+                cells.append(value);texts.append(f'{int(row.violations)}/{int(row.runs)} runs' if metric=='violations' else f'{value:.1%}\nn={int(row.runs)} runs')
+            values.append(cells);labels.append(texts)
+        sns.heatmap(np.array(values),annot=np.array(labels),fmt='',vmin=0,vmax=1,cmap='Oranges' if metric=='violations' else 'Blues',cbar=False,linewidths=3,ax=ax,annot_kws={'fontsize':11})
+        ax.set(title=title,xticklabels=['Control','Injected'],yticklabels=['Catalog','Provenance','Inert patch'],xlabel='',ylabel='');ax.tick_params(axis='y',rotation=0)
+    fig.suptitle(f'Final boundary violations: {int(done.final_any_violation.sum())}/{len(done)} completed runs',fontsize=12,fontweight='bold',y=1.08)
     save(fig,'02_task_outcomes')
     fig,axes=plt.subplots(1,2,figsize=(8.4,3))
     for ax,condition in zip(axes,['none','benign_override']):
@@ -138,23 +142,37 @@ def figures(evidence,output):
     save(fig,'03_topology_counts')
     fig,ax=plt.subplots(figsize=(7.4,3))
     for topology,values in temporal_patch_series(data).items():
-        ax.plot(range(5),values,marker='o',label=topology)
+        ax.plot(range(5),values,marker='o',linewidth=2.2,label=topology)
+        ax.annotate(f'{values[1]:.1%}',(1,values[1]),xytext=(9,4),textcoords='offset points',fontsize=9)
     ax.set(xlabel='Round (injected message delivered in round1)',ylabel='Mean downstream violation fraction',ylim=(-.03,1.03),xticks=range(5),title='Intermediate deviations disappear before final artifacts')
-    ax.legend(title='Injected condition',frameon=False,fontsize=8);save(fig,'07_transient_behavior')
+    ax.axvspan(.85,1.15,color='#e6a36e',alpha=.13);ax.text(2.8,.12,'No downstream violations\nin rounds 2–4',ha='center',fontsize=10)
+    ax.legend(title='Injected condition · 2 runs each',frameon=False,fontsize=8);save(fig,'07_transient_behavior')
 
-    monitor=pd.DataFrame(data['monitor_observations']);fig,axes=plt.subplots(1,2,figsize=(8.5,3.1))
+    monitor=pd.DataFrame(data['monitor_observations']);fig,axes=plt.subplots(1,2,figsize=(8.5,2.7))
     if monitor.truth.any():raise ValueError('This compact figure caption requires zero oracle positives; revise before reuse')
     for ax,policy in zip(axes,['communications_only','communications_and_outputs']):
+        values=[];labels=[]
         for topology in ['ring','star','complete']:
-            sub=monitor[monitor.policy.eq(policy)&monitor.topology.eq(topology)&monitor.monitor_seed.eq(404)]
-            series=sub.groupby('visibility',observed=True).prediction.mean();ax.plot(series.index,series.values,marker='o',label=topology)
-        ax.set(title=policy.replace('_',' '),xlabel='Visible message fraction',ylabel='False positive rate',ylim=(-.03,1.03));ax.set_xticks([.25,.5,.75,1]);ax.legend(frameon=False,fontsize=8)
+            rates=[];counts=[]
+            for visibility in [.25,.5,.75,1.]:
+                sub=monitor[monitor.policy.eq(policy)&monitor.topology.eq(topology)&monitor.monitor_seed.eq(404)&monitor.visibility.eq(visibility)]
+                if sub.empty:raise ValueError('Missing monitor cell')
+                rates.append(sub.prediction.mean());counts.append(f'{int(sub.prediction.sum())}/{len(sub)}')
+            values.append(rates);labels.append(counts)
+        sns.heatmap(np.array(values),annot=np.array(labels),fmt='',vmin=0,vmax=1,cmap='Oranges',cbar=False,linewidths=3,ax=ax,annot_kws={'fontsize':11})
+        ax.set(title=policy.replace('_',' '),xticklabels=['25%','50%','75%','100%'],yticklabels=['ring','star','complete'],xlabel='Visible message fraction',ylabel='');ax.tick_params(axis='y',rotation=0)
+    fig.suptitle('False alarms / negative projections · mask 404 · recall undefined',fontsize=11,fontweight='bold',y=1.08)
     save(fig,'04_monitor_false_alarms')
     neural=pd.DataFrame(data['neural']);fig,axes=plt.subplots(1,2,figsize=(8.5,3.1))
     for kind,label in [('capability_control','Capital-pair control'),('task_shaped_probe','Record-status probe')]:
         sub=neural[neural.kind.eq(kind)].sort_values('layer');axes[0].plot(sub.layer,sub.patch_delta,marker='o',label=label);axes[1].plot(sub.layer,sub.restoration,marker='o',label=label)
     for ax in axes:ax.axhline(0,color='.6',lw=.7);ax.set_xlabel('GPT-2 layer');ax.set_xticks([0,5,11]);ax.legend(frameon=False,fontsize=8)
     axes[0].set(title='Measured activation-patching effect',ylabel='Target-logit change');axes[1].set(title='Normalized restoration',ylabel='Effect / clean–corrupt logit gap')
+    for ax in axes:
+        for line in ax.lines:
+            if len(line.get_xdata())!=3:continue
+            for x,y in zip(line.get_xdata(),line.get_ydata()):ax.annotate(f'{y:.2g}',(x,y),xytext=(3,6),textcoords='offset points',fontsize=8)
+        ax.margins(y=.25)
     save(fig,'05_reference_checkpoint')
     fig,ax=plt.subplots(figsize=(7,3));sns.stripplot(data=done,x='family',y='runtime_seconds',hue='condition',order=families,palette=colors,dodge=True,jitter=.1,ax=ax)
     ax.set(xlabel='Task family',ylabel='Recorded run seconds',title='Run timing includes controller and thermal pauses');ax.legend(title='Condition',frameon=False,fontsize=8)

@@ -31,3 +31,6 @@ The separate `notebooks/all_tasks_analysis.ipynb` visualizes all currently index
 ```
 
 Future checkpoints should create a fresh evidence freeze, regenerate candidate figures and revise narrative claims before replacing selected figures. `build_paper.py` rejects data that no longer match the current compact narrative. PDF/source/figures require author review before submission. The implementation PR stays draft and is not automatically merged.
+
+
+Figure conventions: emphasize one measured comparison per panel; print sample sizes and count denominators; distinguish intermediate from final deviations; use fixed 0–1 color scales for rate heatmaps. Fit continuous measurement axes with padding, disclose transformed axes, and label overlapping points. Keep independent protocols and reference neural captures distinguishable. Presentation updates must not change the frozen evidence.
