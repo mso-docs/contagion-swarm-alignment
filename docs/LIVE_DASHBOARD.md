@@ -75,7 +75,17 @@ Synchronization replaces the research snapshot with the remote version. Restarti
 | Scenarios & review, Neural captures | `data/research.json` | Newer studies, reviews, monitors, measurements and suite telemetry |
 | Clicked benchmark row | `data/studies/<id>.json` | Bounded task and trace detail, if exported |
 
-The research view shows export time, last browser check and run-attempt count. Refresh reloads both snapshots. A visible tab polls every 60 seconds. Hard-refresh after JavaScript changes. An old export timestamp means no newly exported evidence; an old browser-check time suggests the tab is inactive or refreshing failed.
+The local dashboard polls all result indexes every 15 seconds; the public static dashboard checks every 60 seconds. Returning to the tab refreshes immediately. Research rows and trace choices show newest timestamps first. Source failures remain visible while the last valid results stay available. Use **Reset filters** to restore all cohorts.
+
+The local server reads its ignored `results/dashboard-live/data` cache. Git checkout and pre-commit stashing cannot rewind that cache. Sealed, validated runs enter automatically; active calls appear separately in the private collector strip. Monitor cells count analysis projections, not experiments, and update when offline analysis completes.
+
+Create a privacy-validated checkpoint for review and commit with:
+
+```bash
+.venv/bin/python scripts/export_live_dashboard.py
+```
+
+This copies only approved result indexes and referenced sanitized details into `dashboard/data`; it does not stop inference, publish private progress, push, or deploy. The all-task analysis notebook reads the live cache when available and falls back to the tracked checkpoint.
 
 ## Public Pages
 

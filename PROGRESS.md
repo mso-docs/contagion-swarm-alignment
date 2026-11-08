@@ -132,3 +132,10 @@ Registered and detached a further36-run /1,560-response matched long-input horiz
 Reviewed and merged Dependabot PRs#1/#2/#3 after current security/reproducibility checks passed. Stale audit failures in#1/#3 were resolved by updating from main before merging. A narrowly scoped reviewed-pin auto-merge policy is proposed in the human-reviewed draft; application/experiment/report code is not auto-merged.
 
 Secondary handoff verified: all six protocol3.1 repository checkpoints completed260responses with no parse failures. The216-run /5,400-response synthetic campaign started and returned its first12responses, then entered a scheduled cooling pause with zero failed runs. The additional36-run matched long-input queue remains waiting for successful completion. Draft PR#5 contains the implementation/report/visuals; reviewed dependency main updates were merged into the feature branch only. The draft's current head passed security/reproducibility CI once; a metadata-edit rerun is pending. New sealed results continue entering the local dashboard automatically.
+
+
+### Live dashboard synchronization repair
+
+Isolated the runtime result cache from tracked publication checkpoints so Git/pre-commit cannot rewind the live view. All result sources refresh together; newest timestamps sort first, trace labels identify cases, source failures retain last valid data, and filters can be reset. A loopback-only collector strip distinguishes active calls, completed runs, waiting long-input work and monitor analysis cells. Explicit sanitized checkpoint export remains separate from collection.
+
+Validation:175 pytest tests passed; seven service tests include Git rewind isolation, explicit export validation and local Host checks. JavaScript runtime smoke passed all eight views, trace/chart interactions and automatic arrival of a new result without modifying legacy data. Bandit passed. At the status check, the secondary campaign had18/216 completed runs and zero failures; the36-run long-input queue waited without competing inference. No frozen controller, source protocol or primary-server changes.

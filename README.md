@@ -60,6 +60,8 @@ Run/seed is the analysis unit. Agents within a run, paired conditions and monito
 
 ```bash
 .venv/bin/python scripts/serve_dashboard.py --sync-secondary
+# Separately checkpoint sanitized live results for review/commit:
+.venv/bin/python scripts/export_live_dashboard.py
 ```
 
 Open **http://127.0.0.1:8765/**. No version or special URL is needed. The local service discovers sealed studies every 15 seconds and polls sanitized secondary snapshots every minute. It does not access primary. The visible page checks local synchronization health and reloads changed frontend assets automatically. Pause other exporters while this service owns the public index.

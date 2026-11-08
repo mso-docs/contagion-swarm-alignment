@@ -292,3 +292,10 @@ LaTeX source, template-format provenance, frozen numeric evidence, notebook exec
 171pytest tests passed. New tests cover intermediate-vs-final reporting, fixed-input horizon registration and conservative dependency automation. All-task dashboard heatmap/bars/scatter DOM interactions passed; coverage is recorded across all indexed task families. Further final security/publication gates and commit hooks are required before push. A prior broad check reported files changing during the scan while exports/source were updating, despite no secret findings; rerun with stable inputs rather than waiving the gate.
 
 The active secondary long repository pair remains running; the216-run /5,400-response baseline follows its checkpoint gate. A separate36-run /1,560-response long-input queue waits afterward, preserving matched case IDs across3/8/15round horizons. The primary remains untouched and all model agents remain tool-free. Proposed infrastructure and analysis changes stay in draft PR#5 for human review.
+
+
+### Live dashboard synchronization repair
+
+Isolated the runtime result cache from tracked publication checkpoints so Git/pre-commit cannot rewind the live view. All result sources refresh together; newest timestamps sort first, trace labels identify cases, source failures retain last valid data, and filters can be reset. A loopback-only collector strip distinguishes active calls, completed runs, waiting long-input work and monitor analysis cells. Explicit sanitized checkpoint export remains separate from collection.
+
+Validation:175 pytest tests passed; seven service tests include Git rewind isolation, explicit export validation and local Host checks. JavaScript runtime smoke passed all eight views, trace/chart interactions and automatic arrival of a new result without modifying legacy data. Bandit passed. At the status check, the secondary campaign had18/216 completed runs and zero failures; the36-run long-input queue waited without competing inference. No frozen controller, source protocol or primary-server changes.

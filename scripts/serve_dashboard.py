@@ -24,6 +24,74 @@ ASSETS = {'/', '/index.html', '/app.js', '/style.css', '/widgets.js',
 DERIVED_SIGNATURE=None
 
 
+def validate_live_data(directory,env=None):
+    from contagion.publication import validate_snapshot
+    from contagion.research_publication import validate_research_snapshot,validate_study_detail
+    from repository_publication import validate_repository_snapshot
+    from scan_privacy import scan_blob
+    directory=Path(directory)
+    validators={'results.json':validate_snapshot,'research.json':validate_research_snapshot,'repositories.json':validate_repository_snapshot}
+    for name,validator in validators.items():
+        path=directory/name
+        if not path.exists():continue
+        if path.is_symlink():raise ValueError('Snapshot symlink rejected')
+        data=validator(path,env=env or {})
+        if name=='research.json' and (data.suite is not None or data.resources is not None):raise ValueError('Operator progress cannot enter result snapshots')
+        if name=='research.json':
+            for row in data.studies:
+                if row.detail_file and not (directory/'studies'/Path(row.detail_file).name).is_file():raise ValueError('Referenced public trace is missing')
+        if scan_blob(path.read_bytes(),public=True):raise ValueError('Snapshot privacy lint failed')
+    for path in (directory/'studies').glob('*.json'):
+        if path.is_symlink() or not re.fullmatch(r'[a-f0-9]{16}\.json',path.name):raise ValueError('Unapproved trace path')
+        validate_study_detail(path,env=env or {})
+        if scan_blob(path.read_bytes(),public=True):raise ValueError('Trace privacy lint failed')
+
+
+def seed_live_data(source,destination,env=None):
+    """Seed once; Git checkout/stash never rewinds the running view."""
+    source=Path(source);destination=Path(destination);validate_live_data(source,env)
+    destination.mkdir(parents=True,exist_ok=True)
+    for name in ['results.json','research.json','repositories.json']:
+        target=destination/name
+        if target.exists() or not (source/name).is_file():continue
+        if (source/name).is_symlink():raise ValueError('Snapshot source must not be a symlink')
+        temporary=target.with_suffix('.tmp');shutil.copyfile(source/name,temporary);temporary.replace(target)
+    details=destination/'studies';details.mkdir(exist_ok=True)
+    for path in (source/'studies').glob('*.json'):
+        if not re.fullmatch(r'[a-f0-9]{16}\.json',path.name) or path.is_symlink():raise ValueError('Unapproved detail source')
+        target=details/path.name
+        if not target.exists():shutil.copyfile(path,target)
+    validate_live_data(destination,env)
+
+
+def private_campaigns(base):
+    """Loopback response only: closed numeric progress, never exported to Pages."""
+    result=[];stopped={}
+    for directory in sorted(Path(base).glob('*')):
+        if not directory.is_dir():continue
+        try:
+            if (directory/'state.json').is_file() and (directory/'campaign.json').is_file():
+                state=json.loads((directory/'state.json').read_text());plan=json.loads((directory/'campaign.json').read_text())
+                planned=sum(len(j['plan']['families'])*len(j['plan']['case_indices'])*len(j['plan']['seeds'])*len(j['plan']['topologies'])*len(j['plan']['interventions']) for j in plan['jobs'])
+                row={'kind':'swarm_campaign','status':state['status'],'planned_runs':planned,'planned_calls':plan['planned_calls'],
+                     'completed_runs':state.get('completed_runs',0),'physical_calls':state.get('physical_calls',0),'failed_runs':state.get('failed_runs',0)}
+            elif (directory/'queue-state.json').is_file():
+                state=json.loads((directory/'queue-state.json').read_text())
+                row={'kind':'long_input_queue','status':state['status'],'planned_runs':state['planned_runs'],'planned_calls':state['planned_calls'],
+                     'completed_runs':2*state.get('completed_pairs',0),'physical_calls':state.get('http_attempts',0),'failed_runs':0}
+            else:continue
+            if row['status'] not in {'running','cooling','waiting','stopped','failed','budget_exhausted'}:continue
+            if any(type(v) is not int or v<0 for k,v in row.items() if k not in {'kind','status'}):continue
+            if row['status'] in {'stopped','failed','budget_exhausted'}:
+                stamp=state.get('updated_utc',state.get('started_utc',''))
+                if row['kind'] not in stopped or stamp>stopped[row['kind']][0]:stopped[row['kind']]=(stamp,row)
+            else:result.append(row)
+        except (OSError,ValueError,KeyError,TypeError):continue
+    active={row['kind'] for row in result}
+    result.extend(value[1] for kind,value in stopped.items() if kind not in active)
+    return sorted(result,key=lambda row:0 if row['status'] in {'running','cooling'} else 1 if row['status']=='waiting' else 2)
+
+
 def sync_derived(output,env):
     global DERIVED_SIGNATURE
     from contagion.research_publication import make_research_snapshot,validate_research_snapshot
@@ -119,7 +187,7 @@ def sync_secondary_neural(env_file,execute=None):
     return fetched
 
 
-def handler_type(directory, state):
+def handler_type(directory, state, data_directory=None):
     class Handler(SimpleHTTPRequestHandler):
         def __init__(self, *args, **kwargs):
             super().__init__(*args, directory=str(directory), **kwargs)
@@ -128,6 +196,11 @@ def handler_type(directory, state):
             self.send_header('Pragma', 'no-cache')
             self.send_header('X-Content-Type-Options', 'nosniff')
             super().end_headers()
+        def translate_path(self,path):
+            relative=urlsplit(path).path
+            if data_directory is not None and relative.startswith('/data/'):
+                return str(Path(data_directory)/relative.removeprefix('/data/'))
+            return super().translate_path(path)
         def do_GET(self):
             path = urlsplit(self.path).path
             if re.fullmatch(r'/__private_repository/[a-f0-9]{16}',path):
@@ -142,9 +215,14 @@ def handler_type(directory, state):
                 except Exception:self.send_error(404)
                 return
             if path == '/__local_status':
+                try:
+                    host=urlsplit('http://'+self.headers.get('Host',''))
+                    local=host.hostname in {'127.0.0.1','localhost'} and host.port==self.server.server_port and not host.username and not host.password
+                except ValueError:local=False
+                if not local:self.send_error(403);return
                 revision = hashlib.sha256(b''.join((directory/name).read_bytes() for name in
                     ['index.html', 'app.js', 'style.css', 'widgets.js'])).hexdigest()[:16]
-                data = json.dumps({**state, 'asset_revision': revision}).encode()
+                data = json.dumps({**state, 'asset_revision': revision,'campaigns':private_campaigns(ROOT/'results/campaigns')}).encode()
                 self.send_response(200)
                 self.send_header('Content-Type', 'application/json')
                 self.send_header('Content-Length', str(len(data)))
@@ -154,8 +232,10 @@ def handler_type(directory, state):
             if path not in ASSETS and not re.fullmatch(r'/data/studies/[a-f0-9]{16}\.json', path):
                 self.send_error(404)
                 return
-            target = directory / ('index.html' if path == '/' else path.lstrip('/'))
-            if target.is_symlink() or directory.resolve() not in target.resolve().parents:
+            base=Path(data_directory) if data_directory is not None and path.startswith('/data/') else directory
+            relative=path.removeprefix('/data/') if base!=directory else ('index.html' if path=='/' else path.lstrip('/'))
+            target=base/relative
+            if target.is_symlink() or base.resolve() not in target.resolve().parents:
                 self.send_error(404)
                 return
             super().do_GET()
@@ -177,8 +257,10 @@ def main():
         parser.error('Use interval >=5 seconds and an unprivileged valid port')
     sources = args.study or [ROOT / 'results/studies']
     _, env = private_values(ROOT, dict(os.environ))
+    live=ROOT/'results/dashboard-live/data'
+    seed_live_data(ROOT/'dashboard/data',live,env)
     state = {'status': 'starting', 'checked_epoch': None, 'studies': 0, 'error': None}
-    server = ThreadingHTTPServer(('127.0.0.1', args.port), handler_type(ROOT / 'dashboard', state))
+    server = ThreadingHTTPServer(('127.0.0.1', args.port), handler_type(ROOT / 'dashboard', state,live))
     stop = threading.Event()
     boot_revision=hashlib.sha256(b''.join(p.read_bytes() for p in [Path(__file__),ROOT/'scripts/watch_dashboard.py',ROOT/'scripts/repository_publication.py',*sorted((ROOT/'src/contagion').glob('*.py'))])).hexdigest()
     def worker():
@@ -196,7 +278,7 @@ def main():
                     from remote_worker import execute
                     staging=ROOT/'results/dashboard-remote-staging'
                     execute('secondary','suite-sync',ROOT/'.env',public_target=staging)
-                    merge_secondary(ROOT/'dashboard/data/research.json',staging,env)
+                    merge_secondary(live/'research.json',staging,env)
                     state['secondary_sync']='ok'
                 except Exception as exc:
                     state['secondary_sync']='unavailable: '+type(exc).__name__
@@ -205,7 +287,7 @@ def main():
                     state['secondary_neural_sync']='ok'
                 except Exception as exc:
                     state['secondary_neural_sync']='unavailable: '+type(exc).__name__
-            refresh(sources, ROOT / 'dashboard/data/research.json', env, state)
+            refresh(sources, live/'research.json', env, state)
             stop.wait(args.interval)
     thread = threading.Thread(target=worker, daemon=True)
     thread.start()

@@ -14,12 +14,27 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
   ids.get('research-outcome-filter').value='all';ids.get('backend').value='live';ids.get('round').value='0';
   class Option extends Element { constructor(text,value){super('option');this.textContent=text;this.value=value;} }
   const widgets=widgetsSource?new Function('document',widgetsSource+'\nreturn EvidenceWidgets;')(document):null;
-  const fetched=[];
-  const api=new Function('document','Option','fetch','setInterval','EvidenceWidgets',source+'\nreturn {load,render,renderRound,renderTraces,showView,state,loadResearch,researchState,loadStudyDetail,loadRepositories};')(document,Option,async url=>(fetched.push(url),{ok:!url.startsWith('data/studies/')||Boolean(detailFiles[url]),json:async()=>url.startsWith('data/research.json')?research:url.startsWith('data/repositories.json')?repositories:detailFiles[url]??data}),()=>0,widgets);
-  await api.load();await api.loadResearch();await api.loadRepositories();
+  const fetched=[],timers=[];
+  const api=new Function('document','Option','fetch','setInterval','EvidenceWidgets',source+'\nreturn {load,render,renderRound,renderTraces,showView,state,loadResearch,researchState,loadStudyDetail,loadRepositories,refreshSnapshots};')(document,Option,async url=>(fetched.push(url),{ok:!url.startsWith('data/studies/')||Boolean(detailFiles[url]),json:async()=>url==='__local_status'?{status:'ok',asset_revision:'test-assets',checked_epoch:Date.now()/1000,studies:research.studies.length,campaigns:[{kind:'swarm_campaign',status:'running',completed_runs:1,planned_runs:216,physical_calls:31,planned_calls:5400,failed_runs:0}]}:url.startsWith('data/research.json')?research:url.startsWith('data/repositories.json')?repositories:detailFiles[url]??data}),(callback,ms)=>(timers.push({callback,ms}),timers.length),widgets);
+  await api.load();await api.loadResearch();await api.loadRepositories();await api.refreshSnapshots();
   fetched.length=0;await ids.get('refresh').listeners.click();
   if(!fetched.some(u=>u.startsWith('data/results.json'))||!fetched.some(u=>u.startsWith('data/research.json')))throw Error('Refresh must fetch both snapshots');
   if(!ids.get('research-updated').textContent.includes('run attempts'))throw Error('Research freshness missing');
+  if(ids.get('collector-progress').hidden||!ids.get('collector-progress').children.length)throw Error('Private collector progress missing');
+  const originalStudies=research.studies,originalStamp=research.generated_utc,baseStudy=originalStudies.find(r=>r.backend!=='mock');
+  if(baseStudy){
+    const before=api.state.runs.length;
+    const arriving={...baseStudy,id:'0000000000000000',case_id:'new-overnight-arrival',started_utc:'2100-01-01T00:00:00+00:00',detail_file:null};
+    const older=Array.from({length:220},(_,i)=>({...baseStudy,id:(i+1).toString(16).padStart(16,'0'),case_id:'older-fixture-'+i,started_utc:'2000-01-01T00:00:00+00:00',detail_file:null}));
+    research.studies=[arriving,...older,...originalStudies];research.generated_utc='2100-01-01T00:00:00+00:00';
+    for(const timer of timers.filter(t=>t.ms===15000))timer.callback();await api.refreshSnapshots();
+    if(api.state.runs.length!==before+221)throw Error('Automatic refresh omitted arriving runs while legacy snapshot stayed unchanged');
+    if(!ids.get('research-studies').children[0]?.children[1]?.children[2]?.textContent.includes('new-overnight-arrival'))throw Error('Latest research rows are ordered by opaque IDs instead of time');
+    if(!ids.get('run-select').children[0]?.textContent.includes('new-overnight-arrival'))throw Error('Newest trace run is not discoverable at the top');
+    if(!ids.get('runs-kpi').textContent.endsWith('/ '+(before+221)))throw Error('Overview did not update automatically');
+    research.studies=originalStudies;research.generated_utc=originalStamp;await api.refreshSnapshots();
+  }
+
   if(!ids.get('coverage-heatmap').children.length||!ids.get('coverage-bars').children.length)throw Error('All-task coverage visuals missing');
   const scatter=ids.get('coverage-scatter').children[0];
   const point=scatter?.children.find(n=>n.tagName==='circle'&&n.attributes.role==='button');

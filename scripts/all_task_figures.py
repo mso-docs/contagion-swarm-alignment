@@ -7,12 +7,13 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 
 
-def inventory(root=ROOT/'dashboard/data'):
+def inventory(root=None):
+    root=Path(root) if root is not None else ROOT/('results/dashboard-live/data' if (ROOT/'results/dashboard-live/data/research.json').exists() else 'dashboard/data')
     rows=[];hashes={}
     for filename,kind in [('results.json','legacy'),('research.json','study'),('repositories.json','repository')]:
         path=Path(root)/filename
         if not path.exists():continue
-        data=json.loads(path.read_text());hashes[filename]=hashlib.sha256(path.read_bytes()).hexdigest()
+        blob=path.read_bytes();data=json.loads(blob);hashes[filename]=hashlib.sha256(blob).hexdigest()
         for r in data.get('studies' if kind=='study' else 'runs',[]):
             rows.append({'id':kind+':'+r['id'],'model':r['model'],'backend':r['backend'],
                 'protocol':r['protocol_version'] if kind=='legacy' else r['protocol'],
