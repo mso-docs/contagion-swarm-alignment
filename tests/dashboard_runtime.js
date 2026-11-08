@@ -20,6 +20,22 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
   fetched.length=0;await ids.get('refresh').listeners.click();
   if(!fetched.some(u=>u.startsWith('data/results.json'))||!fetched.some(u=>u.startsWith('data/research.json')))throw Error('Refresh must fetch both snapshots');
   if(!ids.get('research-updated').textContent.includes('run attempts'))throw Error('Research freshness missing');
+  const comparisonCards=ids.get('comparison').children;
+  if(!comparisonCards.length)throw Error('Model comparison cards missing');
+  const comparisonDetail=comparisonCards[0].children.find(n=>n.tagName==='details');
+  if(!comparisonDetail||comparisonDetail.open||comparisonDetail.children[1].children.length)throw Error('Comparison details must start collapsed and lazy');
+  comparisonDetail.open=true;comparisonDetail.listeners.toggle();
+  if(!comparisonDetail.children[1].children[0]?.children[1]?.children.length)throw Error('Expanded cohort rows missing');
+  let detailedConditions=0;
+  for(const card of comparisonCards){const detail=card.children.find(n=>n.tagName==='details');detail.open=true;detail.listeners.toggle();detailedConditions+=detail.children[1].children[0].children[1].children.length;if(detail!==comparisonDetail){detail.open=false;detail.listeners.toggle();}}
+  if(detailedConditions!==new Set(api.state.runs.map(r=>[r.cohort,r.topology,r.intervention].join('|'))).size)throw Error('Visual cards lost or pooled cohort conditions');
+
+  api.render();
+  if(!ids.get('comparison').children[0].children.find(n=>n.tagName==='details')?.open)throw Error('Expanded comparison lost on refresh');
+  ids.get('comparison-search').value='__no_matching_model__';ids.get('comparison-search').listeners.input();
+  if(!ids.get('comparison-count').textContent.startsWith('0 model'))throw Error('Comparison search did not filter');
+  ids.get('comparison-search').value='';ids.get('comparison-search').listeners.input();
+
   if(ids.get('interp-kpis').children.length!==6)throw Error('Interpretability headline metrics missing');
   if(research.neural.length&&!ids.get('interp-capture-grid').children.length)throw Error('Visible capture cards missing');
   if(!ids.get('interp-effects').children.length)throw Error('Interpretability overview chart missing');

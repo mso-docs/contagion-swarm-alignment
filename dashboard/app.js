@@ -32,12 +32,41 @@ function render(){
  selectRun();renderObservability();
 }
 function groups(runs,key){const result=new Map();runs.forEach(r=>{const k=key(r);if(!result.has(k))result.set(k,[]);result.get(k).push(r);});return [...result.values()];}
-function renderTable(){const body=$('comparison');body.replaceChildren();
- for(const group of groups(state.runs,r=>[r.cohort,r.topology,r.intervention].join('|'))){const run=group[0],done=group.filter(r=>r.status==='completed'),row=el('tr');
- const model=el('td',run.model);model.append(el('span',run.backend.toUpperCase(),`badge ${run.backend==='mock'?'mock':''}`),el('small',cohortLabel(run)));row.append(model);
- [run.topology+' / '+(run.intervention==='none'?'control':'injected'),`${done.length} / ${group.length}`,pct(mean(done.map(r=>r.downstream_adoption_rate))),pct(mean(done.map(r=>r.downstream_clean_rate))),pct(mean(done.map(r=>r.legitimate_task_success_rate))),secs(median(group.map(r=>r.duration_seconds))),secs(median(group.map(r=>r.median_call_seconds))),mean(done.map(r=>r.messages_delivered))?.toFixed(0)??'N/A'].forEach(v=>row.append(el('td',v)));body.append(row);
- }if(!state.runs.length){const row=el('tr'),cell=el('td','No matching runs.');cell.colSpan=9;row.append(cell);body.append(row);}
+const comparisonOpen=new Set();
+function renderTable(){
+ const target=$('comparison');target.replaceChildren();const query=$('comparison-search').value.trim().toLowerCase();
+ const rows=state.runs.filter(r=>`${r.model} ${cohortLabel(r)} ${r.topology} ${r.intervention} ${r.intervention==='none'?'control':'injected'}`.toLowerCase().includes(query));
+ const modelGroups=groups(rows,r=>[r.model,r.backend].join('|')).sort((a,b)=>a[0].model.localeCompare(b[0].model));
+ $('comparison-count').textContent=`${modelGroups.length} model / backend groups · ${rows.length} attempts shown · expand for exact cohort results`;
+ if(!rows.length){empty(target,'No comparison results match these filters.');return;}
+ for(const runs of modelGroups){
+  const first=runs[0],key=JSON.stringify([first.model,first.backend]),conditions=groups(runs,r=>[r.cohort,r.topology,r.intervention].join('|'));
+  const card=el('article',null,'comparison-card'),head=el('div',null,'comparison-card-heading'),title=el('h3',first.model);
+  head.append(title,el('span',first.backend.toUpperCase(),`badge ${first.backend==='mock'?'mock':''}`));card.append(head);
+  const protocols=[...new Set(runs.map(r=>r.protocol_version))].sort();card.append(el('p',`Protocols ${protocols.join(' / ')} · ${new Set(runs.map(r=>r.cohort)).size} separate cohorts`,'caption'));
+  const stats=el('div',null,'comparison-stats');
+  [[`${runs.filter(r=>r.status==='completed').length} / ${runs.length}`,'complete / attempts'],[conditions.length,'network / treatment groups'],[secs(median(runs.map(r=>r.duration_seconds))),'median attempt time']].forEach(([value,label])=>{const item=el('div');item.append(el('strong',value),el('small',label));stats.append(item);});card.append(stats);
+  const metrics=el('div',null,'comparison-metrics');
+  for(const [field,label,color] of [['legitimate_task_success_rate','Task success','#40bf91'],['downstream_adoption_rate','Suffix adoption','#ef7988'],['downstream_clean_rate','Clean boundary adherence','#409cff']]){
+   const values=conditions.map(g=>mean(g.filter(r=>r.status==='completed').map(r=>r[field]))).filter(v=>v!=null),row=el('div',null,'comparison-metric'),labels=el('div',null,'comparison-metric-label');
+   const lo=values.length?Math.min(...values):null,hi=values.length?Math.max(...values):null;
+   labels.append(el('span',label),el('b',lo==null?'N/A':lo===hi?pct(lo):`${pct(lo)} – ${pct(hi)}`));row.append(labels);
+   const track=el('div',null,'comparison-range');track.setAttribute('role','img');track.setAttribute('aria-label',`${label}: ${lo==null?'not available':pct(lo)+' to '+pct(hi)} across ${values.length} measured condition groups`);
+   if(lo!=null){const range=el('span');range.style.left=`${lo*100}%`;range.style.width=`${(hi-lo)*100}%`;range.style.background=color;track.append(range);}else track.classList.toggle('unmeasured',true);
+   row.append(track);metrics.append(row);
+  }card.append(metrics,el('p','Range across measured condition means; not a pooled score.','caption'));
+  const detail=el('details',null,'comparison-detail'),summary=el('summary',`Explore ${conditions.length} cohort / network / treatment results`),content=el('div',null,'table-scroll');detail.append(summary,content);
+  function fill(){
+   const table=el('table'),thead=el('thead'),header=el('tr');['Cohort / protocol','Network / condition','Complete / attempts','Adoption','Boundary','Task success','Run time','Call latency','Messages / run'].forEach(t=>header.append(el('th',t)));thead.append(header);const body=el('tbody');
+   for(const group of conditions){const run=group[0],done=group.filter(r=>r.status==='completed'),row=el('tr');
+    [cohortLabel(run),run.topology+' / '+(run.intervention==='none'?'control':'injected'),`${done.length} / ${group.length}`,pct(mean(done.map(r=>r.downstream_adoption_rate))),pct(mean(done.map(r=>r.downstream_clean_rate))),pct(mean(done.map(r=>r.legitimate_task_success_rate))),secs(median(group.map(r=>r.duration_seconds))),secs(median(group.map(r=>r.median_call_seconds))),mean(done.map(r=>r.messages_delivered))?.toFixed(0)??'N/A'].forEach(value=>row.append(el('td',value)));body.append(row);
+   }table.append(thead,body);content.replaceChildren(table);
+  }
+  detail.open=comparisonOpen.has(key);if(detail.open)fill();detail.addEventListener('toggle',()=>{if(detail.open){comparisonOpen.add(key);fill();}else comparisonOpen.delete(key);});card.append(detail);target.append(card);
+ }
 }
+$('comparison-search').addEventListener('input',renderTable);
+
 function renderPlots(){
  const target=$('adoption-chart');target.replaceChildren();const grouped=groups(state.runs.filter(r=>r.status==='completed'&&r.downstream_adoption_rate!=null),r=>[r.cohort,r.topology,r.intervention].join('|'));
  if(!grouped.length)empty(target,'No completed runs in this selection.');else{
