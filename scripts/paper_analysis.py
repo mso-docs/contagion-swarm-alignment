@@ -93,6 +93,24 @@ def temporal_patch_rows(data):
             result.append({'topology':topology,'seed':row['seed'],'violations':list(counts),'direct_deliveries':deliveries})
     return result
 
+def paired_run_outcomes(data):
+    """Pair completed trajectories; never treat their agent outputs as replicates."""
+    pairs={}
+    for row in data['runs']:
+        if row['status']!='completed':continue
+        key=(row['family'],row['topology'],row['seed'],row['case_index'])
+        conditions=pairs.setdefault(key,{})
+        if row['condition'] in conditions:raise ValueError('Duplicate paired condition')
+        conditions[row['condition']]=row['task_success']
+    result=[]
+    for (family,topology,seed,case),conditions in sorted(pairs.items()):
+        if set(conditions)!={'none','benign_override'}:raise ValueError('Incomplete paired trajectory')
+        result.append(dict(family=family,topology=topology,seed=seed,case_index=case,
+                           control=conditions['none'],injected=conditions['benign_override'],
+                           difference=conditions['benign_override']-conditions['none']))
+    return result
+
+
 def reference_patch_cells(data):
     """Expose each reference capture once; missing effects remain undefined."""
     rows=data['neural'];kinds=['capability_control','task_shaped_probe'];layers=[0,5,11]
@@ -238,9 +256,23 @@ def figures(evidence,output):
     for ax in axes:ax.legend(frameon=False,fontsize=8,loc='upper center',bbox_to_anchor=(.5,-.25),ncol=1)
     fig.suptitle('Post-hoc path sensitivity · original scores and controller actions unchanged',fontsize=11,fontweight='bold',y=1.05)
     save(fig,'08_measurement_sensitivity')
+    paired=paired_run_outcomes(data)
+    fig,axes=plt.subplots(1,3,figsize=(9,3),sharey=True)
+    for ax,family in zip(axes,families):
+        rows=[row for row in paired if row['family']==family]
+        for i,row in enumerate(rows):
+            jitter=(i-2.5)*.025
+            ax.plot([jitter,1+jitter],[row['control'],row['injected']],color='#819bb0',alpha=.75,lw=1)
+            ax.scatter([jitter,1+jitter],[row['control'],row['injected']],c=['#2970b1','#d16a2d'],s=24,zorder=3)
+        differences=[row['difference'] for row in rows]
+        ax.set(title=family.capitalize(),xticks=[0,1],xticklabels=['Control','Injected'],ylim=(-.08,1.08),xlim=(-.25,1.25),
+               xlabel=f"Paired difference range: {min(differences):+.2f} to {max(differences):+.2f}")
+    axes[0].set_ylabel('Exact final-artifact match fraction')
+    fig.suptitle('Six matched run pairs per task · descriptive observations only',fontweight='bold')
+    save(fig,'09_paired_run_outcomes')
     done.to_csv(out/'completed_runs.csv',index=False);summary.to_csv(out/'task_summary.csv',index=False)
     selected={'main':['01_experiment_flow','07_transient_behavior','02_task_outcomes'],
-              'appendix':['03_topology_counts','04_monitor_false_alarms','05_reference_checkpoint','06_run_timing','08_measurement_sensitivity'],
+              'appendix':['03_topology_counts','04_monitor_false_alarms','05_reference_checkpoint','06_run_timing','08_measurement_sensitivity','09_paired_run_outcomes'],
               'selection_reason':'Three main figures communicate controlled architecture, time-resolved failures and paired task outcomes; monitor/reference diagnostics remain explicit appendix evidence.'}
     manifest={'evidence_sha256':sha(evidence),'secondary_inputs_sha256':{'report/data/patch_pointer_audit.json':sha(sensitivity_path)},
               'analysis_script_sha256':sha(Path(__file__)),'selected':selected,'files':{p.name:sha(p) for p in files},

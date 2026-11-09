@@ -1,5 +1,10 @@
 # Experiment status and public checkpoint
 
+**Collection closed for final review.** All 30 registered local allocations have
+STOP markers; both controller leases were idle at closure. The final static
+[snapshot](FINAL_DASHBOARD_SNAPSHOT.md) replaces live dashboards. The recovery
+history below explains the preserved results; it is not a new collection queue.
+
 **Primary collection is stopped and reserved for another operator. Do not restart
 it or query/load models there.** All primary successors and the planned diversity
 interlude are stopped or unstarted. Secondary collection finished its registered

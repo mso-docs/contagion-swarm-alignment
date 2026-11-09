@@ -2,6 +2,7 @@ import asyncio
 import json
 from pathlib import Path
 import runpy
+from types import SimpleNamespace
 
 import pytest
 
@@ -13,6 +14,8 @@ ROOT=Path(__file__).resolve().parents[1]
 def api(monkeypatch,tmp_path):
     monkeypatch.syspath_prepend(str(ROOT/'scripts'))
     result=runpy.run_path(str(ROOT/'scripts/run_campaign.py'))
+    # Mock campaign orchestration must not depend on the CI runner's free disk.
+    monkeypatch.setattr(result['run'].__globals__['shutil'],'disk_usage',lambda path:SimpleNamespace(total=30*2**30,used=10*2**30,free=20*2**30))
     for name in ['prepare','run']:
         monkeypatch.setitem(result[name].__globals__,'ROOT',tmp_path)
     return result
@@ -119,3 +122,15 @@ def test_overnight_does_not_start_campaign_after_repository_checkpoint_error(tmp
     assert state['status']=='stopped' and state['phase']=='repository-short'
     assert len(calls)==1 and 'scripts/run_campaign.py' not in calls[0]
     with pytest.raises(ValueError,match='fresh supervisor'):module['main']()
+
+
+def test_low_disk_guard_stops_mock_campaign_before_inference(tmp_path,monkeypatch):
+    from contagion.inference import CallBudgetExhausted
+    module=api(monkeypatch,tmp_path);root=tmp_path/'campaign'
+    campaign=module['prepare'](root,[plan()],'mock')
+    monkeypatch.setattr(module['run'].__globals__['shutil'],'disk_usage',lambda path:SimpleNamespace(total=20*2**30,used=19*2**30,free=1*2**30))
+    with pytest.raises(CallBudgetExhausted,match='disk_headroom'):
+        asyncio.run(module['run'](root))
+    assert not list(Path(campaign['run_root']).rglob('events.jsonl'))
+    state=json.loads((root/'state.json').read_text())
+    assert state['status']=='stopped' and state['physical_calls']==0

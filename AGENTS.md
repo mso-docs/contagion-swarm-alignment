@@ -23,3 +23,12 @@ The user released primary for experimentation on November8,2026. Primary uses a 
 The later November8 operator instruction supersedes that allocation: primary is reserved for another operator. Keep all primary STOP markers and do not resume primary inference without a new explicit release. Completed secondary recovery and reference-checkpoint captures are preserved; pending primary allocations are not completed experiments. Submission preparation does not require exhausting these queues.
 
 The author has requested public, redacted trace views and an identical static judge preview. Export bounded allowlisted copies, bind reviewed samples to their exact content hashes, and keep raw oracle logs, requests, environment values and operational telemetry private. The public preview must serve the exact Pages artifact without private API dependencies. Publication readiness does not authorize changing repository visibility, merging the draft PR or submitting to the hackathon.
+
+Final collection is closed. Preserve every existing allocation STOP marker and
+the submission manifest at dashboard/data/submission-freeze.json. Do not resume
+collectors, mutate frozen dashboard assets or silently enlarge the paper's
+analysis sample. Future experiments require an explicitly authorized separate
+allocation/checkpoint; do not remove the final freeze to bypass publication
+guards. Both local preview ports serve the same static artifact. Report edits
+may rebuild offline against the preserved evidence and still require author
+review before replacing the submitted PDF.

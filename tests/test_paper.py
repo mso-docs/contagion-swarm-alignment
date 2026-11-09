@@ -85,6 +85,9 @@ def test_submission_audit_detects_stale_separate_rq3_freeze(tmp_path,monkeypatch
     mapping={'latex_source_sha256':'report/paper.tex','bibliography_sha256':'report/sources.bib',
              'analysis_script_sha256':'scripts/paper_analysis.py','notebook_source_sha256':'notebooks/paper_figures.ipynb',
              'rq3_followup_sha256':'report/data/rq3_followup.json','build_script_sha256':'scripts/build_paper.py'}
+    for index in ['results','research','repositories','followups']:
+        destination=tmp_path/'dashboard/data'/f'{index}.json';destination.parent.mkdir(parents=True,exist_ok=True)
+        destination.write_bytes((ROOT/'dashboard/data'/f'{index}.json').read_bytes())
     from paper_supplement import INPUTS
     mapping.update(INPUTS)
     manifest={}
@@ -133,6 +136,9 @@ def test_variant_audit_binds_source_transform_pdf_and_fonts(tmp_path,monkeypatch
     mapping={'authoring_source_sha256':'report/paper.tex','bibliography_sha256':'report/sources.bib',
              'analysis_script_sha256':'scripts/paper_analysis.py','notebook_source_sha256':'notebooks/paper_figures.ipynb',
              'rq3_followup_sha256':'report/data/rq3_followup.json','build_script_sha256':'scripts/build_paper.py'}
+    for index in ['results','research','repositories','followups']:
+        destination=tmp_path/'dashboard/data'/f'{index}.json';destination.parent.mkdir(parents=True,exist_ok=True)
+        destination.write_bytes((ROOT/'dashboard/data'/f'{index}.json').read_bytes())
     from paper_supplement import INPUTS
     mapping.update(INPUTS);manifest={}
     for key,name in mapping.items():

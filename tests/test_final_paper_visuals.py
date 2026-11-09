@@ -42,3 +42,16 @@ def test_secondary_sensitivity_figure_input_is_bound_and_fail_closed(modules,tmp
     path.write_text('changed numeric fixture')
     with pytest.raises(ValueError,match='changed'):build.validate_secondary_figure_inputs(inputs,tmp_path)
     with pytest.raises(ValueError,match='declared secondary'):build.validate_secondary_figure_inputs({},tmp_path)
+
+
+def test_paired_run_points_require_matched_conditions(modules):
+    analysis,_=modules
+    paired_run_outcomes=analysis.paired_run_outcomes
+    data=json.loads((Path(__file__).resolve().parents[1]/'report/data/compact_evidence.json').read_text())
+    pairs=paired_run_outcomes(data)
+    assert len(pairs)==18
+    assert all(-1<=row['difference']<=1 for row in pairs)
+    incomplete=copy.deepcopy(data)
+    incomplete['runs'].pop(0)
+    with pytest.raises(ValueError,match='Incomplete'):
+        paired_run_outcomes(incomplete)

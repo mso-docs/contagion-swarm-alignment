@@ -63,6 +63,9 @@ def expected_assets(source):
         samples=validate_index(path)
         assets.add('data/trace-samples.json')
         assets.update(row.file for row in samples.samples)
+    if (source/'data/submission-freeze.json').exists():
+        from freeze_dashboard import validate
+        validate(source/'data/submission-freeze.json');assets.add('data/submission-freeze.json')
     return assets
 
 

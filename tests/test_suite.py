@@ -1,5 +1,8 @@
 import json
 from pathlib import Path
+from types import SimpleNamespace
+
+import pytest
 
 from contagion import suite
 
@@ -21,10 +24,13 @@ def test_secondary_suite_freezes_full_schedule_and_budgets(tmp_path,monkeypatch)
     assert {5,10,20,40,80,128}==set(plan['sizes'])
 
 
-def test_suite_runs_a_frozen_mock_block_and_records_completion(tmp_path,monkeypatch):
+@pytest.mark.parametrize('free_gib',[20,1])
+def test_suite_runs_a_frozen_mock_block_and_records_completion(tmp_path,monkeypatch,free_gib):
     import asyncio
     from contagion.config import digest
     from contagion.inference import MockProvider
+    # Exercise both resource outcomes without consulting shared runner hardware.
+    monkeypatch.setattr(suite.shutil,'disk_usage',lambda path:SimpleNamespace(total=30*2**30,used=(30-free_gib)*2**30,free=free_gib*2**30))
     monkeypatch.chdir(tmp_path);(tmp_path/'results').mkdir()
     root=Path('results/suite');prepared=suite.prepare(root)
     prepared['jobs']=prepared['jobs'][:1];prepared['planned_calls']=prepared['jobs'][0]['calls']
@@ -39,6 +45,12 @@ def test_suite_runs_a_frozen_mock_block_and_records_completion(tmp_path,monkeypa
     monkeypatch.setattr(suite,'HTTPProvider',Provider)
     publications=[];monkeypatch.setattr(suite,'publish',lambda path:publications.append(path))
     outcome=asyncio.run(suite.run(root))
+    if free_gib==1:
+        assert outcome['status']=='stopped'
+        assert json.loads((root/'state.json').read_text())['stop_reason']=='disk_budget'
+        assert outcome['completed_runs']==0 and outcome['physical_calls']==0
+        assert not list((root/'runs').rglob('events.jsonl'))
+        return
     assert outcome['status']=='completed' and outcome['completed_runs']==6
     assert outcome['failed_runs']==0 and publications
     state=json.loads((root/'state.json').read_text())

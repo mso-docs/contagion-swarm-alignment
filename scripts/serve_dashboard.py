@@ -376,6 +376,8 @@ def main():
     parser.add_argument('--secondary-env-file', type=Path, default=ROOT/'.env',
                         help='Private SSH settings for secondary synchronization; keep cloud judge keys separate')
     args = parser.parse_args()
+    if (ROOT/'dashboard/data/submission-freeze.json').exists():
+        parser.error('Submission snapshot is frozen. Use scripts/serve_public_preview.py to serve the reviewed static artifact.')
     if args.interval < 5 or not 1024 <= args.port <= 65535:
         parser.error('Use interval >=5 seconds and an unprivileged valid port')
     sources = args.study or [ROOT / 'results/studies']

@@ -52,6 +52,10 @@ def build(source, output):
         _,values=private_values(ROOT,dict(os.environ))
         samples=validate_index(public_traces,values)
         assets+=('data/trace-samples.json',)+tuple(row.file for row in samples.samples)
+    if (source/'data/submission-freeze.json').exists():
+        from freeze_dashboard import validate
+        validate(source/'data/submission-freeze.json')
+        assets+=('data/submission-freeze.json',)
     for asset in assets:
         path = source / asset
         if path.is_symlink() or not path.is_file():

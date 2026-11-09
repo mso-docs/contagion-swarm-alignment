@@ -46,7 +46,7 @@ def blocked_path(name):
         return True
     if path.suffix.casefold() == '.jsonl' and not re.fullmatch(r'tests/fixtures/mock_run/[^/]+/events\.jsonl', name):
         return True
-    if name.startswith('dashboard/data/') and name not in {'dashboard/data/results.json', 'dashboard/data/research.json', 'dashboard/data/repositories.json', 'dashboard/data/followups.json', 'dashboard/data/trace-samples.json'} and not re.fullmatch(r'dashboard/data/(?:studies|trace-samples)/[a-f0-9]{16}\.json',name):
+    if name.startswith('dashboard/data/') and name not in {'dashboard/data/results.json', 'dashboard/data/research.json', 'dashboard/data/repositories.json', 'dashboard/data/followups.json', 'dashboard/data/trace-samples.json', 'dashboard/data/submission-freeze.json'} and not re.fullmatch(r'dashboard/data/(?:studies|trace-samples)/[a-f0-9]{16}\.json',name):
         return True
     return False
 
@@ -258,6 +258,37 @@ def check(root, mode, scan=False, env=None):
                 validate_index(index, values)
         except Exception:
             findings.append(('dashboard/data/trace-samples.json', 'reviewed public sample closure/privacy/schema validation failed'))
+    freeze_name='dashboard/data/submission-freeze.json'
+    if freeze_name in blobs or (root/freeze_name).exists():
+        try:
+            from freeze_dashboard import Freeze, validate as validate_freeze
+            def frozen_blob(name):
+                return blobs[name] if name in blobs else read_candidate(root,name,mode)
+            frozen=Freeze.model_validate_json(frozen_blob(freeze_name))
+            with tempfile.TemporaryDirectory() as temp:
+                base=Path(temp); dashboard=base/'dashboard'; manifest=dashboard/'data/submission-freeze.json'
+                manifest.parent.mkdir(parents=True);manifest.write_bytes(frozen_blob(freeze_name))
+                for asset in frozen.files_sha256:
+                    target=dashboard/asset;target.parent.mkdir(parents=True,exist_ok=True)
+                    target.write_bytes(frozen_blob('dashboard/'+asset))
+                inventory=base/'final_inventory.json'
+                inventory.write_bytes(frozen_blob('report/data/final_inventory.json'))
+                validate_freeze(manifest,values,inventory)
+        except Exception:
+            findings.append((freeze_name,'frozen snapshot closure/source/privacy validation failed'))
+    for name, validator in [('report/data/final_inventory.json','inventory'),('report/data/illustrative_examples.json','examples')]:
+        if name not in blobs:continue
+        try:
+            with tempfile.TemporaryDirectory() as temp:
+                path=Path(temp)/Path(name).name;path.write_bytes(blobs[name])
+                if validator=='inventory':
+                    from final_evidence_inventory import validate_inventory
+                    validate_inventory(path,env=values)
+                else:
+                    from illustrative_examples import validate as validate_examples
+                    validate_examples(path,values)
+        except Exception:
+            findings.append((name,'final evidence schema/privacy validation failed'))
     for name, reason in findings:
         safe = '[redacted path]' if any(value in name for value in known) or privacy_findings(name) else ascii(name)
         print(f'Blocked {safe}: {reason}', file=sys.stderr)

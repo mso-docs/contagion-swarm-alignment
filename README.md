@@ -2,13 +2,27 @@
 
 A reproducible research harness for instruction-boundary failures in LLM swarms, built from scratch for the November 6–8, 2026 Swarm Alignment Hackathon. Agents have separate histories and communicate through a bounded simulation controller. They have no tools, shell, file access or autonomous networking.
 
+**Final review:** [paper PDF](report/paper.pdf) · [review guide](docs/FINAL_REVIEW.md) ·
+[complete experiment catalog](docs/EXPERIMENT_CATALOG.md) ·
+[static dashboard snapshot](docs/FINAL_DASHBOARD_SNAPSHOT.md).
+Collection is closed. The dashboard is frozen at **2026-11-09T02:59:37Z** and
+serves recorded files without polling collectors or private APIs.
+
+The final inventory has **583 indexed live attempts** (570 completed), of which
+578 distinct trajectories have locally verified source seals (567 completed,
+14,622 returned responses). Five older rows have an explicit provenance gap.
+The 829 mock records are engineering checks, not empirical model findings.
+All eleven task families are catalogued; SWE-bench-style issue diagnosis and
+defensive cybersecurity have mock checks but no live results in this snapshot.
+These counts are an inventory across separate protocols, not independent trials.
+
 **Evidence checkpoint:** the compact protocol2.6 study completed36 runs/900 responses. Seventeen intermediate patch artifacts were flagged by the strict path scorer; final downstream flags were zero. A separate post-hoc wrapper-path sensitivity check preserves zero final flags while changing intermediate counts and task-format interpretation. The separate primary protocol4 allocation completed140 runs, including four integration prechecks,72 RQ1 and64 RQ3 runs. Original catalog-monitor recall is undefined without adoption positives. The paper's six trained GPT-2 captures are reference measurements, separate from the deployed swarm models. A later 72-cell reference grid reuses those six and adds66 captures; it does not revise the paper cutoff or explain swarm internals. A selected16-artifact human audit labeled all compliant; automated flags and human interpretation remain separate, with no general judge-accuracy claim. Primary collection is stopped for another operator; secondary recovery completed21 remaining assignments. Pending larger studies remain separate registrations, not results.
 
 For submission, start with the [research report](report/paper.pdf), [submission handoff](docs/FINAL_SUBMISSION.md), [compact findings](report/COMPACT_RESULTS.md), and [LaTeX/report commands](report/README.md). Completed runs, pending collection and model opinions are separate evidence categories; none is a general alignment score.
 
 The [submission runbook](docs/SUBMISSION_RUNBOOK.md) covers the immutable cutoff snapshot, actual human-audit import, PDF rehearsal and reviewer bundle. The [RQ assessment](docs/RQ_ASSESSMENT.md) lists supported findings and unresolved questions. Repository access is currently private and GitHub Pages is not enabled; the running local dashboard does not imply public availability.
 
-The [long primary runbook](docs/PRIMARY_LARGE_RUNBOOK.md) describes the separately registered264-run/19,320-call static benchmark extension, paired batches, recovery and private progress. Its51long materials include pinned Martian reviews and SWE-bench Verified base-source issue diagnosis. These are benchmark adaptations with an explicit memory window; they do not execute upstream tasks or yield official benchmark scores. Ongoing collection does not update the paper's frozen evidence automatically.
+The [long primary runbook](docs/PRIMARY_LARGE_RUNBOOK.md) describes the separately registered264-run/19,320-call static benchmark extension, paired batches, recovery and private progress. Its51long materials include pinned Martian reviews and SWE-bench Verified base-source issue diagnosis. These are benchmark adaptations with an explicit memory window; they do not execute upstream tasks or yield official benchmark scores. The pending large allocation is closed without live results; registrations are not findings.
 
 The [multidisciplinary docket](docs/MULTIDOMAIN_DOCKET.md) adds psychology, science, mathematics, humanities and defensive cybersecurity evidence tasks. Its separate protocol includes pinned open-source BBH adaptations, unavailable-evidence checks and peer reporting-pressure conditions. The [guarded live controller](docs/MULTIDOMAIN_LIVE.md) supports development gates, separate numeric dashboard summaries and private traces. See [active experiments](docs/ACTIVE_EXPERIMENTS.md) for the recovered allocation sequence and limits.
 
@@ -19,12 +33,12 @@ Requires Python 3.11+. Commands run from the repository root; no paid API is req
 ```bash
 python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade -r requirements-bootstrap.txt
-.venv/bin/python -m pip install -e '.[test]'
+.venv/bin/python -m pip install -e '.[test,security,analysis]'
 .venv/bin/python -m pytest -q
 .venv/bin/python scripts/run_pilot.py --env-file configs/mock.env --provider mock
 ```
 
-For live inference, copy `.env.example` to `.env`, enter your approved endpoint and exact installed model tag, then run:
+For a future, separately authorized replication, copy `.env.example` to `.env`, enter your approved endpoint and exact installed model tag, then run:
 
 ```bash
 .venv/bin/python scripts/run_pilot.py --doctor-only
@@ -42,11 +56,11 @@ numeric results, charts and reviewed public trace samples:
 .venv/bin/python scripts/serve_public_preview.py --artifact results/public-preview/review-FRESH
 ```
 
-Open <http://127.0.0.1:8766/>. This view has no private APIs or server telemetry;
-the operational dashboard on8765 is separate. Refresh a reviewed checkpoint with
-`scripts/export_live_dashboard.py` through `.venv/bin/python`, then use a fresh
-artifact directory. See [current experiment status](docs/ACTIVE_EXPERIMENTS.md).
-Primary collection is currently stopped/reserved; previewing results does not
+Open <http://127.0.0.1:8766/>. Both current local ports8765 and8766 serve the same
+frozen artifact, with no private APIs or server telemetry. The exporter refuses
+to replace a frozen checkpoint. Filters, figures and approved trace drilldowns
+remain interactive; automatic refresh is disabled. See the
+[snapshot policy](docs/FINAL_DASHBOARD_SNAPSHOT.md). Previewing results does not
 restart experiments or publish the site.
 
 ## Experiment flow
@@ -124,3 +138,5 @@ See [LaTeX paper and notebooks](report/README.md), [measurement plan](docs/RESEA
 Raw logs, private requests, credentials and tensors stay ignored. Public exports use closed schemas and heuristic redaction; review optional text before pushing. Reviewers are advisory and uncalibrated. Generated thinking is text, not a neural measurement. Random-weight activations validate instrumentation, not learned features or alignment. There are no claimed SAE meanings, fabricated SHAP values or general alignment scores.
 
 Research follow-ups, human review commands and neural coverage limits: [Confirmatory protocol](docs/CONFIRMATORY_PROTOCOL.md). Check the PDF with `.venv/bin/python scripts/submission_audit.py`; automated checks do not replace author review or submission confirmation.
+
+The final review uses a fixed public dashboard, identical to the GitHub Pages artifact, at [localhost:8766](http://127.0.0.1:8766/). See [submission snapshot instructions](docs/FINAL_DASHBOARD_SNAPSHOT.md) for the explicit cutoff, hash validation and preview commands. Public views do not connect to private collector APIs.

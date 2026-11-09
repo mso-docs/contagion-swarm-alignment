@@ -25,3 +25,5 @@ Only completed manifests with all four source files and a verified checksum are 
 Pending allocation states are observations at freeze time, with their own observation UTC and hashes. They can be later than the evidence cutoff and do not contribute unfinished-run outcomes. They are progress metadata, not evidence that a planned matrix has completed.
 
 For public packaging, include only `public.json`, `safeguard.json` and `RQ_ASSESSMENT.md` after `validate(directory)`. Never include `lineage.private.json`. Validation checks the content hash, cutoff, duplicate IDs, row-derived cohort/safeguard tables, exact generated assessment and privacy scanning. The original compact numerical freeze and reference-checkpoint interpretation remain unchanged.
+
+The final public dashboard has a separate [static artifact freeze](FINAL_DASHBOARD_SNAPSHOT.md), which supplements this paper evidence cutoff without changing it.

@@ -4,6 +4,9 @@ const state = {snapshot:null, legacySnapshot:null, runs:[], selected:null};
 const studyRunCache=new Map();
 let snapshotRefresh=null,lastSnapshotPoll=0;
 const dataSourceErrors=new Set();
+const dashboardMode={frozen:false,blocked:false,operator:false,loaded:false};
+const modeReady=(async()=>{try{const response=await fetch('data/submission-freeze.json',{cache:'no-store'});if(response.ok){const value=await response.json();if(value.schema_version!=='public-dashboard-freeze-1.0'||value.state!=='submission_frozen'||value.automatic_refresh_enabled!==false||!(/^[a-f0-9]{64}$/.test(value.artifact_content_sha256)))throw Error('Freeze metadata invalid');dashboardMode.frozen=true;const banner=$('submission-freeze-status');if(banner){banner.hidden=false;banner.textContent=`FINAL SUBMISSION SNAPSHOT · cutoff ${value.cutoff_utc} · content SHA256 ${value.artifact_content_sha256}. Collection is closed; filters and reviewed trace drilldowns remain interactive.`;}const counts=$('submission-freeze-counts');if(counts){counts.hidden=false;counts.textContent=value.datasets.map(r=>`${r.index}: ${r.rows} records (${r.live_rows} live, ${r.mock_rows} mock; ${r.completed_rows} completed; ${r.development_rows} development, ${r.evaluation_rows} evaluation, ${r.unclassified_rows} unclassified)`).join(' · ')+` · ${value.trained_checkpoint_captures} trained-checkpoint captures; ${value.random_weight_checks} random-weight checks; ${value.reviewed_public_trace_samples} reviewed public trace samples. Protocols and dependent records are not pooled.`;}const refresh=$('refresh');if(refresh){refresh.disabled=true;refresh.textContent='Frozen snapshot';}}else if(response.status!==404)throw Error('Freeze metadata unavailable');if(!dashboardMode.frozen)dashboardMode.operator=typeof location!=='undefined'&&/(?:[?&])mode=operator(?:&|$)/.test(location.search??'');const refreshMode=$('refresh-mode');if(refreshMode)refreshMode.textContent=dashboardMode.frozen?'Submission frozen':dashboardMode.operator?'Private operator refresh · 15s':'Static checkpoint';}catch{dashboardMode.blocked=true;const banner=$('submission-freeze-status');if(banner){banner.hidden=false;banner.textContent='Snapshot integrity metadata unavailable. Reload from a validated artifact; private APIs and automatic refresh are disabled.';}}})();
+
 const newestFirst=(a,b)=>String(b.started_utc??'').localeCompare(String(a.started_utc??''))||b.id.localeCompare(a.id);
 const NS = 'http://www.w3.org/2000/svg';
 const pct = value => value == null ? 'N/A' : `${(100 * value).toFixed(1)}%`;
@@ -310,6 +313,7 @@ function renderEvidenceCensus(){const target=$('evidence-census');if(!target)ret
 let localAssetRevision=null;
 async function checkLocalDashboard(){
  const node=$('local-sync-status'),progress=$('collector-progress');
+ if(!dashboardMode.operator||dashboardMode.frozen||dashboardMode.blocked){if(node)node.textContent=dashboardMode.frozen?'FINAL SUBMISSION SNAPSHOT · immutable public artifact; no live collector connection.':'PUBLIC STATIC VIEW · no private APIs or automatic refresh. Operator monitoring requires ?mode=operator on the private server.';if(progress)progress.hidden=true;return;}
  try{const response=await fetch('__local_status',{cache:'no-store'});if(!response.ok)throw Error('Published snapshot');const status=await response.json();if(!status.asset_revision)throw Error('No local collector');
   if(localAssetRevision&&localAssetRevision!==status.asset_revision){window.location.reload();return;}localAssetRevision=status.asset_revision;
   if(node)node.textContent=status.status==='ok'?`LOCAL LIVE VIEW · log index checked ${new Date(status.checked_epoch*1000).toLocaleTimeString()} · ${status.studies} sealed study attempts (live + mock) · ${status.repository_runs??0} repository attempts · ${status.neural_captures??0} neural captures · ${status.monitor_summaries??0} monitor cells (not runs)`:`Local log sync ${status.status}; previous validated snapshot retained.`;
@@ -317,8 +321,9 @@ async function checkLocalDashboard(){
  }catch{if(node)node.textContent=localAssetRevision?'Local collector status is temporarily unavailable; retained results remain visible.':'PUBLISHED / STATIC SNAPSHOT · results update after reviewed data publication; this page has no live collector connection.';if(progress)progress.hidden=true;}
 }
 async function refreshSnapshots(){
+ await modeReady;if(dashboardMode.blocked||(dashboardMode.frozen&&dashboardMode.loaded))return;
  if(snapshotRefresh)return snapshotRefresh;
- snapshotRefresh=(async()=>{await Promise.allSettled([load(),loadResearch(),loadRepositories(),loadFollowups(),loadPublicTraceSamples()]);lastSnapshotPoll=Date.now();await checkLocalDashboard();renderEvidenceCensus();})();
+ snapshotRefresh=(async()=>{await Promise.allSettled([load(),loadResearch(),loadRepositories(),loadFollowups(),loadPublicTraceSamples()]);lastSnapshotPoll=Date.now();dashboardMode.loaded=true;await checkLocalDashboard();renderEvidenceCensus();})();
  try{await snapshotRefresh;}finally{snapshotRefresh=null;}
 }
 $('reset-filters').addEventListener('click',()=>{$('backend').value='live';['model','topology','condition','research-model-filter','research-task-filter','research-size-filter','research-outcome-filter'].forEach(id=>$(id).value='all');$('comparison-search').value='';if(state.snapshot)render();if(researchState.snapshot)renderStudyRows(allResearchRows());});
@@ -447,6 +452,6 @@ async function loadDiversityDetail(row){
 function researchTableInto(target,headers,rows){const table=el('table'),head=el('thead'),tr=el('tr');headers.forEach(h=>tr.append(el('th',h)));head.append(tr);table.append(head);const body=el('tbody');rows.forEach(values=>{const row=el('tr');values.forEach(v=>row.append(el('td',v)));body.append(row);});table.append(body);target.replaceChildren(table);}
 ['diversity-backend','diversity-composition','diversity-roles'].forEach(id=>$(id)?.addEventListener('change',renderDiversity));
 async function loadFollowups(){try{const response=await fetch(`data/followups.json?v=${Date.now()}`,{cache:'no-store'});if(!response.ok){if(response.status===404)return;throw Error('Follow-up index');}const data=await response.json();if(data.schema_version!=='confirmatory-public-1.0'||!Array.isArray(data.runs))throw Error('Follow-up schema');followupState.snapshot=data;dataSourceErrors.delete('followups');renderMultidomain();renderDiversity();renderFollowupMonitor();renderAdvisoryReviews();combineEvidence();if(state.snapshot)render();if(researchState.snapshot)renderStudyRows(allResearchRows());renderEvidenceInventory();}catch{dataSourceErrors.add('followups');}}
-refreshSnapshots();setInterval(()=>{if(!document.hidden&&(localAssetRevision||Date.now()-lastSnapshotPoll>=60000))refreshSnapshots();},15000);
+refreshSnapshots();modeReady.then(()=>{if(dashboardMode.operator&&!dashboardMode.frozen&&!dashboardMode.blocked)setInterval(()=>{if(!document.hidden)refreshSnapshots();},15000);});
 
-document.addEventListener?.('visibilitychange',()=>{if(!document.hidden)refreshSnapshots();});
+document.addEventListener?.('visibilitychange',()=>{if(!document.hidden&&dashboardMode.operator&&!dashboardMode.frozen&&!dashboardMode.blocked)refreshSnapshots();});

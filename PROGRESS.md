@@ -303,3 +303,40 @@ retain their immutable evidence; failures still stop rather than bypass guards.
   reference instrumentation has72 trained captures and two random checks.
   Pending larger allocations have not become findings. The paper cutoff stays
   fixed. No merge, repository visibility change, deployment or submission occurs.
+
+### Final static dashboard boundary
+
+Implemented an explicit `public-dashboard-freeze-1.0` manifest binding the final inventory, all four public numeric indexes, six separately counted result sources and every approved application/detail/trace asset. Default public pages make no private-status requests and schedule no refresh. Explicit private operator mode is available before a freeze; the final manifest overrides it. Filters, diagrams and approved static trace drilldowns remain interactive. Export refuses to mutate frozen data, and a fresh Pages build revalidates the exact asset hashes.
+
+Observed verification: `.venv/bin/python -m pytest -q tests/test_freeze_dashboard.py tests/test_public_preview.py tests/test_public_trace_samples.py` → **9 passed in55.40s**; `git diff --check` passed. These checks used temporary copied snapshots; actual submission freeze and preview restart remain the lead operator's coordinated final step. No inference, SSH, deployment or raw-log modifications were performed. See `docs/FINAL_DASHBOARD_SNAPSHOT.md`.
+# Final static submission checkpoint — November 9, 2026
+
+The final paper now has7 main-text pages,16 total pages and a211-word abstract.
+It retains Latin Modern and the original research questions. The five substantive
+revisions add endpoint-focused contributions, actual scorer/human disagreement
+examples, an RQ support/limits table, paired run-level variation and an updated
+64-run responsibility summary. The original compact freeze is not expanded by
+silently pooling exploratory results.
+
+The final inventory covers1,412 indexed rows:583 live and829 mock. There are578
+locally seal-verified distinct live trajectories,567 completed, and14,622 returned
+responses; five older rows have explicit unresolved provenance. All eleven task
+families and every indexed ID are recorded. Issue diagnosis and defensive cyber
+have mock-only coverage. The72 trained reference captures include the original
+six plus66 later captures; two random checks remain separate.
+
+Collection closure marked30 local allocations STOP and verified both controller
+leases idle without changing raw logs/states or remote machines. The public
+dashboard is frozen at2026-11-09T02:59:37Z. Both local ports8765/8766 now serve the
+same464-file Pages artifact; HTTP checks verified exact HTML/index/manifest bytes,
+private endpoint404 and foreign-Host403. Frozen clients have no polling timers or
+private requests, and collector startup refuses a submission freeze.
+
+Final full pytest run: **524 passed in 217.32s**. Awaited JavaScript checks passed
+eight views in operator, public-static and frozen modes. The source-only research
+bundle regenerated figures and validated supplements offline. The final PDF
+audit, privacy guard, Ruff and configured Bandit checks passed. Final staged
+secret/privacy hooks and new-head CI remain part of the commit/review process.
+Mock hardware fixtures also passed with simulated 1 GiB free; low-disk guards
+still stop before inference. No production safeguard was weakened. No new model
+calls, public deployment, merge or hackathon submission occurred.

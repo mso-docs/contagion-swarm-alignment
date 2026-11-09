@@ -1,5 +1,6 @@
 """Create an allowlisted research bundle; raw logs, private reviews and env stay out."""
 import argparse
+import ast
 import gzip
 import hashlib
 import json
@@ -17,12 +18,12 @@ from scan_privacy import scan_blob,findings
 
 ROOT=Path(__file__).resolve().parents[1]
 TEXT_FILES=[
-    'README.md','AGENTS.md','LICENSE','CONTAGION_AGENT_MVP_SPEC.md','pyproject.toml','requirements.lock.txt','requirements-bootstrap.txt',
-    'report/paper.tex','report/sources.bib','report/template_format.json','report/RESEARCH_READINESS.md',
+    'README.md','AGENTS.md','LICENSE','Makefile','CONTAGION_AGENT_MVP_SPEC.md','pyproject.toml','requirements.lock.txt','requirements-bootstrap.txt',
+    'report/paper.tex','report/sources.bib','report/template_format.json','report/README.md','report/RESEARCH_READINESS.md',
     'report/data/compact_evidence.json','report/data/rq3_followup.json',
     'report/data/human_audit.json','report/data/patch_pointer_audit.json',
     'report/data/submission_snapshot/public.json','report/data/submission_snapshot/safeguard.json','report/data/submission_snapshot/RQ_ASSESSMENT.md',
-    'notebooks/paper_figures.ipynb',
+    'notebooks/paper_figures.ipynb','notebooks/all_tasks_analysis.ipynb','scripts/all_task_figures.py',
     'scripts/paper_analysis.py','scripts/build_paper.py',
     'scripts/execute_notebook.py','scripts/submission_audit.py','scripts/run_pilot.py',
     'scripts/security_guard.py','scripts/scan_privacy.py','scripts/repository_publication.py','scripts/freeze_rq3_followup.py','scripts/research_bundle.py',
@@ -32,10 +33,33 @@ TEXT_FILES=[
     'docs/SUBMISSION_SNAPSHOT.md','docs/SUBMISSION_REHEARSAL.md','docs/RQ_ASSESSMENT.md',
     'docs/SUBMISSION_RUNBOOK.md','docs/SUBMISSION_DEMO.md',
     'docs/PRIMARY_RQ1_VALIDITY.md',
+    'report/data/final_inventory.json','report/data/illustrative_examples.json',
+    'scripts/final_evidence_inventory.py','scripts/illustrative_examples.py',
+    'dashboard/data/results.json','dashboard/data/research.json',
+    'dashboard/data/repositories.json','dashboard/data/followups.json',
+    'docs/EXPERIMENT_CATALOG.md',
+    'docs/FINAL_REVIEW.md','docs/FINAL_SUBMISSION.md','docs/FINAL_DASHBOARD_SNAPSHOT.md',
 ]
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def source_dependencies(files, root):
+    """Include local Python imports transitively, without executing source code."""
+    root=Path(root).resolve(); selected=set(files); pending=[n for n in selected if n.endswith('.py')]
+    while pending:
+        name=pending.pop(); tree=ast.parse((root/name).read_text(),filename=name)
+        modules=[]
+        for node in ast.walk(tree):
+            if isinstance(node,ast.Import):modules.extend(alias.name.split('.')[0] for alias in node.names)
+            elif isinstance(node,ast.ImportFrom) and node.level==0 and node.module:modules.append(node.module.split('.')[0])
+        for module in modules:
+            candidate='scripts/'+module+'.py'; path=root/candidate
+            if not path.is_file():continue
+            if path.is_symlink() or root/'scripts' not in path.resolve().parents:raise ValueError('Unsafe source dependency')
+            if candidate not in selected:selected.add(candidate);pending.append(candidate)
+    return sorted(selected)
 
 
 def validate_text(blob,suffix,known,values):
@@ -51,7 +75,7 @@ def clean_checkout_smoke(source):
     source=Path(source)
     with TemporaryDirectory(prefix='contagion-offline-smoke-') as temporary:
         root=Path(temporary)
-        for name in ['src','scripts','report','notebooks']:
+        for name in ['src','scripts','report','notebooks','dashboard']:
             if (source/name).is_dir():shutil.copytree(source/name,root/name)
         env=dict(os.environ,PYTHONPATH=os.pathsep.join([str(root/'src'),str(root/'scripts')]),MPLCONFIGDIR=str(root/'mpl-cache'),
                  HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1')
@@ -61,11 +85,18 @@ def clean_checkout_smoke(source):
                 cwd=root,env=env,stdout=log,stderr=log,check=True,timeout=120)
             subprocess.run([sys.executable,'-c','from paper_supplement import render; text, hashes = render(); assert text and hashes'],
                 cwd=root,env=env,stdout=log,stderr=log,check=True,timeout=120)
+            subprocess.run([sys.executable,str(root/'scripts/all_task_figures.py'),'--out',str(root/'all-task-figures')],
+                cwd=root,env=env,stdout=log,stderr=log,check=True,timeout=120)
         manifest=json.loads((root/'figures/figure_manifest.json').read_text())
         if manifest['evidence_sha256']!=sha(root/'report/data/compact_evidence.json'):raise ValueError('Smoke used a different evidence freeze')
+        inventory=json.loads((root/'report/data/final_inventory.json').read_text())
+        coverage=json.loads((root/'all-task-figures/inventory_manifest.json').read_text())
+        if coverage['live_attempts']!=inventory['counts']['live_rows'] or coverage['mock_attempts']!=inventory['counts']['mock_rows']:
+            raise ValueError('All-task figures omit indexed results')
         return {'status':'passed','completed_primary_runs':manifest['complete_runs'],'generated_figure_files':len(manifest['files']),
+                'all_task_live_rows':coverage['live_attempts'],'all_task_mock_rows':coverage['mock_attempts'],
                 'environment':'Existing installed analysis dependencies; fresh dependency installation not tested.',
-                'scope':'Source-only temporary copy; offline figure and validated supplement generation; no inference or raw logs.'}
+                'scope':'Source-only temporary copy; paper/all-task figures and validated supplements; no inference or raw logs.'}
 
 
 def build(output,paper=ROOT/'results/paper-draft',root=ROOT,smoke=True,snapshot=None):
@@ -80,7 +111,7 @@ def build(output,paper=ROOT/'results/paper-draft',root=ROOT,smoke=True,snapshot=
     build_manifest=json.loads((paper/'build_manifest.json').read_text())
     if sha(paper/'paper.pdf')!=build_manifest['pdf_sha256']:raise ValueError('PDF differs from its recorded build')
     known,values=private_values(ROOT,dict(os.environ));output.mkdir(parents=True)
-    source_files=[*TEXT_FILES,*[str(p.relative_to(root)) for p in sorted((root/'src/contagion').glob('*.py'))]]
+    source_files=source_dependencies([*TEXT_FILES,*[str(p.relative_to(root)) for p in sorted((root/'src/contagion').glob('*.py'))]],root)
     copied=[]
     def copy(source,target,binary=False):
         source=Path(source)

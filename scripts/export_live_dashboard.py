@@ -14,6 +14,7 @@ from serve_dashboard import validate_live_data
 
 def export(source,destination,env):
     source=Path(source);destination=Path(destination)
+    if (destination/'submission-freeze.json').exists():raise ValueError('Submission snapshot is frozen; use a separate future checkpoint')
     if not (source/'research.json').is_file():raise ValueError('Start the local dashboard before exporting live data')
     (ROOT/'results').mkdir(exist_ok=True)
     with TemporaryDirectory(prefix='dashboard-checkpoint-',dir=ROOT/'results') as temporary:

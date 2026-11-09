@@ -425,3 +425,26 @@ on port8766. Port8765 remains the private collector dashboard. Static publicatio
 updates through reviewed committed snapshots, not private live server access.
 Primary is stopped/reserved; secondary recovery completed21/21. Long queues are
 pending, not completed results. Final submission is an author action.
+
+Final static dashboard tooling:9 focused freeze/public-preview/reviewed-trace tests passed (`.venv/bin/python -m pytest -q tests/test_freeze_dashboard.py tests/test_public_preview.py tests/test_public_trace_samples.py`). The final manifest must be created only after collection closure/inventory reconciliation; build into a fresh directory and restart the operator-owned8766 preview explicitly. Default public mode has no private API polling; frozen mode also disables manual data refresh. No experiment observations were added by this tooling.
+# Frozen final-review checkpoint
+
+- **524 pytest tests passed** after adding inventory, actual example bindings,
+  closure and frozen-publication guards. The inventory's499-test value is a
+  separately identified earlier software-validation observation, not an
+  experimental sample size.
+- The final report is7 main pages /16 total /211 abstract words. It includes all
+  five paper refinements and retains the author's chosen typography.
+- All eleven task families and every indexed result ID appear in the closed
+  final inventory and experiment catalog. Live, mock, incomplete, unverified
+  legacy, monitor, advisory and neural records remain separate.
+-30 local allocations closed; controller leases idle; no raw evidence or remote
+  services changed. Fixed cutoff2026-11-09T02:59:37Z,464 allowlisted static files.
+  Both localhost ports8765/8766 serve the exact public artifact. Private APIs
+  return404 and frozen clients do not poll or refresh.
+- Three-mode awaited JavaScript interaction checks, the PDF/source audit and an
+  offline source-copy reproduction passed. Privacy guard, Ruff and Bandit passed.
+  Finish staged hooks and CI, then author review; no automatic submission.
+- Mock orchestration now controls its disk-capacity fixtures. Simulated low-disk
+  regressions preserve production stopping behavior and make CI independent of
+  incidental runner headroom. No frozen measurement runner was changed.

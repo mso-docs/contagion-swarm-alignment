@@ -15,7 +15,7 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
   class Option extends Element { constructor(text,value){super('option');this.textContent=text;this.value=value;} }
   const widgets=widgetsSource?new Function('document',widgetsSource+'\nreturn EvidenceWidgets;')(document):null;
   const fetched=[],timers=[];
-  const api=new Function('document','Option','fetch','setInterval','EvidenceWidgets',source+'\nreturn {load,render,renderRound,renderTraces,showView,state,loadResearch,researchState,loadStudyDetail,loadRepositories,refreshSnapshots,loadPublicTraceSamples,loadMultidomainDetail,loadDiversityDetail,loadStudyRun};')(document,Option,async url=>(fetched.push(url),{ok:url==='__local_status'?(!runtimeOptions.static):!(url.startsWith('data/studies/')||url.startsWith('data/trace-samples/'))||Boolean(detailFiles[url]),status:url==='__local_status'&&runtimeOptions.static?404:200,json:async()=>url.startsWith('data/trace-samples.json')?(runtimeOptions.index??{schema_version:'public-trace-samples-1.0',samples:[]}):url.startsWith('data/followups.json')?followups:url==='__local_status'?{status:'ok',asset_revision:'test-assets',checked_epoch:Date.now()/1000,studies:research.studies.length,campaigns:[{kind:'swarm_campaign',status:'running',completed_runs:1,planned_runs:216,physical_calls:31,planned_calls:5400,failed_runs:0}]}:url.startsWith('data/research.json')?research:url.startsWith('data/repositories.json')?repositories:detailFiles[url]??data}),(callback,ms)=>(timers.push({callback,ms}),timers.length),widgets);
+  const api=new Function('document','Option','fetch','setInterval','EvidenceWidgets','location',source+'\nreturn {load,render,renderRound,renderTraces,showView,state,loadResearch,researchState,loadStudyDetail,loadRepositories,refreshSnapshots,loadPublicTraceSamples,loadMultidomainDetail,loadDiversityDetail,loadStudyRun};')(document,Option,async url=>(fetched.push(url),{ok:url==='data/submission-freeze.json'?Boolean(runtimeOptions.freezeManifest):url==='__local_status'?(!runtimeOptions.static):!(url.startsWith('data/studies/')||url.startsWith('data/trace-samples/'))||Boolean(detailFiles[url]),status:(url==='data/submission-freeze.json'&&!runtimeOptions.freezeManifest)||(url==='__local_status'&&runtimeOptions.static)?404:200,json:async()=>url==='data/submission-freeze.json'?runtimeOptions.freezeManifest:url.startsWith('data/trace-samples.json')?(runtimeOptions.index??{schema_version:'public-trace-samples-1.0',samples:[]}):url.startsWith('data/followups.json')?followups:url==='__local_status'?{status:'ok',asset_revision:'test-assets',checked_epoch:Date.now()/1000,studies:research.studies.length,campaigns:[{kind:'swarm_campaign',status:'running',completed_runs:1,planned_runs:216,physical_calls:31,planned_calls:5400,failed_runs:0}]}:url.startsWith('data/research.json')?research:url.startsWith('data/repositories.json')?repositories:detailFiles[url]??data}),(callback,ms)=>(timers.push({callback,ms}),timers.length),widgets,{search:runtimeOptions.static?'':'?mode=operator'});
   await api.load();await api.loadResearch();await api.loadRepositories();await api.refreshSnapshots();
   if(followups.multidomain?.length){
     const select=ids.get('multidomain-backend'),summary=ids.get('multidomain-summary');
@@ -29,12 +29,12 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
     select.value='live';select.listeners.change();
   }
   fetched.length=0;await ids.get('refresh').listeners.click();
-  if(!fetched.some(u=>u.startsWith('data/results.json'))||!fetched.some(u=>u.startsWith('data/research.json')))throw Error('Refresh must fetch both snapshots');
+  if(runtimeOptions.freezeManifest){if(fetched.length||timers.length)throw Error('Frozen snapshot refreshed or scheduled polling');if(!ids.get('refresh').disabled)throw Error('Frozen refresh control enabled');}else if(!fetched.some(u=>u.startsWith('data/results.json'))||!fetched.some(u=>u.startsWith('data/research.json')))throw Error('Refresh must fetch both snapshots');
   if(!ids.get('research-updated').textContent.includes('run attempts'))throw Error('Research freshness missing');
-  if(runtimeOptions.static){if(!ids.get('collector-progress').hidden)throw Error('Public preview exposed private operations');}else if(ids.get('collector-progress').hidden||!ids.get('collector-progress').children.length)throw Error('Private collector progress missing');
+  if(runtimeOptions.static||runtimeOptions.freezeManifest){if(!ids.get('collector-progress').hidden)throw Error('Public preview exposed private operations');}else if(ids.get('collector-progress').hidden||!ids.get('collector-progress').children.length)throw Error('Private collector progress missing');
   for(const id of ['task-metric-coverage','adoption-metric-coverage'])if(!ids.get(id)?.textContent)throw Error('Missing measured metric denominator: '+id);
   const originalStudies=research.studies,originalStamp=research.generated_utc,baseStudy=originalStudies.find(r=>r.backend!=='mock');
-  if(baseStudy){
+  if(baseStudy&&!runtimeOptions.freezeManifest){
     const before=api.state.runs.length;
     const arriving={...baseStudy,id:'0000000000000000',case_id:'new-overnight-arrival',started_utc:'2100-01-01T00:00:00+00:00',detail_file:null};
     const older=Array.from({length:220},(_,i)=>({...baseStudy,id:(i+1).toString(16).padStart(16,'0'),case_id:'older-fixture-'+i,started_utc:'2000-01-01T00:00:00+00:00',detail_file:null}));
@@ -141,5 +141,23 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
 }
 if(typeof module!=='undefined'&&require.main===module){
   const fs=require('node:fs'),path=require('node:path'),root=path.join(__dirname,'..','dashboard');
-  dashboardSmoke(fs.readFileSync(path.join(root,'app.js'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/results.json'),'utf8')),fs.readFileSync(path.join(root,'index.html'),'utf8'),JSON.parse(fs.readFileSync(path.join(root,'data/research.json'),'utf8')),fs.readFileSync(path.join(root,'widgets.js'),'utf8'),Object.fromEntries(fs.existsSync(path.join(root,'data/studies'))?fs.readdirSync(path.join(root,'data/studies')).filter(n=>n.endsWith('.json')).map(n=>['data/studies/'+n,JSON.parse(fs.readFileSync(path.join(root,'data/studies',n),'utf8'))]):[]),fs.existsSync(path.join(root,'data/repositories.json'))?JSON.parse(fs.readFileSync(path.join(root,'data/repositories.json'),'utf8')):undefined,fs.existsSync(path.join(root,'data/followups.json'))?JSON.parse(fs.readFileSync(path.join(root,'data/followups.json'),'utf8')):undefined).then(console.log).catch(error=>{console.error(error);process.exitCode=1;});
+  const read=name=>fs.readFileSync(path.join(root,name),'utf8');
+  const json=name=>JSON.parse(read(name));
+  const details={};
+  for(const directory of ['studies','trace-samples']){
+    const folder=path.join(root,'data',directory);
+    if(fs.existsSync(folder))for(const name of fs.readdirSync(folder).filter(n=>n.endsWith('.json'))){
+      const relative=`data/${directory}/${name}`;details[relative]=json(relative);
+    }
+  }
+  const args=[read('app.js'),json('data/results.json'),read('index.html'),json('data/research.json'),
+    read('widgets.js'),details,json('data/repositories.json'),json('data/followups.json')];
+  const index=fs.existsSync(path.join(root,'data/trace-samples.json'))?json('data/trace-samples.json'):undefined;
+  (async()=>{
+    console.log(await dashboardSmoke(...args));
+    console.log(await dashboardSmoke(...args,{static:true,index}));
+    if(fs.existsSync(path.join(root,'data/submission-freeze.json'))){
+      console.log(await dashboardSmoke(...args,{static:true,index,freezeManifest:json('data/submission-freeze.json')}));
+    }
+  })().catch(error=>{console.error(error);process.exitCode=1;});
 }

@@ -8,6 +8,18 @@ def service(monkeypatch):
     return runpy.run_path(str(root / 'scripts/serve_dashboard.py'))
 
 
+def test_frozen_submission_prevents_collector_startup(monkeypatch,tmp_path):
+    import pytest
+    import sys
+    api=service(monkeypatch);main=api['main']
+    path=tmp_path/'dashboard/data/submission-freeze.json';path.parent.mkdir(parents=True);path.write_text('{}')
+    monkeypatch.setitem(main.__globals__,'ROOT',tmp_path)
+    monkeypatch.setitem(main.__globals__,'private_values',lambda *args:pytest.fail('Frozen startup must not read operator settings'))
+    monkeypatch.setattr(sys,'argv',['serve_dashboard.py','--sync-secondary'])
+    with pytest.raises(SystemExit) as exc:main()
+    assert exc.value.code==2
+
+
 def test_local_service_failure_is_visible_and_does_not_echo_private_values(monkeypatch, tmp_path, capsys):
     api = service(monkeypatch)
     refresh = api['refresh']
