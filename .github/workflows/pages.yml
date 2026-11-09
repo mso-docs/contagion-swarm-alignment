@@ -53,7 +53,7 @@ jobs:
       - name: Check dashboard interactions
         run: node tests/dashboard_runtime.js
       - name: Validate and build only allowlisted public assets
-        run: .venv/bin/python scripts/build_dashboard.py --out "${{ runner.temp }}/contagion-public"
+        run: .venv/bin/python scripts/build_public_site.py --out "${{ runner.temp }}/contagion-public"
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
         with:

@@ -5,9 +5,20 @@ A reproducible research harness for instruction-boundary failures in LLM swarms,
 **Final review:** [paper PDF](report/paper.pdf) · [review guide](docs/FINAL_REVIEW.md) ·
 [complete experiment catalog](docs/EXPERIMENT_CATALOG.md) ·
 [static dashboard snapshot](docs/FINAL_DASHBOARD_SNAPSHOT.md).
+
+**Online:** [final dashboard snapshot](https://mso-docs.github.io/contagion-swarm-alignment/) ·
+[judge overview](https://mso-docs.github.io/contagion-swarm-alignment/overview/) ·
+[Apart Research project](https://apartresearch.com/sprints/projects/contagion-testing-how-unsafe-instructions-spread-through-ai-agent-networks-3hzoqflrcr).
+
 Watch the [video demo](https://youtu.be/7FGDfEq0ucE).
+
 Collection is closed. The dashboard is frozen at **2026-11-09T02:59:37Z** and
 serves recorded files without polling collectors or private APIs.
+
+[![Frozen Contagion dashboard with cohort metrics, runtime summaries and research coverage](docs/images/dashboard-overview.png)](https://mso-docs.github.io/contagion-swarm-alignment/)
+
+The screenshot shows the public snapshot. Individual panels cover different
+evidence subsets; the complete cross-protocol inventory is described below.
 
 The final inventory has **583 indexed live attempts** (570 completed), of which
 578 distinct trajectories have locally verified source seals (567 completed,
@@ -21,11 +32,47 @@ These counts are an inventory across separate protocols, not independent trials.
 
 For submission, start with the [research report](report/paper.pdf), [submission handoff](docs/FINAL_SUBMISSION.md), [compact findings](report/COMPACT_RESULTS.md), and [LaTeX/report commands](report/README.md). Completed runs, pending collection and model opinions are separate evidence categories; none is a general alignment score.
 
-The [submission runbook](docs/SUBMISSION_RUNBOOK.md) covers the immutable cutoff snapshot, actual human-audit import, PDF rehearsal and reviewer bundle. The [RQ assessment](docs/RQ_ASSESSMENT.md) lists supported findings and unresolved questions. Repository access is currently private and GitHub Pages is not enabled; the running local dashboard does not imply public availability.
+The [submission runbook](docs/SUBMISSION_RUNBOOK.md) covers the immutable cutoff snapshot, actual human-audit import, PDF rehearsal and reviewer bundle. The [RQ assessment](docs/RQ_ASSESSMENT.md) lists supported findings and unresolved questions. The repository is public and GitHub Pages is configured to publish the reviewed static snapshot; it does not expose local collectors or private APIs.
 
 The [long primary runbook](docs/PRIMARY_LARGE_RUNBOOK.md) describes the separately registered264-run/19,320-call static benchmark extension, paired batches, recovery and private progress. Its51long materials include pinned Martian reviews and SWE-bench Verified base-source issue diagnosis. These are benchmark adaptations with an explicit memory window; they do not execute upstream tasks or yield official benchmark scores. The pending large allocation is closed without live results; registrations are not findings.
 
 The [multidisciplinary docket](docs/MULTIDOMAIN_DOCKET.md) adds psychology, science, mathematics, humanities and defensive cybersecurity evidence tasks. Its separate protocol includes pinned open-source BBH adaptations, unavailable-evidence checks and peer reporting-pressure conditions. The [guarded live controller](docs/MULTIDOMAIN_LIVE.md) supports development gates, separate numeric dashboard summaries and private traces. See [active experiments](docs/ACTIVE_EXPERIMENTS.md) for the recovered allocation sequence and limits.
+
+## App screenshots
+
+These are actual captures of the frozen public app and the judge overview.
+Metadata is stripped without changing pixels; images receive visual and OCR
+privacy checks and are bound to their reviewed hashes.
+
+<details>
+<summary>Model comparisons, public traces, interpretability, and judge overview</summary>
+
+**Model comparisons.** Cohorts, protocols and conditions remain separate;
+displayed ranges are not general alignment scores.
+
+![Model and protocol comparison cards](docs/images/model-comparisons.png)
+
+**Reviewed public traces.** Selected output/message excerpts can be expanded
+without connecting to a private server. They are not complete raw logs.
+
+![Reviewed public trace excerpts with two messages expanded](docs/images/reviewed-traces.png)
+
+**Interpretability overview.** Trained GPT-2 reference captures, intervention
+effects and measurement controls are separate from the Ollama swarm runs.
+
+![Reference-checkpoint interpretability metrics and intervention plots](docs/images/interpretability-overview.png)
+
+**Neuron inspector.** Recorded activation values and clean/patched/control
+logits describe the selected reference capture, not a mechanism for swarm behavior.
+
+![Selected reference capture with neuron activations, intervention logits and residual heatmap](docs/images/neuron-inspector.png)
+
+**Judge overview.** A short reading guide connects the paper, experiment flow,
+findings, limitations, demo and dashboard.
+
+![Contagion judge overview and controller-mediated experiment diagram](docs/images/judge-overview.png)
+
+</details>
 
 ## Start here
 
@@ -49,6 +96,16 @@ For a future, separately authorized replication, copy `.env.example` to `.env`, 
 The pilot discovers model identity, checks a response and runs a bounded control/injection pair. It does not pull models or change server settings. Keep mock and live output directories separate. Research parameters belong in YAML; credentials and private server identifiers belong only in ignored `.env` files. See [worker setup](docs/WORKERS.md) before remote execution.
 
 ## Public judge preview
+
+The dashboard stays at the Pages root; `/overview/` provides a concise judge
+landing page with the paper, findings, scope, and demo. Both use the same Pages
+deployment, with no additional hosting account. Build the combined site with
+`.venv/bin/python scripts/build_public_site.py --out results/public-preview/site-FRESH`.
+The dashboard freeze stays byte-identical; overview statistics are rendered from
+the validated inventory, and the PDF receives the existing publication audit.
+To preview both views on loopback, run
+`.venv/bin/python scripts/serve_public_site.py --artifact results/public-preview/overview-FRESH`
+and open <http://127.0.0.1:8767/overview/>.
 
 Build and open the exact allowlisted GitHub Pages artifact locally, with the same
 numeric results, charts and reviewed public trace samples:

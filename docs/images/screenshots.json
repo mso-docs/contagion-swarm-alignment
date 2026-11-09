@@ -1,0 +1,65 @@
+{
+  "schema_version": "reviewed-screenshots-1.0",
+  "screenshots": [
+    {
+      "file": "docs/images/dashboard-overview.png",
+      "sha256": "af69b00871264d04d8c4b1995c45239cff8311e07362d1e62bf10ae54926cfb4",
+      "width": 1891,
+      "height": 860,
+      "caption": "Frozen public dashboard overview supplied by the author.",
+      "source": "user_supplied_public_snapshot",
+      "privacy_reviewed": true,
+      "ocr_checked": true
+    },
+    {
+      "file": "docs/images/model-comparisons.png",
+      "sha256": "c693d25aa706a17732f0a2f9372d6b08e327b54129349b1c2b2c219337a18f43",
+      "width": 1600,
+      "height": 1050,
+      "caption": "Model and protocol comparisons keep sampling cohorts and treatments separate.",
+      "source": "public_snapshot_browser_capture",
+      "privacy_reviewed": true,
+      "ocr_checked": true
+    },
+    {
+      "file": "docs/images/interpretability-overview.png",
+      "sha256": "cc5d1e4ee2cb23399ec780c735bc81b07ff8b8ecf45942ca42754f94acdc947b",
+      "width": 1600,
+      "height": 1050,
+      "caption": "GPT-2 reference captures and controls; separate from the Ollama swarm runs.",
+      "source": "public_snapshot_browser_capture",
+      "privacy_reviewed": true,
+      "ocr_checked": true
+    },
+    {
+      "file": "docs/images/neuron-inspector.png",
+      "sha256": "3a03126d0d35a11656b3cad6215133631980ffe0b03f208e9a56b7be9a7b8069",
+      "width": 1600,
+      "height": 1050,
+      "caption": "Measured neuron activations and intervention logits for a selected reference capture.",
+      "source": "public_snapshot_browser_capture",
+      "privacy_reviewed": true,
+      "ocr_checked": true
+    },
+    {
+      "file": "docs/images/reviewed-traces.png",
+      "sha256": "5522bebff8a4a41a11c24860d9206e33fc412e91d826d209daefdc1e285747c6",
+      "width": 1600,
+      "height": 1050,
+      "caption": "Selected approved model-output excerpts, with two delivered messages expanded.",
+      "source": "public_snapshot_browser_capture",
+      "privacy_reviewed": true,
+      "ocr_checked": true
+    },
+    {
+      "file": "docs/images/judge-overview.png",
+      "sha256": "31b739df681f7efc749f2645522f0af65e361467cb16ff45f419149a2b1e06fe",
+      "width": 1600,
+      "height": 1050,
+      "caption": "Judge reading guide with the paper, measured findings and evidence links.",
+      "source": "public_snapshot_browser_capture",
+      "privacy_reviewed": true,
+      "ocr_checked": true
+    }
+  ]
+}

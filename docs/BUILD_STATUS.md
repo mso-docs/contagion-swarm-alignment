@@ -448,3 +448,33 @@ Final static dashboard tooling:9 focused freeze/public-preview/reviewed-trace te
 - Mock orchestration now controls its disk-capacity fixtures. Simulated low-disk
   regressions preserve production stopping behavior and make CI independent of
   incidental runner headroom. No frozen measurement runner was changed.
+
+## Judge overview on the existing Pages site
+
+- Added a separate `/overview/` reading guide with the paper, measured findings,
+  archive scope, reference-study caveats, video demo and dashboard links.
+- `scripts/build_public_site.py` preserves the dashboard's frozen files and adds
+  only overview HTML/CSS and the audited canonical PDF. Inventory counts and
+  source hashes are validated before publication; no inference is performed.
+- `scripts/serve_public_site.py` provides an allowlisted loopback preview on
+  port8767. The existing preview ports and frozen source are unchanged.
+- Combined Pages build passed:464 original files plus3 overview files. All ten
+  overview/publication checks passed: nine in the sandbox and the loopback HTTP
+  test with native socket permission. Ruff and Bandit passed.
+- GitHub confirms the repository is public and Pages uses Actions publishing.
+  The overview requires human PR review and merge before it appears publicly.
+
+### README screenshot gallery
+
+- Added the supplied overview plus five real browser captures: model comparisons,
+  reference interpretability, neuron inspection, reviewed public trace excerpts
+  and the judge overview. Only public snapshot content was loaded; external
+  browser requests were blocked. No page errors occurred; the overview fits a
+  390px mobile viewport.
+- All six images passed visual and native OCR privacy checks. PNG metadata was
+  removed with pixel identity verified. A closed review manifest binds each
+  approved image hash, dimensions and source; other binary images remain blocked.
+- Added regression checks for changed/unapproved screenshots, hidden metadata
+  and trailing binary content. Full regression:531 tests passed in269.42s.
+  `scripts/check_all.py` passed all secret/history, privacy, lint and security
+  checks. Browser captures reported no page errors and validated mobile fit.
