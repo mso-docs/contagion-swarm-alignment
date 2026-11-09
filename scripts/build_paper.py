@@ -202,7 +202,7 @@ def main():
     (out/'generated_supplement.tex').write_text(supplement)
     fonts=out/'fonts';fonts.mkdir(exist_ok=True)
     needs_template_font=args.typeface=='template'
-    cached_fonts=ROOT/'results/paper-template-bf217d7/fonts'
+    cached_fonts=ROOT/'.cache/report-fonts'
     if needs_template_font:
         for name in ['OldStandard-Bold.ttf','OFL.txt']:
             if not (fonts/name).exists() and (cached_fonts/name).is_file():
