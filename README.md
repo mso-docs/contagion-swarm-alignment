@@ -5,6 +5,7 @@ A reproducible research harness for instruction-boundary failures in LLM swarms,
 **Final review:** [paper PDF](report/paper.pdf) · [review guide](docs/FINAL_REVIEW.md) ·
 [complete experiment catalog](docs/EXPERIMENT_CATALOG.md) ·
 [static dashboard snapshot](docs/FINAL_DASHBOARD_SNAPSHOT.md).
+Watch the [video demo](https://youtu.be/7FGDfEq0ucE).
 Collection is closed. The dashboard is frozen at **2026-11-09T02:59:37Z** and
 serves recorded files without polling collectors or private APIs.
 
@@ -62,6 +63,13 @@ to replace a frozen checkpoint. Filters, figures and approved trace drilldowns
 remain interactive; automatic refresh is disabled. See the
 [snapshot policy](docs/FINAL_DASHBOARD_SNAPSHOT.md). Previewing results does not
 restart experiments or publish the site.
+
+After approving and merging the PR, make the repository public and select
+**Settings → Pages → Build and deployment → Source: GitHub Actions**. Run the
+**Security, tests and GitHub Pages** workflow on `main` if the merge ran before
+Pages was enabled. The workflow publishes this frozen snapshot only after its
+security, test and artifact checks pass. Verify the resulting Pages URL before
+sharing it with reviewers; repository visibility alone does not enable Pages.
 
 ## Experiment flow
 
