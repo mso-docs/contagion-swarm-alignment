@@ -172,6 +172,16 @@ def check(root, mode, scan=False, env=None):
                 continue
             blobs[name] = data
             continue
+        if name.startswith('docs/images/') and name.endswith('.png'):
+            try:
+                from screenshot_publication import MANIFEST, validate_screenshot
+                manifest = read_candidate(root, MANIFEST, mode)
+                validate_screenshot(name, data, manifest)
+            except Exception:
+                findings.append((name, 'screenshot missing review, hash binding or metadata validation'))
+                continue
+            blobs[name] = data
+            continue
         from scan_privacy import scan_blob
         try:
             from scan_privacy import PATTERNS

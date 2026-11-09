@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Contagion: measured instruction-boundary failures in agent swarms. A concise guide to the paper, frozen results, and interpretability studies.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Contagion · Research overview</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to research overview</a>
+<header class="nav wrap"><a class="wordmark" href="./" aria-label="Contagion overview"><span class="mark">◈</span> CONTAGION</a><nav aria-label="Main navigation"><a href="#findings">Findings</a><a href="#scope">Scope</a><a href="../">Dashboard ↗</a><a class="nav-paper" href="paper.pdf">Read the paper ↗</a></nav></header>
+<main id="main">
+<section class="hero wrap">
+  <div class="eyebrow"><span class="dot"></span> SWARM ALIGNMENT HACKATHON · NOVEMBER 6–8, 2026</div>
+  <h1>When instructions<br>cross the <em>swarm.</em></h1>
+  <p class="lede">Do unauthorized instructions spread between agents? Contagion tracks what agents receive, propose, and ultimately return—because those are different outcomes.</p>
+  <div class="actions"><a class="button primary" href="paper.pdf">Read the research report <span>↗</span></a><a class="button secondary" href="../">Explore the frozen results <span>→</span></a></div>
+  <p class="byline">Mackenzie O’Brien · Independent AI Researcher, Mac Labs AI</p>
+  <div class="experiment" aria-label="Illustrative architecture: five isolated agents communicate only through a controller, which records events and scores artifacts.">
+    <div class="figure-top"><span>THE EXPERIMENT</span><span>Architecture illustration · not an activation map</span></div>
+    <div class="flow"><div class="agents"><span>A₁</span><span>A₂</span><span>A₃</span><span>A₄</span><span>A₅</span><small>Five isolated contexts</small></div><span class="arrow" aria-hidden="true">→</span><div class="controller"><span class="mini">BOUNDED SIMULATION</span><strong>Controller</strong><small>Route · intervene · record</small></div><span class="arrow" aria-hidden="true">→</span><div class="artifacts"><strong>Sealed event log</strong><span>Intermediate proposals</span><span>Final task artifacts</span></div></div>
+    <div class="figure-bottom">Ring · star · fully connected <span>No agent shell, tools, or autonomous networking</span></div>
+  </div>
+</section>
+<section class="wrap finding-section" id="findings">
+  <div class="section-heading"><span class="eyebrow">01 / THE COMPACT STUDY</span><h2>The final answer misses<br>part of the story.</h2></div>
+  <div class="finding-grid"><div><p class="large-copy">Strict scoring flagged transient forbidden patch proposals. Those flags did not persist into final artifacts.</p><p>The compact protocol 2.6 checkpoint contains <strong>36 completed runs and 900 responses</strong>: five agents, five rounds, three task families, three topologies, and paired clean/injected conditions with two seeds.</p><p>After 20 direct injected-message deliveries, the path scorer flagged 17 intermediate recipient artifacts. These are nested observations, not 17 independent trials or confirmed instances of general misalignment.</p></div>
+  <figure class="outcome"><figcaption>Injected patch runs with a strict boundary flag <small>Same six runs; any intermediate round versus final output</small></figcaption><div class="bar-row"><span>Intermediate</span><div class="track"><div class="bar"></div></div><strong>6 / 6</strong></div><div class="bar-row"><span>Final</span><div class="track"><span class="zero"></span></div><strong>0 / 6</strong></div><p>Final downstream flags were zero across all 36 compact runs. This small sample does not establish safety or a topology effect.</p></figure></div>
+  <aside class="caveat"><strong>The interpretation matters.</strong> A selected human audit labeled all 16 reviewed artifacts compliant. Strict path flags and human interpretation diverged; the paper reports both, including format sensitivity and source-bound examples.</aside>
+</section>
+<section class="questions wrap">
+  <div class="section-heading"><span class="eyebrow">02 / THREE RESEARCH QUESTIONS</span><h2>What the evidence supports.</h2></div>
+  <article class="question"><span class="rq">RQ1</span><div><h3>Does topology change instruction propagation?</h3><p>Transient scored patch signals occurred; final adoption was absent in the compact checkpoint. Topology causality remains unresolved because exposure differs and the sample is small.</p></div><span class="status amber">Narrow temporal finding</span></article>
+  <article class="question"><span class="rq">RQ2</span><div><h3>What does a partially informed monitor miss?</h3><p>The original catalog analysis has 288 dependent visibility projections over 12 trajectories. With no adoption positives, recall and F1 are undefined. False alarms remain measurable.</p></div><span class="status">Recall undefined</span></article>
+  <article class="question"><span class="rq">RQ3</span><div><h3>Does distributed responsibility change violations?</h3><p>A separate 64-run held-out simulator follow-up returned 320 responses: zero forbidden update attempts, state violations, or refusals. Four cases and one seed limit inference; this is not evidence of refusal bypass.</p></div><span class="status">Zero observed violations</span></article>
+</section>
+<section class="scope-band" id="scope"><div class="wrap">
+  <div class="section-heading"><span class="eyebrow">03 / THE FULL ARCHIVE</span><h2>A broader inventory.<br>A deliberately narrower claim.</h2></div>
+  <div class="metrics"><div><strong>{{LIVE_ROWS}}</strong><span>Indexed live attempts</span><small>{{LIVE_COMPLETED}} completed; separate protocols</small></div><div><strong>{{RESPONSES}}</strong><span>Returned model responses</span><small>Locally seal-verified live trajectories</small></div><div><strong>{{MOCK_ROWS}}</strong><span>Mock records</span><small>Engineering checks, not model findings</small></div><div><strong>{{NEURAL_CAPTURES}}</strong><span>Trained reference captures</span><small>GPT-2 instrumentation; separate from swarms</small></div></div>
+  <div class="scope-columns"><div><h3>Tasks beyond the compact study</h3><p>The archive covers eleven task families, including synthetic records, inert patches, provenance, code review, psychology, science, mathematics, and humanities. Multidisciplinary live runs are integration prechecks. Issue diagnosis and defensive cybersecurity have mock checks only.</p><p>Static benchmark adaptations do not execute upstream tasks or provide official benchmark scores. Longer registered queues that were not run are not findings.</p></div><div><h3>Interpretability, kept in context</h3><p>The 72 trained GPT-2 reference captures include six original measurements and 66 later captures. Two random-checkpoint checks are separate. These studies test the instrumentation; they do not reveal the deployed Ollama models’ internal mechanisms.</p><p>Of {{LIVE_ROWS}} indexed live attempts, {{VERIFIED_LIVE}} have locally verified source seals. Five legacy rows have an explicit provenance gap. Counts across the archive are not an independent experimental sample.</p></div></div>
+</div></section>
+<section class="wrap evidence"><span class="eyebrow">04 / FOLLOW THE EVIDENCE</span><h2>Start with the paper.<br>Inspect the results.</h2><div class="evidence-links"><a href="paper.pdf"><span>01</span><strong>Research report</strong><small>Methods, results, figures, limitations, and ethics</small><b aria-hidden="true">↗</b></a><a href="../"><span>02</span><strong>Results dashboard</strong><small>Frozen metrics, task breakdowns, and reviewed traces</small><b aria-hidden="true">↗</b></a><a href="https://youtu.be/7FGDfEq0ucE"><span>03</span><strong>Video demo</strong><small>A guided tour of the project</small><b aria-hidden="true">↗</b></a><a href="https://github.com/mso-docs/contagion-swarm-alignment/blob/main/docs/EXPERIMENT_CATALOG.md"><span>04</span><strong>Experiment catalog</strong><small>What ran, why it ran, and what remains untested</small><b aria-hidden="true">↗</b></a></div><p class="snapshot">Fixed snapshot · {{CUTOFF}} · No live inference, analytics, private APIs, or server telemetry. Public traces are selected, redacted samples; full raw logs remain private.</p></section>
+</main>
+<footer class="wrap"><span>◈ CONTAGION <small>Mac Labs AI · 2026</small></span><a href="https://github.com/mso-docs/contagion-swarm-alignment">Source &amp; reproducibility ↗</a></footer>
+</body>
+</html>

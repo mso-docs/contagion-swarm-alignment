@@ -60,4 +60,20 @@ For the legacy exporter, `--redact-file private.redact.txt` also supplies explic
 
 ## Limits
 
+### Reviewed README screenshots
+
+Only the PNG files listed in `docs/images/screenshots.json` may bypass the
+text-only binary rejection. Each image must match its reviewed SHA-256 and
+dimensions. PNG parsing checks CRCs, bounded decoded pixel size, row filters and
+end-of-file; text, EXIF, XMP and unexpected metadata chunks are rejected.
+
+Capture the public static preview, keep operator screens and browser chrome out
+of frame, and inspect both visible text and local OCR output before approving a
+new hash. Strip metadata without changing pixels. Never edit displayed metrics
+to improve a screenshot. Update the manifest only after review, then run
+`.venv/bin/python scripts/check_all.py`. OCR transcripts remain ignored/private.
+
+CI verifies the approval hash and PNG structure; it does not independently
+repeat the visual/OCR review or prove that pixels contain no private information.
+
 Pattern checks cannot identify every personal name, postal address, encoded secret, image or sensitive fact. False positives are possible. Summary-only exports minimize exposure; opt-in traces still need review. A clean scan means no recognized pattern or configured private string was found, not proof of anonymity. If sensitive content already reached Git history, removing it from the latest snapshot is insufficient; rotate exposed credentials and assess history cleanup separately.

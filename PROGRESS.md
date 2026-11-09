@@ -340,3 +340,28 @@ secret/privacy hooks and new-head CI remain part of the commit/review process.
 Mock hardware fixtures also passed with simulated 1 GiB free; low-disk guards
 still stop before inference. No production safeguard was weakened. No new model
 calls, public deployment, merge or hackathon submission occurred.
+
+## Judge landing page
+
+Added a separate `/overview/` page for the existing GitHub Pages deployment,
+with prominent README links to the final dashboard and judge guide. The page
+distinguishes the compact study, full live/mock inventory and separate GPT-2
+reference captures. Statistics come from the validated frozen inventory; the
+published PDF passes the existing privacy and source-hash audit. The dashboard,
+report and measurement code remain unchanged.
+
+The combined build contains464 original dashboard files plus3 explicitly
+allowlisted overview files. All ten focused checks passed, including the HTTP
+route test with native loopback permission. Ruff and Bandit passed.
+No new model calls or automatic merge, deployment or submission were performed.
+
+The README now includes the supplied overview image and five real browser
+captures of public model comparisons, approved trace excerpts, reference
+interpretability, the neuron inspector and the judge guide. All six screenshots
+passed visual/OCR privacy review and lossless metadata stripping. Exact hashes
+and dimensions are bound by `docs/images/screenshots.json`; the privacy guard
+rejects unreviewed images or unexpected PNG metadata. Three new screenshot
+policy tests passed. The browser reported no page errors and the judge overview
+fits a390px viewport. Full regression passed:531 tests in269.42s. Final manual
+secret/history, publication privacy, Ruff and Bandit checks also passed. The
+new overview requires human review and merge before Pages publishes it.
