@@ -12,11 +12,20 @@ This is a readiness assessment, not a declaration that every research hypothesis
 | RQ2 | Separate policies/cohorts; confusion counts and undefined recall | Verified positive adoption cases, more monitor seeds, coverage beyond catalog |
 | RQ3 | Attempts vs simulator state changes remain distinct | Held-out single/team comparisons with matched budgets and recorded information access |
 | Runtime | All-attempt runtime distributions, observed latency/token telemetry | Controlled hardware allocation for performance comparisons; no inferred GPU-hours |
-| Interpretability | Six trained GPT-2 reference captures with parity/no-op/position controls | Same-model task behavior linkage and replicated causal controls before swarm mechanism claims |
+| Interpretability | Frozen paper: six trained GPT-2 references. Later reference grid:72distinct cells, including66new captures, with parity/no-op/position controls | No current Ollama swarm model was instrumented. Same-checkpoint, matched-context behavioral linkage remains required before swarm mechanism claims |
 | Reviewer | Blinding, cited event evidence, human queue | Held-out human adjudication, agreement/precision/recall and calibration |
 | Public data | Unified evidence index; numeric telemetry derived from logs; privacy gates | Review optional text; private queue/hardware data never enter Pages |
 
 Do not use a grand total of generations as the experimental sample size. Report development, timing, mock and held-out evaluation separately. A zero-event result with three runs remains highly uncertain. Neural magnitudes, generated reasoning text and advisory model confidence are not alignment probabilities.
+
+The expanded neural grid uses six short predeclared prompt pairs across all twelve
+GPT-2 layers. Record, arithmetic and evidence prompts are task-shaped controls;
+they are not captured Qwen/Nemotron/LFM swarm executions. All72grid cells have
+verified seals and controls, but the current matched swarm–neural measurement
+coverage is unestablished. More reference cells validate the measurement pipeline;
+they do not fill that scientific gap. A different-backend replay requires explicit
+checkpoint/template/precision/context and logit-parity validation and remains a new
+measurement rather than recovery of the original Ollama hidden state.
 
 The compact temporal audit distinguishes17 round1 patch deviations from zero final downstream violations. See `RESEARCH_MEASUREMENT_PLAN.md` and the frozen paper notebook. Intermediate-artifact review is required; final-only review would miss this observation.
 

@@ -38,13 +38,14 @@ class Agent(Closed):
 class RepositoryRun(Closed):
     id:str=Field(pattern=r'^[a-f0-9]{16}$')
     source_kind:Literal['repository_review']='repository_review'
-    protocol:Literal['3.0-repository','3.1-repository','3.3-repository-safeguard','3.4-benchmark-static']='3.0-repository'
+    protocol:Literal['3.0-repository','3.1-repository','3.3-repository-safeguard','3.4-benchmark-static','3.5-repository-output-budget','3.6-repository-output-budget','3.7-benchmark-output-budget','3.8-repository-bounded-output']='3.0-repository'
     task_family:Literal['code_review','issue_diagnosis']='code_review'
     task_kind:Literal['code_review','issue_diagnosis']='code_review'
     source_dataset:Literal['legacy_unspecified','withmartian/code-review-benchmark','princeton-nlp/SWE-bench_Verified']='legacy_unspecified'
     memory_policy:Literal['full_history','original_task_plus_last_two_own_rounds']='full_history'
     context_selection:Literal['legacy_unspecified','complete_pinned_pr_diff','reference_localized_base_windows']='legacy_unspecified'
     official_benchmark_score:Literal[False]=False
+    output_token_limit:int|None=Field(default=None,ge=32,le=4096)
     model:str
     backend:Literal['mock','ollama']
     model_digest:str|None=Field(default=None,pattern=r'^[a-f0-9]{64}$')
@@ -106,7 +107,7 @@ def export_repository_runs(source,output,env):
     for path in sorted(Path(source).rglob('manifest.json')):
         if not (path.parent/'checksum.sha256').is_file():continue
         manifest=json.loads(path.read_text())
-        if manifest.get('protocol_version') not in {'3.0-repository','3.1-repository','3.3-repository-safeguard','3.4-benchmark-static'}:continue
+        if manifest.get('protocol_version') not in {'3.0-repository','3.1-repository','3.3-repository-safeguard','3.4-benchmark-static','3.5-repository-output-budget','3.6-repository-output-budget','3.7-benchmark-output-budget','3.8-repository-bounded-output'}:continue
         signature=row_signature(path.parent,policy)
         if signature in _ROW_CACHE:
             rows.append(RepositoryRun.model_validate_json(_ROW_CACHE[signature]));continue
@@ -117,12 +118,13 @@ def export_repository_runs(source,output,env):
         identity=manifest['model_identity'];task=config['task_metadata']
         final_agents=outcome['final_agents']
         downstream=[a for a in final_agents if a['agent_id']!='agent_0']
-        marker_rate=(sum(a['marker_adoption'] for a in downstream)/4 if manifest['protocol_version']=='3.4-benchmark-static'
+        marker_rate=(sum(a['marker_adoption'] for a in downstream)/4 if manifest['protocol_version'] in {'3.4-benchmark-static','3.7-benchmark-output-budget'}
                      and manifest['status']=='completed' and len(downstream)==4 and all(type(a.get('marker_adoption')) is bool for a in downstream) else None)
         rows.append(RepositoryRun(id=hashlib.sha256(manifest['run_id'].encode()).hexdigest()[:16],model=redact(identity['model']),
             protocol=manifest['protocol_version'],backend=identity['backend'],model_digest=identity.get('digest'),worker_label=identity.get('worker_label','unspecified'),
             task_family=config.get('task_kind','code_review'),task_kind=config.get('task_kind','code_review'),
-            source_dataset=task.get('dataset','legacy_unspecified'),memory_policy=config.get('memory_policy','full_history'),
+            source_dataset=task.get('dataset','legacy_unspecified'),memory_policy=('full_history' if manifest['protocol_version'] in {'3.5-repository-output-budget','3.6-repository-output-budget','3.8-repository-bounded-output'} else config.get('memory_policy','full_history')),
+            output_token_limit=config.get('max_output_tokens'),
             context_selection=task.get('context_selection','legacy_unspecified'),
             split=config.get('split','development'),defense=config.get('defense','not_applicable'),phase=config.get('phase','development'),
             final_any_violation=outcome.get('final_any_violation'),downstream_final_boundary_violation_rate=outcome.get('downstream_final_violation_rate'),

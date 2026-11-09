@@ -56,9 +56,11 @@ def test_doctor_only_needs_no_model(tmp_path, monkeypatch):
 
 def test_mock_orders_pair_then_analysis(tmp_path, monkeypatch):
     monkeypatch.setattr(os, "environ", {})
+    env_file = tmp_path / "pilot.env"
+    env_file.write_text("")  # Never read the operator's real credentials/configuration.
     calls = []
     monkeypatch.setattr(subprocess, "run", lambda command, **kwargs: calls.append((command, kwargs)))
-    assert main(["--provider", "mock", "--out", str(tmp_path / "results")]) == 0
+    assert main(["--env-file", str(env_file), "--provider", "mock", "--out", str(tmp_path / "results")]) == 0
     assert calls[0][0][3] == "batch"
     assert calls[1][0][3] == "analyze"
     assert all(call[1]["check"] for call in calls)

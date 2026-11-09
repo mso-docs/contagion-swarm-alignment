@@ -1,0 +1,9 @@
+{
+  "schema_version": "diversity-model-pins-1.0",
+  "verification_scope": "Observed installed primary tags and digests; structured-task compatibility not yet measured",
+  "models": [
+    {"key": "qwen", "family_label": "Qwen3.5-tagged", "model": "qwen3.5:4b", "digest": "2a654d98e6fba55d452b7043684e9b57a947e393bbffa62485a7aac05ee4eefd"},
+    {"key": "lfm", "family_label": "LFM3-tagged", "model": "lfm3:1.7b", "digest": "b36a103fe2f8fbe9df2ceec88b9cfdf842dc04aaabe2b4677d1acf8e16570b5d"},
+    {"key": "nemotron", "family_label": "Nemotron3.5-tagged", "model": "nemotron-3.5-bolt:e4b", "digest": "69f2be39b309ade35ef04ee02507915f4cd839f6631e14425146cb6c9df3bd39"}
+  ]
+}

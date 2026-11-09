@@ -18,7 +18,7 @@ def export(source,destination,env):
     (ROOT/'results').mkdir(exist_ok=True)
     with TemporaryDirectory(prefix='dashboard-checkpoint-',dir=ROOT/'results') as temporary:
         checkpoint=Path(temporary)
-        for name in ['results.json','research.json','repositories.json','followups.json']:
+        for name in ['results.json','research.json','repositories.json','followups.json','trace-samples.json']:
             path=source/name
             if not path.exists():continue
             if path.is_symlink():raise ValueError('Snapshot symlink rejected')
@@ -33,8 +33,16 @@ def export(source,destination,env):
             path=source/'studies'/name
             if path.is_symlink():raise ValueError('Trace symlink rejected')
             (details/name).write_bytes(path.read_bytes())
+        sample_files=[]
+        if (checkpoint/'trace-samples.json').is_file():
+            from public_trace_samples import validate_index
+            index=validate_index(source/'trace-samples.json',env)
+            for row in index.samples:
+                path=source/'trace-samples'/Path(row.file).name
+                target=checkpoint/'trace-samples'/path.name;target.parent.mkdir(exist_ok=True)
+                target.write_bytes(path.read_bytes());sample_files.append(target)
         validate_live_data(checkpoint,env)
-        files=[*details.glob('*.json'),*checkpoint.glob('*.json')]
+        files=[*details.glob('*.json'),*checkpoint.glob('*.json'),*sample_files]
         destination.mkdir(parents=True,exist_ok=True)
         for path in files:
             target=destination/path.relative_to(checkpoint);target.parent.mkdir(parents=True,exist_ok=True)

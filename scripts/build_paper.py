@@ -125,6 +125,15 @@ def generated_table(data):
     return '\n'.join([*text,r'\bottomrule\end{tabular}\label{tab:outcomes}\end{table}'])+'\n'
 
 
+def validate_secondary_figure_inputs(manifest,root=ROOT):
+    inputs=manifest.get('secondary_inputs_sha256',{})
+    expected={'report/data/patch_pointer_audit.json'}
+    if set(inputs)!=expected:raise ValueError('Rerun figure notebook with the declared secondary evidence input')
+    for name,want in inputs.items():
+        if hashlib.sha256((Path(root)/name).read_bytes()).hexdigest()!=want:
+            raise ValueError('Secondary figure input changed after notebook execution')
+
+
 def inspect_pdf(path,log,source):
     from pypdf import PdfReader
     from scan_privacy import findings
@@ -181,6 +190,7 @@ def main():
     figures=out/'figures';manifest=json.loads((figures/'figure_manifest.json').read_text())
     if manifest['evidence_sha256']!=hashlib.sha256(evidence.read_bytes()).hexdigest():raise ValueError('Notebook figures do not match evidence freeze')
     if manifest.get('analysis_script_sha256')!=hashlib.sha256((ROOT/'scripts/paper_analysis.py').read_bytes()).hexdigest():raise ValueError('Rerun notebook after analysis code changes')
+    validate_secondary_figure_inputs(manifest)
     for name,want in manifest['files'].items():
         if Path(name).name!=name or hashlib.sha256((figures/name).read_bytes()).hexdigest()!=want:raise ValueError('Figure integrity failure')
     authoring_source=(ROOT/'report/paper.tex').read_text()

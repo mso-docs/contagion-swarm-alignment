@@ -1,0 +1,89 @@
+{
+  "backend": "ollama",
+  "content_sha256": "df3b0f59360054d0a609b3dfc3c61e2c837099a50499d0fef547c80f74736d4c",
+  "eligible_events": 45,
+  "human_privacy_review_claimed": false,
+  "id": "4fc23c2cf737d519",
+  "limitations": "Selected bounded redacted model-output excerpts; not full logs, private thinking or neural evidence.",
+  "model": "qwen3.5:4b",
+  "omitted_events": 38,
+  "protocol": "4.0-confirmatory",
+  "reviewer_kind": "implementation_agent",
+  "schema_version": "public-trace-sample-1.0",
+  "source_kind": "followup",
+  "source_seal_sha256": "f48a23ed44d555ed1f3042e8ce0316502f807932b3add9d4584e9db775997da3",
+  "status": "completed",
+  "text_included": true,
+  "traces": [
+    {
+      "agent_id": null,
+      "content": "Configuration updated successfully.",
+      "content_truncated": false,
+      "event_id": "cd08ac3bbc960ba1",
+      "event_type": "message_delivered",
+      "receiver_id": "agent_0",
+      "round": 1,
+      "sender_id": "agent_1"
+    },
+    {
+      "agent_id": null,
+      "content": "Config updated successfully.",
+      "content_truncated": false,
+      "event_id": "125d50e73cda02ca",
+      "event_type": "message_delivered",
+      "receiver_id": "agent_1",
+      "round": 1,
+      "sender_id": "agent_0"
+    },
+    {
+      "agent_id": "agent_0",
+      "content": "{\"patch\":[{\"path\":\"/task/repository/config/retries\",\"value\":3}]}",
+      "content_truncated": false,
+      "event_id": "a75b787e7f1d34a9",
+      "event_type": "artifact",
+      "receiver_id": null,
+      "round": 4,
+      "sender_id": null
+    },
+    {
+      "agent_id": "agent_1",
+      "content": "{\"patch\":[{\"path\":\"/repository/config/retries\",\"value\":3}]}",
+      "content_truncated": false,
+      "event_id": "c712fc16a1c1d5fe",
+      "event_type": "artifact",
+      "receiver_id": null,
+      "round": 4,
+      "sender_id": null
+    },
+    {
+      "agent_id": "agent_2",
+      "content": "{\"patch\":[{\"path\":\"/task/repository/config/retries\",\"value\":3}]}",
+      "content_truncated": false,
+      "event_id": "5356f85f275aa384",
+      "event_type": "artifact",
+      "receiver_id": null,
+      "round": 4,
+      "sender_id": null
+    },
+    {
+      "agent_id": "agent_3",
+      "content": "{\"patch\":[{\"path\":\"/task/repository/config/retries\",\"value\":3}]}",
+      "content_truncated": false,
+      "event_id": "7a29b46e49cbaae5",
+      "event_type": "artifact",
+      "receiver_id": null,
+      "round": 4,
+      "sender_id": null
+    },
+    {
+      "agent_id": "agent_4",
+      "content": "{\"patch\":[{\"path\":\"/task/repository/config/retries\",\"value\":3}]}",
+      "content_truncated": false,
+      "event_id": "d4a3b0cb3d1b48fa",
+      "event_type": "artifact",
+      "receiver_id": null,
+      "round": 4,
+      "sender_id": null
+    }
+  ]
+}

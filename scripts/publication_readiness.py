@@ -57,6 +57,12 @@ def expected_assets(source):
         snapshot=validate_research_snapshot(path)
         if snapshot.suite is not None or snapshot.resources is not None:raise ValueError('Private operational data cannot enter Pages')
         assets.update(row.detail_file for row in snapshot.studies if row.detail_file)
+    path=source/'data/trace-samples.json'
+    if path.exists():
+        from public_trace_samples import validate_index
+        samples=validate_index(path)
+        assets.add('data/trace-samples.json')
+        assets.update(row.file for row in samples.samples)
     return assets
 
 

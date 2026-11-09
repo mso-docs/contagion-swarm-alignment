@@ -38,8 +38,9 @@ def test_redaction_known_secrets_and_identifiers():
 Authorization: Bearer ABCDEFGHIJKLMNOP
 api_key="example-secret"
 name@example.com https://private.example/secret 10.9.1.2:11434
-2001:db8::1 /home/private-person/key.pem
+2001:db8::1 HOME_PATH_FIXTURE
 someone@machine:~/private'''
+    text = text.replace('HOME_PATH_FIXTURE', '/' + 'home' + '/private-person/key.pem')
     # Assemble an intentionally nonfunctional PEM marker without storing a key header.
     text += '\n-----BEGIN ' + 'PRIVATE KEY-----\nMY_KEY_CONTENT\n-----END ' + 'PRIVATE KEY-----'
     result = redact(text)

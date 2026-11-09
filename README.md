@@ -2,13 +2,15 @@
 
 A reproducible research harness for instruction-boundary failures in LLM swarms, built from scratch for the November 6–8, 2026 Swarm Alignment Hackathon. Agents have separate histories and communicate through a bounded simulation controller. They have no tools, shell, file access or autonomous networking.
 
-**Evidence checkpoint:** the compact protocol2.6 study completed36 runs/900 responses. Seventeen intermediate patch artifacts were flagged by the strict path scorer; final downstream flags were zero. A separate post-hoc wrapper-path sensitivity check preserves zero final flags while changing intermediate counts and task-format interpretation. The separate primary protocol4 allocation completed140 runs, including four integration prechecks,72 RQ1 and64 RQ3 runs. Original catalog-monitor recall is undefined without adoption positives. Six trained GPT-2 captures are reference measurements, separate from the deployed swarm models. A selected16-artifact human audit labeled all compliant; automated flags and human interpretation remain separate, with no general judge-accuracy claim. Longer studies continue under separate frozen protocols and budgets.
+**Evidence checkpoint:** the compact protocol2.6 study completed36 runs/900 responses. Seventeen intermediate patch artifacts were flagged by the strict path scorer; final downstream flags were zero. A separate post-hoc wrapper-path sensitivity check preserves zero final flags while changing intermediate counts and task-format interpretation. The separate primary protocol4 allocation completed140 runs, including four integration prechecks,72 RQ1 and64 RQ3 runs. Original catalog-monitor recall is undefined without adoption positives. The paper's six trained GPT-2 captures are reference measurements, separate from the deployed swarm models. A later 72-cell reference grid reuses those six and adds66 captures; it does not revise the paper cutoff or explain swarm internals. A selected16-artifact human audit labeled all compliant; automated flags and human interpretation remain separate, with no general judge-accuracy claim. Primary collection is stopped for another operator; secondary recovery completed21 remaining assignments. Pending larger studies remain separate registrations, not results.
 
-For submission, start with the [research readiness map](report/RESEARCH_READINESS.md), [compact findings](report/COMPACT_RESULTS.md), and [LaTeX/report commands](report/README.md). Completed runs, pending collection and model opinions are separate evidence categories; none is a general alignment score.
+For submission, start with the [research report](report/paper.pdf), [submission handoff](docs/FINAL_SUBMISSION.md), [compact findings](report/COMPACT_RESULTS.md), and [LaTeX/report commands](report/README.md). Completed runs, pending collection and model opinions are separate evidence categories; none is a general alignment score.
 
 The [submission runbook](docs/SUBMISSION_RUNBOOK.md) covers the immutable cutoff snapshot, actual human-audit import, PDF rehearsal and reviewer bundle. The [RQ assessment](docs/RQ_ASSESSMENT.md) lists supported findings and unresolved questions. Repository access is currently private and GitHub Pages is not enabled; the running local dashboard does not imply public availability.
 
 The [long primary runbook](docs/PRIMARY_LARGE_RUNBOOK.md) describes the separately registered264-run/19,320-call static benchmark extension, paired batches, recovery and private progress. Its51long materials include pinned Martian reviews and SWE-bench Verified base-source issue diagnosis. These are benchmark adaptations with an explicit memory window; they do not execute upstream tasks or yield official benchmark scores. Ongoing collection does not update the paper's frozen evidence automatically.
+
+The [multidisciplinary docket](docs/MULTIDOMAIN_DOCKET.md) adds psychology, science, mathematics, humanities and defensive cybersecurity evidence tasks. Its separate protocol includes pinned open-source BBH adaptations, unavailable-evidence checks and peer reporting-pressure conditions. The [guarded live controller](docs/MULTIDOMAIN_LIVE.md) supports development gates, separate numeric dashboard summaries and private traces. See [active experiments](docs/ACTIVE_EXPERIMENTS.md) for the recovered allocation sequence and limits.
 
 ## Start here
 
@@ -19,7 +21,7 @@ python3 -m venv .venv
 .venv/bin/python -m pip install --upgrade -r requirements-bootstrap.txt
 .venv/bin/python -m pip install -e '.[test]'
 .venv/bin/python -m pytest -q
-.venv/bin/python scripts/run_pilot.py --provider mock
+.venv/bin/python scripts/run_pilot.py --env-file configs/mock.env --provider mock
 ```
 
 For live inference, copy `.env.example` to `.env`, enter your approved endpoint and exact installed model tag, then run:
@@ -30,6 +32,22 @@ For live inference, copy `.env.example` to `.env`, enter your approved endpoint 
 ```
 
 The pilot discovers model identity, checks a response and runs a bounded control/injection pair. It does not pull models or change server settings. Keep mock and live output directories separate. Research parameters belong in YAML; credentials and private server identifiers belong only in ignored `.env` files. See [worker setup](docs/WORKERS.md) before remote execution.
+
+## Public judge preview
+
+Build and open the exact allowlisted GitHub Pages artifact locally, with the same
+numeric results, charts and reviewed public trace samples:
+
+```bash
+.venv/bin/python scripts/serve_public_preview.py --artifact results/public-preview/review-FRESH
+```
+
+Open <http://127.0.0.1:8766/>. This view has no private APIs or server telemetry;
+the operational dashboard on8765 is separate. Refresh a reviewed checkpoint with
+`scripts/export_live_dashboard.py` through `.venv/bin/python`, then use a fresh
+artifact directory. See [current experiment status](docs/ACTIVE_EXPERIMENTS.md).
+Primary collection is currently stopped/reserved; previewing results does not
+restart experiments or publish the site.
 
 ## Experiment flow
 

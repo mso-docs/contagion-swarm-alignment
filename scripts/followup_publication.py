@@ -11,9 +11,19 @@ from contagion.research_publication import Closed,StudyRow,StudyAgent
 from advisory_publication import AdvisoryRow,summaries
 from contagion.storage import verify
 from large_benchmark_monitor import Cell as BenchmarkMonitorCell
+from large_benchmark_monitor_v37 import Cell as BenchmarkOutputMonitorCell
+from multidomain_publication import MultidomainRun,summaries as multidomain_summaries
+from multidomain_publication_v51 import MultidomainRun as MultidomainCoverageRun,summaries as coverage_summaries
+from diversity_publication import DiversityRun,summaries as diversity_summaries
 
 
 class BenchmarkMonitorSummary(BenchmarkMonitorCell):
+    analysis_scope:Literal['completed_registered_batches_descriptive','completed_registered_matrix']
+    cutoff_utc:str|None=None
+    report_hash:str=Field(pattern=r'^[a-f0-9]{64}$')
+
+
+class BenchmarkOutputMonitorSummary(BenchmarkOutputMonitorCell):
     analysis_scope:Literal['completed_registered_batches_descriptive','completed_registered_matrix']
     cutoff_utc:str|None=None
     report_hash:str=Field(pattern=r'^[a-f0-9]{64}$')
@@ -89,8 +99,10 @@ class Snapshot(Closed):
     schema_version:Literal['confirmatory-public-1.0']='confirmatory-public-1.0'
     generated_utc:str
     runs:list[FollowupRun|DecompositionRun]
-    monitor:list[MonitorSummary|BenchmarkMonitorSummary]=Field(default_factory=list,max_length=4096)
+    monitor:list[MonitorSummary|BenchmarkMonitorSummary|BenchmarkOutputMonitorSummary]=Field(default_factory=list,max_length=4096)
     reviews:list[AdvisoryRow]=Field(default_factory=list,max_length=10000)
+    multidomain:list[MultidomainRun|MultidomainCoverageRun]=Field(default_factory=list,max_length=10000)
+    diversity:list[DiversityRun]=Field(default_factory=list,max_length=10000)
     text_included:Literal[False]=False
 
 
@@ -142,16 +154,20 @@ def export(source,output,env):
         for row in raw['summary']:
             monitors.append(MonitorSummary(**{**row,'model':redact(row['model'])}))
     from large_benchmark_monitor import validate_report
+    from large_benchmark_monitor_v37 import validate_report as validate_output_report
     latest={}
     for path in sorted((Path(source).parent/'reports').glob('*/batch-*/monitor/public.json')):
-        report=validate_report(path);key=(report.source_plan_hash,report.backend)
+        schema=json.loads(path.read_text()).get('schema_version')
+        report=(validate_output_report(path) if schema=='3.7-static-marker-monitor-1.0' else validate_report(path))
+        key=(report.source_plan_hash,report.backend)
         order=(report.analysis_scope=='completed_registered_matrix',report.cutoff_utc or '',path.stat().st_mtime_ns)
         if key not in latest or order>latest[key][0]:latest[key]=(order,report)
     for _,report in latest.values():
         for cell in report.summary:
-            monitors.append(BenchmarkMonitorSummary(**{**cell.model_dump(),'model':redact(cell.model)},
+            model=BenchmarkOutputMonitorSummary if cell.protocol=='3.7-benchmark-output-budget' else BenchmarkMonitorSummary
+            monitors.append(model(**{**cell.model_dump(),'model':redact(cell.model)},
                 analysis_scope=report.analysis_scope,cutoff_utc=report.cutoff_utc,report_hash=report.report_hash))
-    snapshot=Snapshot(generated_utc=utc(),runs=rows,monitor=monitors,reviews=summaries(Path(source).parent/'reviews',env));output=Path(output);output.parent.mkdir(parents=True,exist_ok=True)
+    snapshot=Snapshot(generated_utc=utc(),runs=rows,monitor=monitors,reviews=summaries(Path(source).parent/'reviews',env),multidomain=multidomain_summaries(source,env)+coverage_summaries(source,env),diversity=diversity_summaries(source,env));output=Path(output);output.parent.mkdir(parents=True,exist_ok=True)
     temporary=output.with_suffix('.tmp');temporary.write_text(snapshot.model_dump_json(indent=2)+'\n');validate(temporary,env);temporary.replace(output);return snapshot
 
 
@@ -160,7 +176,7 @@ def validate(path,env=None):
     data=Snapshot.model_validate_json(Path(path).read_text());known=sensitive_values(env or {})
     if scan_blob(Path(path).read_bytes(),public=True,known=known):raise ValueError('Follow-up privacy check')
     redact=Redactor(known)
-    if any(redact(r.model)!=r.model for r in [*data.runs,*data.monitor]):raise ValueError('Private model label')
+    if any(redact(r.model)!=r.model for r in [*data.runs,*data.monitor,*data.multidomain,*data.diversity]):raise ValueError('Private model label')
     return data
 
 

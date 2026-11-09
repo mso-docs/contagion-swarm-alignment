@@ -18,7 +18,7 @@ from security_guard import private_values
 from watch_dashboard import publish
 
 ASSETS = {'/', '/index.html', '/app.js', '/style.css', '/widgets.js',
-          '/data/results.json', '/data/research.json', '/data/repositories.json', '/data/followups.json'}
+          '/data/results.json', '/data/research.json', '/data/repositories.json', '/data/followups.json', '/data/trace-samples.json'}
 
 
 DERIVED_SIGNATURE=None
@@ -31,7 +31,8 @@ def validate_live_data(directory,env=None):
     from scan_privacy import scan_blob
     directory=Path(directory)
     from followup_publication import validate as validate_followups
-    validators={'followups.json':validate_followups,'results.json':validate_snapshot,'research.json':validate_research_snapshot,'repositories.json':validate_repository_snapshot}
+    from public_trace_samples import validate_index as validate_public_traces
+    validators={'followups.json':validate_followups,'results.json':validate_snapshot,'research.json':validate_research_snapshot,'repositories.json':validate_repository_snapshot,'trace-samples.json':validate_public_traces}
     for name,validator in validators.items():
         path=directory/name
         if not path.exists():continue
@@ -52,7 +53,7 @@ def seed_live_data(source,destination,env=None):
     """Seed once; Git checkout/stash never rewinds the running view."""
     source=Path(source);destination=Path(destination);validate_live_data(source,env)
     destination.mkdir(parents=True,exist_ok=True)
-    for name in ['results.json','research.json','repositories.json','followups.json']:
+    for name in ['results.json','research.json','repositories.json','followups.json','trace-samples.json']:
         target=destination/name
         if target.exists() or not (source/name).is_file():continue
         if (source/name).is_symlink():raise ValueError('Snapshot source must not be a symlink')
@@ -62,6 +63,13 @@ def seed_live_data(source,destination,env=None):
         if not re.fullmatch(r'[a-f0-9]{16}\.json',path.name) or path.is_symlink():raise ValueError('Unapproved detail source')
         target=details/path.name
         if not target.exists():shutil.copyfile(path,target)
+    if (source/'trace-samples.json').is_file():
+        from public_trace_samples import validate_index
+        samples=validate_index(source/'trace-samples.json',env)
+        for row in samples.samples:
+            path=source/'trace-samples'/Path(row.file).name
+            target=destination/'trace-samples'/path.name;target.parent.mkdir(exist_ok=True)
+            if not target.exists():shutil.copyfile(path,target)
     validate_live_data(destination,env)
 
 
@@ -87,7 +95,7 @@ def active_repository_counters(source):
 
 def private_campaigns(base):
     """Loopback response only: closed numeric progress, never exported to Pages."""
-    result=[];stopped={}
+    result=[];stopped={};completed={}
     for directory in sorted(Path(base).glob('*')):
         if not directory.is_dir():continue
         try:
@@ -102,6 +110,27 @@ def private_campaigns(base):
                 row={k:state.get(k,0) for k in ['planned_runs','planned_calls','completed_runs','physical_calls','failed_runs']}
                 row.update(kind='primary_benchmark_queue' if large else 'primary_long_queue',status=state['status'])
                 row.update(active_repository_counters(Path(base).parent/'repository-runs'/directory.name))
+            elif (directory/'primary-output-state.json').is_file():
+                state=json.loads((directory/'primary-output-state.json').read_text())
+                row={k:state.get(k,0) for k in ['planned_runs','planned_calls','completed_runs','physical_calls','failed_runs']}
+                row.update(kind='primary_output_queue',status=state['status'])
+                row.update(active_repository_counters(Path(base).parent/'repository-runs'/directory.name))
+            elif any((directory/name).is_file() for name in ['secondary-recovery-state.json','secondary-bounded-state.json','secondary-isolated-state.json']):
+                statefile=next(name for name in ['secondary-isolated-state.json','secondary-bounded-state.json','secondary-recovery-state.json'] if (directory/name).is_file())
+                state=json.loads((directory/statefile).read_text())
+                row={k:state.get(k,0) for k in ['planned_runs','planned_calls','completed_runs','physical_calls','failed_runs']}
+                row.update(kind='secondary_recovery_queue',status=state['status'])
+                row.update(active_repository_counters(Path(base).parent/'repository-runs'/directory.name))
+            elif (directory/'diversity-state.json').is_file():
+                state=json.loads((directory/'diversity-state.json').read_text())
+                row={k:state.get(k,0) for k in ['planned_runs','planned_calls','completed_runs','physical_calls','failed_runs']}
+                row.update(kind='diversity_calibration',status=state['status'])
+                row.update(active_repository_counters(directory/'runs'))
+            elif (directory/'multidomain-live-state.json').is_file():
+                state=json.loads((directory/'multidomain-live-state.json').read_text())
+                row={k:state.get(k,0) for k in ['planned_runs','planned_calls','completed_runs','physical_calls','failed_runs']}
+                row.update(kind='multidomain_queue',status=state['status'])
+                row.update(active_repository_counters(directory/'runs'))
             elif (directory/'decomposition-state.json').is_file():
                 state=json.loads((directory/'decomposition-state.json').read_text())
                 row={k:state.get(k,0) for k in ['planned_runs','planned_calls','completed_runs','physical_calls','failed_runs']}
@@ -118,9 +147,13 @@ def private_campaigns(base):
                 row={'kind':'long_input_queue','status':state['status'],'planned_runs':state['planned_runs'],'planned_calls':state['planned_calls'],
                      'completed_runs':2*state.get('completed_pairs',0),'physical_calls':state.get('http_attempts',0),'failed_runs':0}
             else:continue
-            if row['status'] not in {'running','cooling','waiting','waiting_for_primary_lease','stopped','failed','budget_exhausted'}:continue
+            if state.get('backend')=='mock':continue
+            if row['status'] not in {'running','cooling','waiting','waiting_for_primary_lease','waiting_for_secondary_lease','paused_for_review','completed','stopped','failed','budget_exhausted'}:continue
             if any(type(v) is not int or v<0 for k,v in row.items() if k not in {'kind','status'}):continue
-            if row['status'] in {'stopped','failed','budget_exhausted'}:
+            if row['status']=='completed':
+                stamp=state.get('updated_utc',state.get('started_utc',''))
+                if row['kind'] not in completed or stamp>completed[row['kind']][0]:completed[row['kind']]=(stamp,row)
+            elif row['status'] in {'stopped','failed','budget_exhausted'}:
                 stamp=state.get('updated_utc',state.get('started_utc',''))
                 if row['kind'] not in stopped or stamp>stopped[row['kind']][0]:stopped[row['kind']]=(stamp,row)
             else:result.append(row)
@@ -135,7 +168,14 @@ def private_campaigns(base):
             if type(row['planned_calls']) is int and row['planned_calls']>=0:result.append(row)
         except (OSError,ValueError,KeyError,TypeError):continue
     active={row['kind'] for row in result}
-    result.extend(value[1] for kind,value in stopped.items() if kind not in active)
+    recovered_kinds=active|set(completed)|set(stopped)
+    hidden_history=set()
+    if 'secondary_recovery_queue' in recovered_kinds:hidden_history.add('long_input_queue')
+    if 'primary_output_queue' in recovered_kinds:hidden_history.add('primary_long_queue')
+    for kind in set(completed)|set(stopped):
+        if kind in active or kind in hidden_history:continue
+        latest=max([v for v in [completed.get(kind),stopped.get(kind)] if v],key=lambda v:v[0])
+        result.append(latest[1])
     return sorted(result,key=lambda row:0 if row['status'] in {'running','cooling'} else 1 if row['status'].startswith('waiting') else 2)
 
 
@@ -180,6 +220,8 @@ def refresh(sources, output, env, state):
         followups=export_followups(ROOT/'results/campaigns',output.parent/'followups.json',env)
         repository=export_repository_runs(ROOT/'results/repository-runs',output.parent/'repositories.json',env)
         state['repository_runs']=len(repository.runs)
+        state['multidomain_runs']=len(followups.multidomain)
+        state['diversity_runs']=len(followups.diversity)
         from contagion.research_publication import validate_research_snapshot
         index=validate_research_snapshot(output,env=env)
         state.update(status='ok', studies=count, neural_captures=len(index.neural), monitor_summaries=len(index.monitor)+len(followups.monitor), checked_epoch=time.time(), error=None)
@@ -252,14 +294,24 @@ def handler_type(directory, state, data_directory=None):
             return super().translate_path(path)
         def do_GET(self):
             path = urlsplit(self.path).path
-            if re.fullmatch(r'/__private_(?:repository|followup)/[a-f0-9]{16}',path):
+            if re.fullmatch(r'/__private_(?:repository|followup|multidomain|diversity)/[a-f0-9]{16}',path):
                 try:
                     host=urlsplit('http://'+self.headers.get('Host',''))
                     local=host.hostname in {'127.0.0.1','localhost'} and host.port==self.server.server_port and not host.username and not host.password
                 except ValueError:local=False
                 if not local:self.send_error(403);return
                 try:
-                    if path.startswith('/__private_followup/'):
+                    if path.startswith('/__private_diversity/'):
+                        from diversity_publication import private_detail
+                        detail_root=ROOT/'results/campaigns'
+                    elif path.startswith('/__private_multidomain/'):
+                        from multidomain_publication import private_detail as detail_v50
+                        from multidomain_publication_v51 import private_detail as detail_v51
+                        def private_detail(source,ident,env):
+                            try:return detail_v50(source,ident,env)
+                            except ValueError:return detail_v51(source,ident,env)
+                        detail_root=ROOT/'results/campaigns'
+                    elif path.startswith('/__private_followup/'):
                         from followup_publication import private_detail
                         detail_root=ROOT/'results/campaigns'
                     else:
@@ -298,7 +350,7 @@ def handler_type(directory, state, data_directory=None):
                 self.end_headers()
                 self.wfile.write(data)
                 return
-            if path not in ASSETS and not re.fullmatch(r'/data/studies/[a-f0-9]{16}\.json', path):
+            if path not in ASSETS and not re.fullmatch(r'/data/(?:studies|trace-samples)/[a-f0-9]{16}\.json', path):
                 self.send_error(404)
                 return
             base=Path(data_directory) if data_directory is not None and path.startswith('/data/') else directory
@@ -321,6 +373,8 @@ def main():
     parser.add_argument('--port', type=int, default=8765)
     parser.add_argument('--interval', type=int, default=15)
     parser.add_argument('--sync-secondary', action='store_true', help='Poll sanitized secondary suite snapshots every 60 seconds; never primary')
+    parser.add_argument('--secondary-env-file', type=Path, default=ROOT/'.env',
+                        help='Private SSH settings for secondary synchronization; keep cloud judge keys separate')
     args = parser.parse_args()
     if args.interval < 5 or not 1024 <= args.port <= 65535:
         parser.error('Use interval >=5 seconds and an unprivileged valid port')
@@ -346,13 +400,13 @@ def main():
                 try:
                     from remote_worker import execute
                     staging=ROOT/'results/dashboard-remote-staging'
-                    execute('secondary','suite-sync',ROOT/'.env',public_target=staging)
+                    execute('secondary','suite-sync',args.secondary_env_file,public_target=staging)
                     merge_secondary(live/'research.json',staging,env)
                     state['secondary_sync']='ok'
                 except Exception as exc:
                     state['secondary_sync']='unavailable: '+type(exc).__name__
                 try:
-                    sync_secondary_neural(ROOT/'.env')
+                    sync_secondary_neural(args.secondary_env_file)
                     state['secondary_neural_sync']='ok'
                 except Exception as exc:
                     state['secondary_neural_sync']='unavailable: '+type(exc).__name__

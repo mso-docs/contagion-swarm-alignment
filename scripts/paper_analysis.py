@@ -93,6 +93,19 @@ def temporal_patch_rows(data):
             result.append({'topology':topology,'seed':row['seed'],'violations':list(counts),'direct_deliveries':deliveries})
     return result
 
+def reference_patch_cells(data):
+    """Expose each reference capture once; missing effects remain undefined."""
+    rows=data['neural'];kinds=['capability_control','task_shaped_probe'];layers=[0,5,11]
+    identities={(r['model'],r['revision']) for r in rows}
+    cells={(r['kind'],r['layer']):r for r in rows}
+    if len(identities)!=1 or len(cells)!=len(rows) or set(cells)!={(kind,layer) for kind in kinds for layer in layers}:
+        raise ValueError('Reference figure requires one pinned six-capture matrix')
+    return {'model':next(iter(identities))[0],'revision':next(iter(identities))[1],
+            'kinds':kinds,'layers':layers,
+            'patch_delta':[[cells[kind,layer]['patch_delta'] for layer in layers] for kind in kinds],
+            'restoration':[[cells[kind,layer]['restoration'] for layer in layers] for kind in kinds]}
+
+
 def figures(evidence,output):
     import os
     os.environ.setdefault('MPLCONFIGDIR',str(ROOT/'.cache/matplotlib'))
@@ -140,7 +153,7 @@ def figures(evidence,output):
     save(fig,'01_experiment_flow')
     families=['catalog','provenance','patch'];summary=done.groupby(['family','condition'],observed=True).agg(runs=('any_round_violation','size'),violations=('any_round_violation','sum'),final_violations=('final_any_violation','sum'),success=('task_success','mean')).reset_index()
     fig,axes=plt.subplots(1,2,figsize=(9,2.7))
-    for ax,metric,title in [(axes[0],'violations','Any-round boundary violations'),(axes[1],'success','Legitimate task completion')]:
+    for ax,metric,title in [(axes[0],'violations','Runs with any-round strict flags'),(axes[1],'success','Exact final-artifact match')]:
         values=[];labels=[]
         for family in families:
             cells=[];texts=[]
@@ -190,28 +203,50 @@ def figures(evidence,output):
         ax.set(title=policy.replace('_',' '),xticklabels=['25%','50%','75%','100%'],yticklabels=['ring','star','complete'],xlabel='Visible message fraction',ylabel='');ax.tick_params(axis='y',rotation=0)
     fig.suptitle('False alarms / negative projections · mask 404 · recall undefined',fontsize=11,fontweight='bold',y=1.08)
     save(fig,'04_monitor_false_alarms')
-    neural=pd.DataFrame(data['neural']);fig,axes=plt.subplots(1,2,figsize=(8.5,3.1))
-    for kind,label in [('capability_control','Capital-pair control'),('task_shaped_probe','Record-status probe')]:
-        sub=neural[neural.kind.eq(kind)].sort_values('layer');axes[0].plot(sub.layer,sub.patch_delta,marker='o',label=label);axes[1].plot(sub.layer,sub.restoration,marker='o',label=label)
-    for ax in axes:ax.axhline(0,color='.6',lw=.7);ax.set_xlabel('GPT-2 layer');ax.set_xticks([0,5,11]);ax.legend(frameon=False,fontsize=8)
-    axes[0].set(title='Measured activation-patching effect',ylabel='Target-logit change');axes[1].set(title='Normalized restoration',ylabel='Effect / clean–corrupt logit gap')
-    for ax in axes:
-        for line in ax.lines:
-            if len(line.get_xdata())!=3:continue
-            for x,y in zip(line.get_xdata(),line.get_ydata()):ax.annotate(f'{y:.2g}',(x,y),xytext=(3,6),textcoords='offset points',fontsize=8)
-        ax.margins(y=.25)
+    reference=reference_patch_cells(data);fig,axes=plt.subplots(1,2,figsize=(9.2,2.8))
+    for ax,metric,title in [(axes[0],'patch_delta','Signed target-logit change'),(axes[1],'restoration','Effect / clean–corrupt logit gap')]:
+        values=np.array(reference[metric],dtype=float)
+        labels=np.array([['undefined' if value is None else f'{value:.3g}' for value in row] for row in reference[metric]])
+        finite=values[np.isfinite(values)];extent=max(.001,float(np.max(np.abs(finite)))) if finite.size else .001
+        sns.heatmap(values,annot=labels,fmt='',vmin=-extent,vmax=extent,center=0,cmap='vlag',linewidths=3,
+                    ax=ax,annot_kws={'fontsize':10},cbar_kws={'label':'Measured effect'})
+        ax.set(title=title,xticklabels=reference['layers'],yticklabels=['Capital-pair control','Record-status probe'],xlabel='GPT-2 layer',ylabel='')
+        ax.tick_params(axis='y',rotation=0)
+    fig.suptitle('Trained GPT-2 reference only · six single captures · not swarm internals',fontsize=11,fontweight='bold',y=1.04)
     save(fig,'05_reference_checkpoint')
     fig,ax=plt.subplots(figsize=(7,3));sns.stripplot(data=done,x='family',y='runtime_seconds',hue='condition',order=families,palette=colors,dodge=True,jitter=.1,ax=ax)
     ax.set(xlabel='Task family',ylabel='Recorded run seconds',title='Run timing includes controller and thermal pauses');ax.legend(title='Condition',frameon=False,fontsize=8)
     save(fig,'06_run_timing')
+    from patch_pointer_audit import validate as validate_pointer_audit
+    sensitivity_path=ROOT/'report/data/patch_pointer_audit.json'
+    audit=validate_pointer_audit(sensitivity_path);sensitivity={(r.cohort,r.condition):r for r in audit.summary}
+    fig,axes=plt.subplots(1,2,figsize=(9.2,3.3));width=.36
+    for offset,metric,label,color in [(-width/2,'strict_forbidden_artifacts','Original strict scorer','#4776a8'),
+                                      (width/2,'wrapper_sensitive_forbidden_artifacts','Wrapper-sensitive check','#2b927f')]:
+        values=[getattr(sensitivity[cohort,'benign_override'],metric) for cohort in ['compact','primary']]
+        bars=axes[0].bar(np.arange(2)+offset,values,width,label=label,color=color);axes[0].bar_label(bars,padding=3)
+    axes[0].set(xticks=[0,1],xticklabels=['Compact\n6 injected runs','Primary follow-up\n36 injected runs'],
+                ylabel='Intermediate proposed artifacts',title='Path conventions change flag counts',ylim=(0,42))
+    keys=[('compact','none'),('compact','benign_override'),('primary','none'),('primary','benign_override')]
+    for offset,metric,label,color in [(-width/2,'strict_success_final','Exact match','#4776a8'),
+                                      (width/2,'wrapper_normalized_success_final','Wrapper-normalized match','#2b927f')]:
+        values=[getattr(sensitivity[key],metric)/sensitivity[key].final_artifacts for key in keys]
+        bars=axes[1].bar(np.arange(4)+offset,values,width,label=label,color=color)
+        axes[1].bar_label(bars,labels=[f'{getattr(sensitivity[key],metric)}/{sensitivity[key].final_artifacts}' for key in keys],padding=3,fontsize=7,rotation=0)
+    axes[1].set(xticks=range(4),xticklabels=['Compact\ncontrol','Compact\ninjected','Primary\ncontrol','Primary\ninjected'],
+                ylabel='Final artifact match fraction',title='Exact matches depend on path format',ylim=(0,1.3),yticks=[0,.25,.5,.75,1])
+    for ax in axes:ax.legend(frameon=False,fontsize=8,loc='upper center',bbox_to_anchor=(.5,-.25),ncol=1)
+    fig.suptitle('Post-hoc path sensitivity · original scores and controller actions unchanged',fontsize=11,fontweight='bold',y=1.05)
+    save(fig,'08_measurement_sensitivity')
     done.to_csv(out/'completed_runs.csv',index=False);summary.to_csv(out/'task_summary.csv',index=False)
     selected={'main':['01_experiment_flow','07_transient_behavior','02_task_outcomes'],
-              'appendix':['03_topology_counts','04_monitor_false_alarms','05_reference_checkpoint','06_run_timing'],
+              'appendix':['03_topology_counts','04_monitor_false_alarms','05_reference_checkpoint','06_run_timing','08_measurement_sensitivity'],
               'selection_reason':'Three main figures communicate controlled architecture, time-resolved failures and paired task outcomes; monitor/reference diagnostics remain explicit appendix evidence.'}
-    manifest={'evidence_sha256':sha(evidence),'analysis_script_sha256':sha(Path(__file__)),'selected':selected,'files':{p.name:sha(p) for p in files},
+    manifest={'evidence_sha256':sha(evidence),'secondary_inputs_sha256':{'report/data/patch_pointer_audit.json':sha(sensitivity_path)},
+              'analysis_script_sha256':sha(Path(__file__)),'selected':selected,'files':{p.name:sha(p) for p in files},
               'complete_runs':len(done),'all_attempts':len(runs),'observed_responses':int(runs.responses.sum()),
               'completed_responses':int(done.responses.sum()),'rq3_development_runs':len(data['rq3_development']),
-              'monitor_projections':len(monitor),'neural_captures':len(neural)}
+              'monitor_projections':len(monitor),'neural_captures':len(data['neural'])}
     (out/'figure_manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
     return manifest
 

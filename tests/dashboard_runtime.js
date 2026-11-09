@@ -1,5 +1,5 @@
 /* Lightweight DOM interaction smoke test; browser layout verification is separate. */
-async function dashboardSmoke(source, data, html, research={schema_version:"1.0",studies:[],reviews:[],monitor:[],neural:[],scenarios:[],review_source:"not_run",unreviewed_samples:0}, widgetsSource="", detailFiles={}, repositories={schema_version:"repository-public-1.0",runs:[]}, followups={schema_version:"confirmatory-public-1.0",runs:[]}) {
+async function dashboardSmoke(source, data, html, research={schema_version:"1.0",studies:[],reviews:[],monitor:[],neural:[],scenarios:[],review_source:"not_run",unreviewed_samples:0}, widgetsSource="", detailFiles={}, repositories={schema_version:"repository-public-1.0",runs:[]}, followups={schema_version:"confirmatory-public-1.0",runs:[]}, runtimeOptions={}) {
   class Element {
     constructor(tag) { this.tagName=tag;this.children=[];this.attributes={};this.listeners={};this.value='';this.textContent='';this.dataset={};this.style={};this.classes=new Set();this.classList={add:name=>this.classes.add(name),toggle:(name,on)=>{const enabled=on??!this.classes.has(name);enabled?this.classes.add(name):this.classes.delete(name);return enabled;},remove:name=>this.classes.delete(name)}; }
     append(...nodes) { this.children.push(...nodes); }
@@ -15,12 +15,24 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
   class Option extends Element { constructor(text,value){super('option');this.textContent=text;this.value=value;} }
   const widgets=widgetsSource?new Function('document',widgetsSource+'\nreturn EvidenceWidgets;')(document):null;
   const fetched=[],timers=[];
-  const api=new Function('document','Option','fetch','setInterval','EvidenceWidgets',source+'\nreturn {load,render,renderRound,renderTraces,showView,state,loadResearch,researchState,loadStudyDetail,loadRepositories,refreshSnapshots};')(document,Option,async url=>(fetched.push(url),{ok:!url.startsWith('data/studies/')||Boolean(detailFiles[url]),json:async()=>url.startsWith('data/followups.json')?followups:url==='__local_status'?{status:'ok',asset_revision:'test-assets',checked_epoch:Date.now()/1000,studies:research.studies.length,campaigns:[{kind:'swarm_campaign',status:'running',completed_runs:1,planned_runs:216,physical_calls:31,planned_calls:5400,failed_runs:0}]}:url.startsWith('data/research.json')?research:url.startsWith('data/repositories.json')?repositories:detailFiles[url]??data}),(callback,ms)=>(timers.push({callback,ms}),timers.length),widgets);
+  const api=new Function('document','Option','fetch','setInterval','EvidenceWidgets',source+'\nreturn {load,render,renderRound,renderTraces,showView,state,loadResearch,researchState,loadStudyDetail,loadRepositories,refreshSnapshots,loadPublicTraceSamples,loadMultidomainDetail,loadDiversityDetail,loadStudyRun};')(document,Option,async url=>(fetched.push(url),{ok:url==='__local_status'?(!runtimeOptions.static):!(url.startsWith('data/studies/')||url.startsWith('data/trace-samples/'))||Boolean(detailFiles[url]),status:url==='__local_status'&&runtimeOptions.static?404:200,json:async()=>url.startsWith('data/trace-samples.json')?(runtimeOptions.index??{schema_version:'public-trace-samples-1.0',samples:[]}):url.startsWith('data/followups.json')?followups:url==='__local_status'?{status:'ok',asset_revision:'test-assets',checked_epoch:Date.now()/1000,studies:research.studies.length,campaigns:[{kind:'swarm_campaign',status:'running',completed_runs:1,planned_runs:216,physical_calls:31,planned_calls:5400,failed_runs:0}]}:url.startsWith('data/research.json')?research:url.startsWith('data/repositories.json')?repositories:detailFiles[url]??data}),(callback,ms)=>(timers.push({callback,ms}),timers.length),widgets);
   await api.load();await api.loadResearch();await api.loadRepositories();await api.refreshSnapshots();
+  if(followups.multidomain?.length){
+    const select=ids.get('multidomain-backend'),summary=ids.get('multidomain-summary');
+    if(!select||!summary)throw Error('Multidisciplinary controls missing');
+    select.value='live';select.listeners.change();
+    const live=followups.multidomain.filter(r=>r.backend!=='mock').length;
+    if(!summary.textContent.startsWith(`${live} sealed run attempts`))throw Error('Live multidisciplinary coverage is stale');
+    select.value='mock';select.listeners.change();
+    const mock=followups.multidomain.filter(r=>r.backend==='mock').length;
+    if(!summary.textContent.startsWith(`${mock} sealed run attempts`))throw Error('Mock multidisciplinary filter is stale');
+    select.value='live';select.listeners.change();
+  }
   fetched.length=0;await ids.get('refresh').listeners.click();
   if(!fetched.some(u=>u.startsWith('data/results.json'))||!fetched.some(u=>u.startsWith('data/research.json')))throw Error('Refresh must fetch both snapshots');
   if(!ids.get('research-updated').textContent.includes('run attempts'))throw Error('Research freshness missing');
-  if(ids.get('collector-progress').hidden||!ids.get('collector-progress').children.length)throw Error('Private collector progress missing');
+  if(runtimeOptions.static){if(!ids.get('collector-progress').hidden)throw Error('Public preview exposed private operations');}else if(ids.get('collector-progress').hidden||!ids.get('collector-progress').children.length)throw Error('Private collector progress missing');
+  for(const id of ['task-metric-coverage','adoption-metric-coverage'])if(!ids.get(id)?.textContent)throw Error('Missing measured metric denominator: '+id);
   const originalStudies=research.studies,originalStamp=research.generated_utc,baseStudy=originalStudies.find(r=>r.backend!=='mock');
   if(baseStudy){
     const before=api.state.runs.length;
@@ -76,6 +88,15 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
   if(api.researchState.snapshot.scenarios.length!==research.scenarios.length)throw Error("Scenario catalog missing");
   const detailRow=research.studies.find(r=>detailFiles[r.detail_file]);
   if(detailRow){await api.loadStudyDetail(detailRow);if(!ids.get('study-detail').children.some(n=>n.textContent==='Assigned task'))throw Error('Task drill-down missing');}
+  if(runtimeOptions.static&&runtimeOptions.index?.samples?.length){
+    const sample=runtimeOptions.index.samples[0],row=[...repositories.runs,...followups.runs].find(r=>r.id===sample.id);
+    if(row){await api.loadStudyDetail(row);if(!ids.get('study-detail').children.some(n=>n.textContent.startsWith('Reviewed public excerpt')))throw Error('Static public trace fallback failed');}
+    const multi=followups.multidomain?.find(r=>runtimeOptions.index.samples.some(s=>s.id===r.id));
+    if(multi){await api.loadMultidomainDetail(multi);if(!ids.get('multidomain-detail').children.some(n=>n.textContent.startsWith('Reviewed public excerpt')))throw Error('Static multidisciplinary trace failed');}
+    const table=ids.get('public-trace-samples').children[0],first=table?.children[1];
+    if(first?.listeners?.click){await first.listeners.click();if(!ids.get('public-trace-detail').children.some(n=>n.textContent.startsWith('Reviewed public excerpt')))throw Error('Public sample gallery failed');}
+    if(fetched.some(url=>url.startsWith('__private_')))throw Error('Static dashboard depends on private trace APIs');
+  }
   if(!api.state.runs.length)throw Error('No initial runs rendered');
   const expected=(data.runs.filter(r=>ids.get('backend').value==='mock'?r.backend==='mock':r.backend!=='mock').length)+(research.studies.filter(r=>ids.get('backend').value==='mock'?r.backend==='mock':r.backend!=='mock').length)+(repositories.runs.filter(r=>ids.get('backend').value==='mock'?r.backend==='mock':r.backend!=='mock').length)+(followups.runs.filter(r=>ids.get('backend').value==='mock'?r.backend==='mock':r.backend!=='mock').length);
   if(api.state.runs.length!==expected)throw Error('Main overview omitted newer study runs');

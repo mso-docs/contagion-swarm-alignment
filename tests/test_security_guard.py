@@ -142,3 +142,23 @@ def test_public_endpoint_examples_do_not_waive_private_hosts_or_credentials(tmp_
     assert 'https://openrouter.ai/api/v1' in known  # Public trace redaction remains strict.
     filtered=GUARD['source_configuration_values'](known,values)
     assert key in filtered and 'user@private-host.example' in filtered
+
+
+def test_unknown_absolute_home_path_is_blocked_without_echo(tmp_path, capsys):
+    root = repo(tmp_path)
+    private_path = '/' + 'home' + '/unrelated-person/private.txt'
+    stage(root, 'notes.md', private_path)
+    assert GUARD['check'](root, 'staged', env={}) == 1
+    assert private_path not in capsys.readouterr().err
+
+
+def test_only_closed_research_snapshot_gets_larger_numeric_review_budget(tmp_path, monkeypatch):
+    from contagion.research_publication import ResearchSnapshot
+    root = repo(tmp_path)
+    function = GUARD['check']
+    monkeypatch.setitem(function.__globals__, 'MAX_BYTES', 64)
+    snapshot = ResearchSnapshot(generated_utc='2026-11-08T00:00:00+00:00', limitations=[])
+    stage(root, 'dashboard/data/research.json', snapshot.model_dump_json())
+    assert function(root, 'staged', env={}) == 0
+    stage(root, 'oversized.json', ' ' * 65)
+    assert function(root, 'staged', env={}) == 1

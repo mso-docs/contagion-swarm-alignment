@@ -1,5 +1,11 @@
 # Long primary benchmark allocation
 
+**Recovery update:** the original registrations below remain preserved. Current
+collection and versioned output-budget replacements are documented in
+[active experiments](ACTIVE_EXPERIMENTS.md). The active large benchmark registration
+is now `primary-large-v37-20261108`, with explicit output-format amendments;
+do not restart a superseded zero-call predecessor or remove its STOP marker.
+
 The current primary protocol3.3 study keeps its original eight-hour cap. A separate administrative release watcher checks actual completion or a verified expired, sealed prefix; it never relabels a partial study complete. The new protocol3.4 allocation follows a separately registered50-run/186-call RQ3 decomposition prelude and the shared primary lease.
 
 ```mermaid

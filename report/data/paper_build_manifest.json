@@ -1,16 +1,20 @@
 {
-  "main_text_pages": 7,
-  "total_pages": 11,
-  "abstract_words": 188,
+  "main_text_pages": 8,
+  "total_pages": 14,
+  "abstract_words": 209,
   "paper_size": "US Letter",
   "privacy_extracted_text_passed": true,
   "author": "Mackenzie O'Brien",
   "affiliation": "Independent AI Researcher, Mac Labs AI",
-  "status": "research draft; human scientific review pending",
+  "status": "built; automated checks passed",
   "evidence_sha256": "a7b3827f7e6740e55054de614b9799e95dab5e646cb1bd765b15ea986b2c6ce9",
-  "pdf_sha256": "a4ad95bcb437449e5ee17f266bc165e69e7706f18dffda7ecb8da7b0814ab405",
-  "latex_source_sha256": "74750c16d574d12cc50326fa052324a521435cdde714b0c59f13cd28221a0489",
-  "figure_manifest_sha256": "e305475526d36a22425e8815e222b4287d40ced3612fab161321459a3f90fedd",
+  "pdf_sha256": "347ae03d22d38d7198cd1aa6f59272fb5e8e2c29e70bcd42f7a236f5fbc14c19",
+  "latex_source_sha256": "b7f335feb4254db5c90c795a1e8977522e2cd3805603cff3032e573ddd02978a",
+  "figure_manifest_sha256": "0ba4e840e845e52b0a580ac39e3e62de90848e1d84c2edbdf5287f33ad3c2dd9",
+  "schema_version": "paper-build-2.0",
+  "authoring_source_sha256": "be121d169f07bb93f756a0ab102c3f21dbb136acf5395b9d92705944955f6aa5",
+  "compiledlatex_source_sha256": "b7f335feb4254db5c90c795a1e8977522e2cd3805603cff3032e573ddd02978a",
+  "typeface_variant": "template",
   "installed_versions": {
     "pymupdf": "1.28.2",
     "license-expression": "30.4.4",
@@ -111,10 +115,28 @@
     "idna": "3.20",
     "comm": "0.2.3"
   },
-  "notebook_source_sha256": "4d2bb04c5cd7133cb2f1ba768c9828d47cd86a9db40ba991d51f1b7a4f8b31d5",
-  "analysis_script_sha256": "fa4d703544ea7daf15ba99da9c50dc2b9f104aec709998cac2fa3c0765c58cf1",
-  "bibliography_sha256": "9d76005445e8e314e4e586aa96741b6dd0c3f0f02008c7109903059e91581279",
+  "notebook_source_sha256": "b01a6a27c08e2b10ec29fdf4ca6d66d8e847e8e95b8356b381a99c6d7d660c81",
+  "analysis_script_sha256": "58d5625369b52d217d3360d6998955982d30232e18d4fe1eb6987e9d0b31f62e",
+  "bibliography_sha256": "e766147327c850ef1375b955c5a7fc107274a256a58b59da6b5eb610f3817d86",
+  "rq3_followup_sha256": "ff5c882ad16f6154dfe26876e1602c217eb297c7ebbf9ff4b53ee49200ab229c",
+  "build_script_sha256": "3154fe3a01fff670b86a4cc62f4f281711c3fb462988a5dac8b28388377c8da9",
+  "pointer_audit_sha256": "3ef2c0649b499441f55c08e730a257d5b1f495e548df3952dcb60af367316dcd",
+  "human_audit_sha256": "e4548caac173ca57e7d2c1ede5b7c49aed1f8ecf94fe4747886d768824408c9d",
+  "submission_snapshot_sha256": "49639e8b1a865544dcde369f48283dfaa884d4b66d8fa9f12b394cc75a2de95b",
+  "pointer_audit_script_sha256": "329a782d9b97df641c45a4e109908b9ef90d64145fc13779b186bc1d7541c7e1",
+  "human_audit_script_sha256": "29c0ded56193a24aa863ee42750179e9a5b06ae5faec07ca1f55999a4036e740",
+  "snapshot_script_sha256": "fdcb76d62c30f650bf4fc1562dfaf82c21e9791a716c3904515aa0a90a88b70f",
+  "supplement_script_sha256": "2c4482600076c691ca449ffa76f4d2a07e1f16eaa24afcb86f5150ef5c5d2402",
   "font_sha256": {
     "OldStandard-Bold.ttf": "7d831e9d799ad23ee98e889381a9db2a283b2dac7f228dd5c06071decb9c54db"
-  }
+  },
+  "pdf_font_names": [
+    "/AKHCZK+CMSY10",
+    "/BZIVMZ+ArialMT",
+    "/IHAIZV+OldStandardTT-Bold",
+    "/IXFAWU+Arial-BoldMT",
+    "/TQTHRL+LMMono10-Regular-Identity-H",
+    "/YEUUOC+CMR10"
+  ],
+  "typeface": "Official template Arial/Old Standard"
 }

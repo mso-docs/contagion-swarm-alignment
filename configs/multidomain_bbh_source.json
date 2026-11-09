@@ -1,0 +1,11 @@
+{
+  "repository": "suzgunmirac/BIG-Bench-Hard",
+  "revision": "9ee07bd481feebf959a6b59d61ea57bdcf30964d",
+  "license": "MIT",
+  "files": {
+    "LICENSE": "4ef2ff4295d26ab6211235039c132697408cec5391d2c091b41e983771978db8",
+    "bbh/causal_judgement.json": "6e8bca44dd402008ed41c07a3d0a1d5e7b03db7001a7e002fcdf4c60985ea081",
+    "bbh/formal_fallacies.json": "4c1adb664821157faade1d4153685403afcc02648f3c180a608a18f17f589629",
+    "bbh/multistep_arithmetic_two.json": "c9d5a6433c9b78256422a15c78463949c8bec8d85607aa28b52d7234ad4a8595"
+  }
+}

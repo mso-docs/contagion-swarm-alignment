@@ -197,3 +197,109 @@ Offline batch reporting is active: complete matched batches generate private pai
 The dashboard now distinguishes issue diagnosis/review, benchmark source and memory policy; research defaults to live inference and retains explicit mock access. A real-endpoint regression caught and fixed a cache-policy null-credential bug before publication; health returned `ok`. Unchanged sealed repository summaries are cached with file-stat/seal/policy invalidation, and in-flight private call counts remain separate from sealed outcomes. The awaited eight-view JavaScript smoke passed, including auto-arrival and live/mock filtering.
 
 Final validation checkpoint:385pytest tests passed in46.08seconds, Python3.11 grammar checks passed for154Python files, Ruff/Bandit passed, and the isolated PyArrow23.0.1 dependency audit found no known vulnerabilities. Pages preparation built455allowlisted files and passed closure/privacy/relative-path/workflow checks; no deployment or visibility change occurred. The polished paper is7main/12total pages,209abstract words, with neutral title and no editorial/build notes; classic and template variants share one source/evidence set and both passed exact-source/PDF/font audits. Actual author review and hackathon submission remain manual; no submission will be made autonomously.
+# Multidisciplinary task docket — protocol5.0
+
+Added a separate offline task generator, pinned BBH importer and mock rehearsal
+for psychology, science, mathematics, humanities and defensive cybersecurity.
+The actual imported catalog at `results/benchmarks/multidomain-evidence-v2` has
+32 assignments /344questions, including20 original fictional evidence dossiers
+and12 bundles adapted from MIT-licensed BBH at a fixed revision. Original dossier
+families and imported item indices have explicit development/evaluation splits.
+
+Prepared `results/campaigns/multidomain-next-v1` for96runs /7,200scheduled calls;
+this is a docket, not a live launch. Marker and reporting-pressure challenges are
+separate. Answers, missing evidence, unsupported verification claims and citation
+existence have distinct scores. Semantic support and deceptive intent remain
+unadjudicated. Bundled items are not claimed as long-horizon project execution.
+
+Validation: `.venv/bin/python -m pytest -q` passed394tests in46.07seconds;
+the full15-round rehearsal at `results/campaigns/multidomain-mock-v1` completed
+96/96runs and7,200scripted responses, with all96seals independently verified.
+Critical Ruff and medium/high Bandit checks passed on the new scripts. The frozen
+`src/contagion` fingerprint remains unchanged. No inference endpoint, paid judge,
+active queue, paper finding or public dashboard snapshot was changed. Live adapter
+and closed publication-schema integration remain explicit launch blockers. See
+[the docket](docs/MULTIDOMAIN_DOCKET.md) for commands, provenance and interpretation.
+# Live recovery and multidisciplinary launch
+
+Restored both private loopback SSH forwards with keepalives. Primary transport
+recovery preserved42old completions and completed one further assignment before
+a separately diagnosed output-length stop. Secondary output-only recovery also
+hit its ceiling. All failed bytes, sealed artifacts and original states remain.
+New protocol3.6/3.8 controllers use closed compact-report contracts rather than
+silently modifying the frozen experiments; their composite call ledgers retain
+3,011primary and630secondary prior requests. Remaining work stays within the
+original5,200/1,600physical-request ceilings, with explicit supplemental wall
+allowances. Runtimes across output-format cohorts must not be silently pooled.
+
+Started `multidomain-live-active-20261108` on primary:72registered runs/4,500calls,
+with five-domain live development checks before held-out evaluation. Observed
+four completed runs/60responses without failure during verification. Queued the
+25-run primary3.6 continuation,50-run RQ3 decomposition,264-run protocol3.7 long
+benchmark and zero-inference batch report observer in that order. Secondary3.8
+started independently and completed two recovery runs/30responses; a thermal
+cooling pause was observed and remains governed by existing thresholds.
+
+Added closed numeric protocol5.0 publication and a separate Research panel, with
+domain/live/mock filters and loopback-only redacted trace inspection. Added
+protocol3.5/3.6/3.7/3.8 labels and actual output-token ceilings to repository views.
+Local HTTP validation observed `status=ok`,623repository attempts,76multidomain
+summaries (72scripted mock and four live), bounded trace HTTP200 and foreign-Host
+HTTP403. No public push, deployment, remote service change or hackathon submission.
+
+Final validation:436pytest tests passed in103.83seconds; the guarded multidisciplinary
+mock completed72/72runs and1,650scripted responses; awaited V8 smoke passed eight
+views and explicit multidisciplinary filters. Configured Ruff/Bandit and Gitleaks
+worktree checks passed. `src/contagion` and all active frozen dependencies were
+preserved. See [active experiments](docs/ACTIVE_EXPERIMENTS.md) for current roots,
+registered limits, source-version caveats and private monitoring instructions.
+# Telemetry isolation and final recovery verification
+
+The secondary3.8 allocation completed three runs, then preserved a failed attempt
+after two valid responses and before its next HTTP request. Reproduction identified
+the general `.env` parser rejecting an OpenRouter assignment. The operational
+continuation `secondary-isolated-recovery-20261108` snapshots only two existing SSH
+settings into a private hash-checked file; no original environment file, API key or
+SSH credential was modified. Scientific protocol3.8 is unchanged. Its authoritative
+ancestor debit is677requests, with21unfinished assignments/895scheduled calls and
+923requests remaining under the original1,600ceiling. The first resumed15-response
+run completed successfully; primary had eight completed multidisciplinary prechecks.
+
+The dashboard uses isolated secondary settings as well. Final HTTP checks observed
+healthy synchronization,626repository attempts,80multidisciplinary records (72mock,
+eight live), private trace200 and foreign-Host403. The overview now exposes the
+separate multidisciplinary inventory and expandable run panel rather than hiding
+these results in older task-success metrics.
+
+A full validation run exposed one legacy mock test reading operator `.env`; the
+test was made hermetic with its own temporary environment file, without editing
+the frozen pilot controller or credentials. Final `.venv/bin/python -m pytest -q`:
+440passed in97.82seconds. Awaited eight-view V8 smoke and configured Ruff/Bandit/
+Gitleaks checks passed. Both active workers and all registered predecessor plans
+retain their immutable evidence; failures still stop rather than bypass guards.
+# Submission publication checkpoint — November 9, 2026 UTC
+
+- Final report: `report/paper.pdf`, eight main-text pages, fourteen total pages,
+  209-word abstract. Required limitations/dual-use appendix retained; editorial
+  draft/font notes removed. Figures and separate reference-checkpoint diagnostics
+  regenerate from the recorded numerical freezes through the notebook.
+- Final source suite: **499 tests passed in 142.60s**. A separate two-run mock
+  pilot completed and regenerated analysis; it is engineering validation only.
+- Awaited JavaScript runtime checks passed all eight views in both local and
+  static modes, including redacted trace fallbacks and measured metric coverage.
+- Exported458 validated public data files; privacy scan found no recognized
+  categories. The exact463-file Pages artifact passed allowlist/source checks.
+- Published trace candidates contain seven concretely agent-reviewed bounded
+  excerpts /49 events, with exact content/source hashes. They are not full logs
+  or human privacy approvals. Raw records remain unchanged and ignored.
+- Runtime and installed-environment dependency audits found no known
+  vulnerabilities. Gitleaks candidate/history scans and typed PDF inspection
+  passed. Final hooks are rerun on the staged bytes before committing.
+- The author explicitly permits public username, Git name and email, including
+  the historical email identified by the audit. No history rewrite is needed.
+  Credentials, private host details, operational telemetry and private paths
+  remain excluded; heuristic redaction is not an anonymity guarantee.
+- Primary remains stopped/reserved. Secondary recovery is21/21 complete;
+  reference instrumentation has72 trained captures and two random checks.
+  Pending larger allocations have not become findings. The paper cutoff stays
+  fixed. No merge, repository visibility change, deployment or submission occurs.

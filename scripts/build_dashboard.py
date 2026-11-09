@@ -46,6 +46,12 @@ def build(source, output):
         from repository_publication import validate_repository_snapshot
         _,values=private_values(ROOT,dict(os.environ));validate_repository_snapshot(repository,values)
         assets+=('data/repositories.json',)
+    public_traces=source/'data/trace-samples.json'
+    if public_traces.exists() or public_traces.is_symlink():
+        from public_trace_samples import validate_index
+        _,values=private_values(ROOT,dict(os.environ))
+        samples=validate_index(public_traces,values)
+        assets+=('data/trace-samples.json',)+tuple(row.file for row in samples.samples)
     for asset in assets:
         path = source / asset
         if path.is_symlink() or not path.is_file():

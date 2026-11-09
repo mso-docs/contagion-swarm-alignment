@@ -13,9 +13,10 @@
 - [x] Live 18-condition RQ1 matrix and failure accounting.
 - [ ] Hardware details recorded by operator (manifest records controller OS/architecture only).
 - [x] RQ2 implementation/leakage tests; separate RQ3 development simulator comparison.
-- [ ] Strengthened follow-up live results and human calibration.
+- [x] Separately frozen 64-run responsibility follow-up; selected 16-artifact human audit retained separately from machine scores.
+- [ ] Independent human calibration with positive examples, semantic-quality labels and inter-rater agreement.
 - [x] Verified primary-source bibliography, reconstructed official layout, compiled research PDF and appendices.
 - [ ] Final human side-by-side template and scientific review.
 - [ ] Sanitized empirical data reviewed before publication.
 
-Follow README commands. The small included mock fixture under tests/fixtures/mock_run can be analyzed without inference. All generated results elsewhere are git-ignored. Do not merge mock/live sources. A checksum verifies bytes, not the truth of a scientific claim. Live pilot/batch availability is recorded in BUILD_STATUS.md; the included fixture remains mock-only.
+Follow README commands. The small included mock fixture under tests/fixtures/mock_run can be analyzed without inference. Raw generated results are git-ignored; allowlisted sanitized snapshots and the final report are separate publication artifacts. Do not merge mock/live sources. A checksum verifies bytes, not the truth of a scientific claim. Live pilot/batch availability is recorded in BUILD_STATUS.md; the included fixture remains mock-only. Later dashboard data do not revise the frozen paper automatically.

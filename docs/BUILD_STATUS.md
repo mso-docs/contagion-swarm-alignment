@@ -356,3 +356,72 @@ Typography follow-up: author requested the classic LaTeX research-paper serif. L
 - Real-configuration cache regression fixed and tested; localhost health verified `ok`. Source caching invalidates on seal/file-stat/redaction policy changes. Research rows, private call progress and monitor counters include new3.4 evidence with source/memory labels.
 - Fresh Pages preview:455allowlisted files, technical publication checks passed. No deployment/settings/merge/submission. Polished classic/template PDFs:7main/12total/209abstract; two-font-declaration-only variants, same numerical evidence, source/compiled/PDF/font audits passed. Editorial notes are outside the manuscript.
 - Final review packet tooling requires a clean committed tree, source privacy guard, matching scientific PDF versions and validated Pages closure. It includes source without Git history/ignored private runtime data. Actual publication and submission remain author/operator actions.
+# Multidisciplinary extension checkpoint
+
+- Implemented `scripts/multidomain_docket.py`, `scripts/multidomain_pilot.py` and
+  `scripts/import_multidomain_bbh.py`, with source pins and nine regression tests.
+- Actual catalog:32assignments,344questions, five domains; input sizes3,132–19,237
+  characters. Original tasks include cross-record synthesis and unavailable
+  reproduction evidence; BBH bundles retain separate private targets and license.
+- Commands: `scripts/multidomain_docket.py build --out ... --bbh ...`, then
+  `prepare --catalog ... --out ... --rounds 15`, then
+  `scripts/multidomain_pilot.py --catalog ... --root ...`, all through `.venv/bin/python`.
+  Fresh directories are required; exact examples are in `MULTIDOMAIN_DOCKET.md`.
+- Full pytest:394passed in46.07seconds. Actual mock:96completed,7,200scripted
+  responses,96valid seals, no failed runs. Ruff and medium/high Bandit passed.
+- Next allocation is prepared at `results/campaigns/multidomain-next-v1`, with
+  no live launch. Guarded live inference, development feasibility checks and a
+  closed protocol5.0 publication schema are still required. Existing experiments
+  and final-review paper are frozen and unchanged. No new empirical result claimed.
+# Recovery launch checkpoint
+
+- Repaired both existing private SSH forwards; model services, credentials,
+  drivers, firewalls and Ollama parallel settings were not changed.
+- Root-cause review separated primary transport loss from later output truncation.
+  Protocol3.6/3.8 compact-report amendments retain all ancestor evidence and debit
+  actual prior requests, including failed responses omitted from the old pair counter.
+- Primary5.0 live collection is running; remaining primary work is queued behind it.
+  Secondary3.8 recovery is running/cooling under independent guards. Full call/time
+  limits and active paths are in `ACTIVE_EXPERIMENTS.md`; later failures still stop.
+- Live numeric snapshots and private traces support the new protocols. HTTP checks
+  verified healthy synchronization and Host isolation; source/oracles stay private.
+- `.venv/bin/python -m pytest -q`:436passed in103.83seconds. Full new-controller
+  mock:72completed/1,650scripted responses. Awaited eight-view V8 smoke and configured
+  Ruff/Bandit/Gitleaks checks passed. No real-model study completion or broad
+  alignment finding is inferred from these software checks.
+- Paper evidence remains frozen. No remote infrastructure changes, push, public
+  deployment, model pull, paid judge call or hackathon submission was performed.
+# Final isolated-settings verification
+
+- `secondary_env_recovery.py` preserves fifteen completed ancestor assignments,
+ 677prior requests and all failed attempts;21unfinished assignments/895calls remain.
+ The scientific3.8runner is unchanged. Two SSH settings are isolated from cloud
+ judge keys, with mode0600/hash checks; original environment files remain untouched.
+- The resumed secondary first run completed15responses; primary completed eight
+ multidisciplinary development runs. Additional primary allocations remain queued.
+- Final tests:440passed in97.82seconds. Legacy pilot mock tests now use temporary
+ configuration, so operator credentials cannot affect CI. Awaited V8 smoke,
+ Python3.11grammar, configured Ruff/Bandit and Gitleaks checks passed.
+- Local dashboard HTTP status was `ok`; new trace route200 and foreign-Host403.
+ Multidisciplinary counts are visible separately on the overview and related views.
+ Current operational paths and budgets: `ACTIVE_EXPERIMENTS.md`.
+# Final publication validation — November 9, 2026 UTC
+
+`python -m pytest -q`: **499 passed**. The independent mock pair completed.
+Both awaited local/static JavaScript interaction checks passed eight views.
+`scripts/scan_privacy.py`:458 files, no recognized findings.
+`scripts/submission_audit.py --paper-dir results/submission-final-v2` passed
+automated checks:8 main pages /14 total /209 abstract words.
+`scripts/publication_readiness.py` validated463 allowlisted artifact files.
+Runtime and installed dependency audits found no known vulnerabilities.
+Source/history Gitleaks and PDF/trace privacy checks passed; final staged hooks
+must also pass. The numeric research index has a narrow16MiB allowance; all
+other publication candidates retain the5MiB limit and the index still undergoes
+closed-schema and privacy validation. The author permits their Git identity and
+email to remain public; other private operational values stay excluded.
+
+The judge preview uses the exact Pages files through `serve_public_preview.py`
+on port8766. Port8765 remains the private collector dashboard. Static publication
+updates through reviewed committed snapshots, not private live server access.
+Primary is stopped/reserved; secondary recovery completed21/21. Long queues are
+pending, not completed results. Final submission is an author action.

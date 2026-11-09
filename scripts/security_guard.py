@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Read-only publication guard over Git index blobs or nonignored candidate files."""
 import argparse
+import json
 import os
 from pathlib import Path
 import re
@@ -13,6 +14,7 @@ from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_BYTES = 5 * 1024 * 1024
+MAX_RESEARCH_BYTES = 16 * 1024 * 1024
 
 
 def git(root, *args):
@@ -38,11 +40,13 @@ def blocked_path(name):
         return True
     if path.suffix.casefold() in {'.log', '.sqlite', '.sqlite3', '.db', '.safetensors', '.har'}:
         return True
-    if re.fullmatch(r'(?:trace|traces|events|request_history|raw_response)(?:[._-].*)?\.json', path.name, re.I):
+    if path.suffix.casefold() == '.pdf' and name != 'report/paper.pdf':
+        return True
+    if name != 'dashboard/data/trace-samples.json' and re.fullmatch(r'(?:trace|traces|events|request_history|raw_response)(?:[._-].*)?\.json', path.name, re.I):
         return True
     if path.suffix.casefold() == '.jsonl' and not re.fullmatch(r'tests/fixtures/mock_run/[^/]+/events\.jsonl', name):
         return True
-    if name.startswith('dashboard/data/') and name not in {'dashboard/data/results.json', 'dashboard/data/research.json', 'dashboard/data/repositories.json', 'dashboard/data/followups.json'} and not re.fullmatch(r'dashboard/data/studies/[a-f0-9]{16}\.json',name):
+    if name.startswith('dashboard/data/') and name not in {'dashboard/data/results.json', 'dashboard/data/research.json', 'dashboard/data/repositories.json', 'dashboard/data/followups.json', 'dashboard/data/trace-samples.json'} and not re.fullmatch(r'dashboard/data/(?:studies|trace-samples)/[a-f0-9]{16}\.json',name):
         return True
     return False
 
@@ -135,7 +139,7 @@ def check(root, mode, scan=False, env=None):
     root = Path(root).resolve()
     known, values = private_values(root, dict(os.environ) if env is None else env)
     from scan_privacy import findings as privacy_findings
-    blobs, findings = {}, []
+    blobs, findings, pdf_text = {}, [], {}
     source_known=source_configuration_values(known,values)
     for name in candidates(root, mode):
         if privacy_findings(name):
@@ -151,15 +155,29 @@ def check(root, mode, scan=False, env=None):
         except ValueError:
             findings.append((name, 'unapproved file type'))
             continue
-        if len(data) > MAX_BYTES:
-            findings.append((name, 'file exceeds 5 MiB review limit'))
+        limit = MAX_RESEARCH_BYTES if name == 'dashboard/data/research.json' else MAX_BYTES
+        if len(data) > limit:
+            findings.append((name, 'file exceeds its bounded review limit'))
             continue
         candidate_known=known if name.startswith('dashboard/data/') else source_known
         if any(value.encode() in data or value in name for value in candidate_known):
             findings.append((name, 'known private configuration value'))
             continue
+        if name == 'report/paper.pdf':
+            try:
+                from pdf_publication_guard import validate_public_pdf
+                pdf_text[name] = validate_public_pdf(data, known=known)['audited_text']
+            except Exception:
+                findings.append((name, 'public paper PDF privacy or active-content validation failed'))
+                continue
+            blobs[name] = data
+            continue
         from scan_privacy import scan_blob
         try:
+            from scan_privacy import PATTERNS
+            if PATTERNS['home_path'].search(data.decode('utf-8')):
+                findings.append((name, 'absolute user-home path'))
+                continue
             privacy = scan_blob(data, public=name.startswith('dashboard/data/'), known=candidate_known)
         except (UnicodeError, ValueError):
             findings.append((name, 'privacy lint could not validate text input'))
@@ -214,6 +232,32 @@ def check(root, mode, scan=False, env=None):
                     validate_study_detail(path,env=values)
             except Exception:
                 findings.append((name,'study detail privacy/schema validation failed'))
+    trace_names = [name for name in blobs if re.fullmatch(r'dashboard/data/trace-samples/[a-f0-9]{16}\.json', name)]
+    if trace_names or 'dashboard/data/trace-samples.json' in blobs:
+        try:
+            from public_trace_samples import validate_index
+            def public_blob(name):
+                if name in blobs:
+                    return blobs[name]
+                # An unchanged companion must come from the actual Git index,
+                # never a cleaner unstaged copy when checking staged changes.
+                return read_candidate(root, name, mode)
+            with tempfile.TemporaryDirectory() as temp:
+                base = Path(temp); index = base / 'trace-samples.json'
+                index.write_bytes(public_blob('dashboard/data/trace-samples.json'))
+                entries = json.loads(index.read_text())['samples']
+                expected = {'dashboard/' + row['file'] for row in entries}
+                if not set(trace_names) <= expected:
+                    raise ValueError('Unreferenced public sample')
+                for row in entries:
+                    name = 'dashboard/' + row['file']
+                    if blocked_path(name) or not re.fullmatch(r'dashboard/data/trace-samples/[a-f0-9]{16}\.json', name):
+                        raise ValueError('Unsafe public sample link')
+                    target = base / 'trace-samples' / Path(name).name; target.parent.mkdir(exist_ok=True)
+                    target.write_bytes(public_blob(name))
+                validate_index(index, values)
+        except Exception:
+            findings.append(('dashboard/data/trace-samples.json', 'reviewed public sample closure/privacy/schema validation failed'))
     for name, reason in findings:
         safe = '[redacted path]' if any(value in name for value in known) or privacy_findings(name) else ascii(name)
         print(f'Blocked {safe}: {reason}', file=sys.stderr)
@@ -228,6 +272,8 @@ def check(root, mode, scan=False, env=None):
                 target = Path(temp) / name
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(data)
+            for name, text in pdf_text.items():
+                (Path(temp) / (name + '.audited.txt')).write_text(text)
             result = subprocess.run([binary, 'dir', temp, '--redact=100', '--no-banner',
                                      '--config', str(root / '.gitleaks.toml'), '--ignore-gitleaks-allow',
                                      '--timeout=120'], cwd=root, check=False)

@@ -32,6 +32,8 @@ repos:
       - id: detect-private-key
       - id: check-added-large-files
         args: [--maxkb=5120, --enforce-all]
+        # This numeric index has its own 16 MiB cap plus closed-schema/privacy checks.
+        exclude: ^dashboard/data/research\.json$
   - repo: local
     hooks:
       - id: publication-guard

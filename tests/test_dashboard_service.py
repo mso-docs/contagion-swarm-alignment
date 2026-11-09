@@ -46,7 +46,7 @@ def test_cpu_capture_collector_fetches_completed_artifacts_without_manual_import
     assert api['sync_secondary_neural'](Path('private-config'),lambda *args:[{'phase':'capture_fetched'}])==8
 
 
-def test_private_progress_is_numeric_allowlisted_and_excludes_finished_or_private_fields(monkeypatch,tmp_path):
+def test_private_progress_retains_completion_and_excludes_private_fields(monkeypatch,tmp_path):
     import json
     api=service(monkeypatch);root=tmp_path/'campaigns';active=root/'active';active.mkdir(parents=True)
     plan={'planned_calls':5400,'jobs':[{'plan':{'families':['catalog'],'case_indices':[1],'seeds':[11001],
@@ -58,7 +58,9 @@ def test_private_progress_is_numeric_allowlisted_and_excludes_finished_or_privat
     assert rows==[{'kind':'swarm_campaign','status':'cooling','planned_runs':2,'planned_calls':5400,'completed_runs':1,'physical_calls':31,'failed_runs':0}]
     assert 'private' not in json.dumps(rows)
     (active/'state.json').write_text(json.dumps({**state,'status':'completed'}))
-    assert api['private_campaigns'](root)==[]
+    completed=api['private_campaigns'](root)
+    assert completed==[{**rows[0],'status':'completed'}]
+    assert 'private' not in json.dumps(completed)
     (active/'state.json').write_text(json.dumps({**state,'status':'stopped'}))
     assert api['private_campaigns'](root)[0]['status']=='stopped'
 
