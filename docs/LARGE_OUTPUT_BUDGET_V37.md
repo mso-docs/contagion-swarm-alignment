@@ -1,5 +1,10 @@
 # Protocol3.7 output-budget amendment
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+<details>
+<summary><strong>Full reference</strong></summary>
+
 This is a separately frozen allocation, not a repair of protocol3.4 evidence.
 `large_primary_queue_v37.py` and `large_benchmark_runner_v37.py` preserve the
 same source selection, paired seed schedule, four conditions, topologies,
@@ -75,3 +80,5 @@ protocol `3.7-benchmark-output-budget`. Public exporters must explicitly validat
 that schema before including its summaries. Undefined recall stays undefined
 without positive adoption labels; semantic utility and deceptive intent remain
 unadjudicated. No new empirical result is established by this amendment itself.
+
+</details>

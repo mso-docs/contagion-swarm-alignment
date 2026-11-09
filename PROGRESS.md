@@ -1,4 +1,30 @@
-# Progress
+# Project progress
+
+[Project README](README.md) · [Developer guide](docs/DEVELOPMENT.md) · [Build history](docs/BUILD_STATUS.md)
+
+## Current state
+
+- Collection is closed; the final dashboard snapshot remains unchanged.
+- The canonical PDF and frozen numerical evidence are preserved.
+- The last full software regression recorded 531 passing tests.
+- The repository and GitHub Pages are public; the judge overview shares the same site.
+
+## Documentation readability
+
+The current pass adds a task-based documentation index and developer guide,
+short current introductions, focused expandable references, colorful Mermaid
+diagrams and the existing reviewed UI screenshots. Earlier command recipes and
+installation notes remain available below. Versioned research questions and
+protocol definitions are unchanged.
+
+Validation passed:75 Markdown files,291 relative links,76 expandable sections
+and21 browser-rendered Mermaid diagrams. Original reference text was preserved
+across53 documents; protected evidence and versioned protocols are unchanged.
+Secret/history, privacy, lint and security checks passed. Runtime tests were not
+repeated for this documentation-only change.
+
+<details>
+<summary><strong>Full chronological project history</strong></summary>
 
 ## Researcher readiness and unified live dashboard
 
@@ -369,3 +395,5 @@ new overview requires human review and merge before Pages publishes it.
 Added the author-supplied Apart Research project URL to the README and judge
 overview footer. The link remains subject to Apart's own access/publication
 settings; no judging outcome or public-page availability is claimed.
+
+</details>

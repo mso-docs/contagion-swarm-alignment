@@ -1,5 +1,12 @@
 # Guarded multidisciplinary live allocation
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+**Historical operations reference.** Collection is closed. Commands and status
+notes below describe their recorded checkpoint; use the [final catalog](EXPERIMENT_CATALOG.md)
+for completed evidence. Do not resume allocations from this page.
+
+
 `scripts/multidomain_live.py` is a separate, frozen controller for the
 protocol5.0 task docket. It does not alter earlier plans, their raw attempts or
 the original mock-only rehearsal. Models have no tools or external targets.
@@ -81,7 +88,6 @@ Protocol-specific dashboard/export support must validate its own closed schemas;
 raw request histories and upstream task/answer content are not automatically public.
 
 ## Dashboard integration
-
 The closed `followups.json` extension `multidomain` contains only hashed run/task
 identities, domain/condition labels and numeric endpoints from sealed attempts.
 Stored outcome scores are not trusted: the exporter recomputes from final artifact

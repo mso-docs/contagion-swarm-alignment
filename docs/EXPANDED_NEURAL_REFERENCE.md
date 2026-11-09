@@ -1,5 +1,8 @@
 # Expanded trained-checkpoint reference grid
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+
 The expanded pilot measures the pinned trained GPT-2 checkpoint
 `openai-community/gpt2@607a30d783dfa663caf39e06633721c8d4cfcd7e` on CPU. It is a
 reference experiment, **not activation access to Ollama, Qwen or an agent swarm**.
@@ -33,7 +36,6 @@ Repeated baselines, layers and prompt pairs are dependent;72cells are not72
 independent scientific trials.
 
 ## Measurements and checks
-
 Each new capture contains actual residual RMS, selected MLP activation values,
 clean/corrupt target logits and a clean-to-corrupt residual patch at one layer.
 The raw model and instrumented bridge must agree at the frozen tolerances. A
@@ -52,7 +54,6 @@ attempts are not overwritten. File checksums detect accidental changes and are n
 an externally anchored tamper-proof record.
 
 ## Worker boundaries
-
 The operator helper creates a separate `interp-grid-*` project release. It does
 not match legacy `trained-*`, `neural-*` or `suite-*` selectors. It reuses the
 existing CPU Python environment and exact local GPT-2 cache, installs nothing and
@@ -65,6 +66,8 @@ limits, not a guarantee against hardware failure. GPU behavioral collection keep
 its separate controller and model allocation.
 
 ## Operator commands
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
 Use the isolated two-field SSH snapshot, never the broad credential environment:
 
@@ -110,3 +113,5 @@ The existing derived dashboard sync then consumes all measured numeric summaries
 Private prompts and tensors remain private; public snapshots use the existing
 closed neural schema. The helper's `sync(env_file, deployment_file, limit=2)` API
 also supports a dashboard-managed polling loop.
+
+</details>

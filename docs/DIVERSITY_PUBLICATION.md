@@ -1,5 +1,10 @@
 # Model/topology calibration publication boundary
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+<details>
+<summary><strong>Full reference</strong></summary>
+
 `scripts/diversity_publication.py` exports protocol
 `6.0-model-topology-calibration` as closed metadata and numeric summaries. It
 reads sealed controller attempts without running inference, changing allocations
@@ -50,3 +55,5 @@ confidence calibration remain separate measures; none establishes general
 alignment, intentional deception, collusion or a neural mechanism. The publication
 module performs no deployment and does not add itself to a live dashboard or
 snapshot automatically; the caller owns that explicit integration boundary.
+
+</details>

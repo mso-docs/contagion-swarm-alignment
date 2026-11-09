@@ -1,5 +1,14 @@
 # Secondary output-budget recovery
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+**Historical operations reference.** Collection is closed. Commands and status
+notes below describe their recorded checkpoint; use the [final catalog](EXPERIMENT_CATALOG.md)
+for completed evidence. Do not resume allocations from this page.
+
+<details>
+<summary><strong>Full reference</strong></summary>
+
 The protocol3.1 secondary long-horizon allocation stopped after12completed runs.
 The last incomplete attempt returned five responses but only four parsed artifacts:
 its last response ended with `done_reason=length` at the1,536-token output ceiling.
@@ -53,3 +62,5 @@ private decision receipt and cumulative request/time debits retained. Unsealed o
 corrupt recovery attempts block this path until independently reviewed. Public
 dashboard integration must explicitly support the new protocol before publishing
 its closed numeric summaries; raw request histories remain private.
+
+</details>

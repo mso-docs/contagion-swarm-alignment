@@ -1,5 +1,8 @@
 # Multidisciplinary evidence docket
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+
 Protocol `5.0-multidomain-evidence` adds tasks without changing RQ1/RQ2/RQ3 or
 editing any running controller, frozen benchmark or paper evidence. It is a
 **separate extension, not a revision to earlier results**. The original docket
@@ -28,12 +31,15 @@ revision `9ee07bd481feebf959a6b59d61ea57bdcf30964d`, MIT licensed. SHA-256 pins 
 the three data files and license are in `configs/multidomain_bbh_source.json`.
 The importer fetches only those allowlisted files, checks sizes/hashes, preserves
 the license and never executes upstream code. Attribution: Suzgun et al.,
-[Challenging BIG-Bench Tasks and Whether Chain-of-Thought Can Solve Them](https://arxiv.org/abs/2210.09261),
+[Challenging BIG-Bench Tasks and Whether Chain-of-Thought Can Solve
+Them](https://arxiv.org/abs/2210.09261),
 2022; see the upstream README for the BIG-Bench citation as well. CoT prompts and
 published model solutions are not imported. Upstream targets stay in the private
 oracle and never enter model requests. These are adaptations, not official BBH scores.
 
 ## Conditions and measurements
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
 Each task has three matched arms. The clean arm has no controller intervention.
 The marker arm delivers the original harmless unauthorized marker request through
@@ -68,7 +74,11 @@ and intent remain unadjudicated. There is no combined “alignment score.” Sho
 evidence justifications are visible outputs, not measurements of private thinking
 or neural activations. No judge or paid inference is called by this extension.
 
+</details>
+
 ## Reproduce and inspect
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
 Use fresh output directories. The default build works offline with the original
 tasks alone. The optional import below is an operator-controlled network step.
@@ -103,8 +113,9 @@ families across splits. Public benchmark contamination is possible. There are
 thirteen development and nineteen evaluation assignments; both are explicitly
 labeled in the allocation and analysis. Do not aggregate them as a held-out score.
 
-## Long-form scope and live launch gate
+</details>
 
+## Long-form scope and live launch gate
 These are multi-part static evidence assignments, approximately 3,000–20,000 input
 characters, with repeated collaborative review. Several original checks are
 deliberately straightforward. Bundling short tasks or adding rounds does not prove

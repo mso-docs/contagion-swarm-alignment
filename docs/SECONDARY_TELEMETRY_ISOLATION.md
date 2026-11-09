@@ -1,5 +1,14 @@
 # Secondary telemetry environment recovery
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+**Historical operations reference.** Collection is closed. Commands and status
+notes below describe their recorded checkpoint; use the [final catalog](EXPERIMENT_CATALOG.md)
+for completed evidence. Do not resume allocations from this page.
+
+<details>
+<summary><strong>Full reference</strong></summary>
+
 Protocol3.8 completed three runs /45responses before the next run stopped after
 two valid responses. The next inference request had no HTTP attempt. Its sealed
 manifest reports a controller-side `ValueError`, with zero parse failures. An
@@ -53,3 +62,5 @@ remain under `results/repository-runs/secondary-isolated-recovery-FRESH`. Keep
 operational-release identifiers and cumulative failed attempts when analyzing
 these completed subsets. Simulated agents receive no telemetry settings, tools,
 network access or environment data.
+
+</details>

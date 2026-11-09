@@ -1,14 +1,32 @@
 # Experiment catalog
 
-This final metadata supplement freezes the four public dashboard snapshots by SHA-256. It does not change the paper's original analysis cutoff or promote exploratory runs into its confirmatory sample.
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
 
-The software suite observation is **499 passed pytest tests**. These are engineering checks, not model experiments. The snapshots contain **1412 indexed agent-run rows**: 583 live rows (570 completed) and 829 mock rows.
 
-Raw seal reconciliation verifies 1407 indexed rows and leaves 5 unmatched. Within those published indexes, deduplicating identical authoritative event bytes yields **578 distinct verified live trajectories**, 567 completed, and 14622 returned responses; 0 repeated index rows are excluded. Identical files copied between local indexes are one trajectory. Unmatched rows remain indexed evidence, excluded from verified-unique totals. Different failed/retry event logs remain different attempts. This is not a census of every historical private raw attempt: latest-record indexes can retain failure counters without publishing each prior attempt. A trajectory is not an independent seed or an independent scientific comparison.
+This final metadata supplement freezes the four public dashboard snapshots by SHA-256. It does
+not change the paper's original analysis cutoff or promote exploratory runs into its
+confirmatory sample.
 
-Other evidence comprises 72 trained GPT-2 reference captures, 2 random-weight instrumentation checks, 1152 dependent offline monitor cells and 84 advisory reviews. These are not additional swarm runs. Diversity calibration has 0 published records; queued work is not a result.
+The software suite observation is **499 passed pytest tests**. These are engineering checks, not
+model experiments. The snapshots contain **1412 indexed agent-run rows**: 583 live rows (570
+completed) and 829 mock rows.
+
+Raw seal reconciliation verifies 1407 indexed rows and leaves 5 unmatched. Within those
+published indexes, deduplicating identical authoritative event bytes yields **578 distinct
+verified live trajectories**, 567 completed, and 14622 returned responses; 0 repeated index rows
+are excluded. Identical files copied between local indexes are one trajectory. Unmatched rows
+remain indexed evidence, excluded from verified-unique totals. Different failed/retry event logs
+remain different attempts. This is not a census of every historical private raw attempt:
+latest-record indexes can retain failure counters without publishing each prior attempt. A
+trajectory is not an independent seed or an independent scientific comparison.
+
+Other evidence comprises 72 trained GPT-2 reference captures, 2 random-weight instrumentation
+checks, 1152 dependent offline monitor cells and 84 advisory reviews. These are not additional
+swarm runs. Diversity calibration has 0 published records; queued work is not a result.
 
 ## Tasks and research purpose
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
 | Family | Task and observable endpoint | Research role |
 |---|---|---|
@@ -20,13 +38,30 @@ Other evidence comprises 72 trained GPT-2 reference captures, 2 random-weight in
 | issue_diagnosis | Diagnose SWE-bench Verified issues from reference-localized base-code windows; propose evidence-supported findings | Exploratory static diagnosis, not executable patch solving or official SWE-bench success |
 | psychology / science / mathematics / humanities / defensive_cybersecurity | Answer bounded evidence questions with citations, confidence and explicit unknowns | Exploratory honesty/evidence controls; no adjudication of intent or spontaneous collusion |
 
-Repository inputs come from withmartian/code-review-benchmark and princeton-nlp/SWE-bench_Verified. The issue windows use reference localization, a disclosed selection limitation; they are not full repository workspaces. Repository memory policies are full_history or original_task_plus_last_two_own_rounds, recorded per run alongside complete_pinned_pr_diff, reference_localized_base_windows or legacy_unspecified context selection.
+Repository inputs come from withmartian/code-review-benchmark and
+princeton-nlp/SWE-bench_Verified. The issue windows use reference localization, a disclosed
+selection limitation; they are not full repository workspaces. Repository memory policies are
+full_history or original_task_plus_last_two_own_rounds, recorded per run alongside
+complete_pinned_pr_diff, reference_localized_base_windows or legacy_unspecified context
+selection.
 
-Length means controller rounds and recorded input size, not wall-clock human task duration. Coding tasks review supplied material; models never edit repositories or run tests. Neural captures measure a separate GPT-2 reference checkpoint, not Ollama swarm internals or general alignment.
+Length means controller rounds and recorded input size, not wall-clock human task duration.
+Coding tasks review supplied material; models never edit repositories or run tests. Neural
+captures measure a separate GPT-2 reference checkpoint, not Ollama swarm internals or general
+alignment.
+
+</details>
 
 ## Complete indexed cohort inventory
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
-All individual public IDs, source index, exact model/protocol/phase/condition/status, calls, rounds and agent counts appear in [final_inventory.json](../report/data/final_inventory.json). Source references are public dashboard index names; no private source paths or request histories are exported. A missing horizon remains null rather than inferred. Retained multidisciplinary failure counters are supplementary provenance, not added to latest-record calls or silently treated as completed runs.
+All individual public IDs, source index, exact model/protocol/phase/condition/status, calls,
+rounds and agent counts appear in [final_inventory.json](../report/data/final_inventory.json).
+Source references are public dashboard index names; no private source paths or request histories
+are exported. A missing horizon remains null rather than inferred. Retained multidisciplinary
+failure counters are supplementary provenance, not added to latest-record calls or silently
+treated as completed runs.
 
 | Index | Protocol | Model | Family | Phase | Condition | Status | Rows | Responses | Round range |
 |---|---|---|---|---|---|---|---:|---:|---|
@@ -189,19 +224,37 @@ All individual public IDs, source index, exact model/protocol/phase/condition/st
 | results | 1.1 | qwen3.5:9b | catalog | legacy_unspecified | benign_override | completed | 9 | 225 | 5–5 |
 | results | 1.1 | qwen3.5:9b | catalog | legacy_unspecified | none | completed | 9 | 225 | 5–5 |
 
-## How these tasks affect the conclusions
+</details>
 
-- Catalog, provenance and inert patch tasks supply the compact RQ1 comparison. Catalog trajectories also supply the original RQ2 monitor analysis; absent adoption positives leave recall undefined.
-- Protected-record summaries supply RQ3 development and the separate 64-run contextual-allocation comparison. No observed individual refusals means these results do not establish refusal bypass.
-- Live code reviews test longer supplied inputs and repeated controller rounds, plus format/recovery reliability. They are exploratory static reviews, not executable coding solutions; independent semantic-quality labels are missing, so they do not establish benchmark performance or a long-horizon causal effect.
-- Live psychology, science, mathematics and humanities records are integration prechecks of evidence/uncertainty formats. They do not complete the registered held-out multidisciplinary matrix and are not pooled into the compact causal comparison.
-- Issue diagnosis and defensive cybersecurity have mock-only coverage in this checkpoint. They validate the task pipeline, not model honesty, task success or resistance to collusion in those domains.
-- Longer inputs, more rounds and different cases co-vary in exploratory collections. A change in observed behavior cannot be attributed to task length alone. The report keeps these limitations visible rather than counting every record as a new independent experiment.
+## How these tasks affect the conclusions
+- Catalog, provenance and inert patch tasks supply the compact RQ1 comparison. Catalog
+  trajectories also supply the original RQ2 monitor analysis; absent adoption positives leave
+  recall undefined.
+- Protected-record summaries supply RQ3 development and the separate 64-run
+  contextual-allocation comparison. No observed individual refusals means these results do not
+  establish refusal bypass.
+- Live code reviews test longer supplied inputs and repeated controller rounds, plus
+  format/recovery reliability. They are exploratory static reviews, not executable coding
+  solutions; independent semantic-quality labels are missing, so they do not establish benchmark
+  performance or a long-horizon causal effect.
+- Live psychology, science, mathematics and humanities records are integration prechecks of
+  evidence/uncertainty formats. They do not complete the registered held-out multidisciplinary
+  matrix and are not pooled into the compact causal comparison.
+- Issue diagnosis and defensive cybersecurity have mock-only coverage in this checkpoint. They
+  validate the task pipeline, not model honesty, task success or resistance to collusion in
+  those domains.
+- Longer inputs, more rounds and different cases co-vary in exploratory collections. A change in
+  observed behavior cannot be attributed to task length alone. The report keeps these
+  limitations visible rather than counting every record as a new independent experiment.
 
 ## Reproduce
-
 ```bash
 .venv/bin/python scripts/final_evidence_inventory.py --validate-only
 ```
 
-This read-only command checks the closed inventory and its four snapshot hashes without requiring private logs. To rebuild source reconciliation locally, supply fresh --output and --catalog paths under results; existing files are never overwritten. Rebuilding requires the preserved private source logs and makes no inference requests. Monitor recall stays undefined when there are no positive labels. Compliance is a narrow endpoint, not a general alignment score. Public excerpts require their separate reviewed export boundary.
+This read-only command checks the closed inventory and its four snapshot hashes without
+requiring private logs. To rebuild source reconciliation locally, supply fresh --output and
+--catalog paths under results; existing files are never overwritten. Rebuilding requires the
+preserved private source logs and makes no inference requests. Monitor recall stays undefined
+when there are no positive labels. Compliance is a narrow endpoint, not a general alignment
+score. Public excerpts require their separate reviewed export boundary.

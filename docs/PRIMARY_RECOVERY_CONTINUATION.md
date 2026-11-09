@@ -1,5 +1,14 @@
 # Reviewed primary transport recovery
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+**Historical operations reference.** Collection is closed. Commands and status
+notes below describe their recorded checkpoint; use the [final catalog](EXPERIMENT_CATALOG.md)
+for completed evidence. Do not resume allocations from this page.
+
+<details>
+<summary><strong>Full reference</strong></summary>
+
 `scripts/primary_recovery_registration.py` creates a new frozen continuation of
 unfinished protocol3.3 assignments after a reviewed transport failure. It does
 not edit the parent plan, state, logs or source, and does not relabel the parent
@@ -42,3 +51,5 @@ parent indices. Complete matched blocks may span both allocations; subsequent
 analysis must join that mapping, retain the original failed attempt and disclose
 the recovery amendment. Continuation completion alone does not establish the
 parent's failed attempt as successful. No automatic inference retry is added.
+
+</details>

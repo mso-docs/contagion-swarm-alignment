@@ -1,12 +1,28 @@
 # TransformerLens 4 integration notes
 
-The secondary Linux CPU worker has executed the offline random capture with TransformerLens 4.3.0 and verified raw/bridge logit parity. The Intel macOS laptop has not run TransformerLens; trained-checkpoint replay remains pending. The snippets below are API notes, not trained-model results. Follow [the interpretability protocol](INTERPRETABILITY_PROTOCOL.md) and pin exact worker dependencies before collecting research data.
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+
+The secondary Linux CPU worker has executed the offline random capture with TransformerLens
+4.3.0 and verified raw/bridge logit parity. The Intel macOS laptop has not run TransformerLens;
+trained-checkpoint replay remains pending. The snippets below are API notes, not trained-model
+results. Follow [the interpretability protocol](INTERPRETABILITY_PROTOCOL.md) and pin exact
+worker dependencies before collecting research data.
 
 ## Supported entry points
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
-TransformerLens 4 uses `TransformerBridge`; legacy `HookedTransformer.from_pretrained` examples must not be copied unchanged. The [v4 migration guide](https://raw.githubusercontent.com/TransformerLensOrg/TransformerLens/main/docs/source/content/migrating_to_v4.md) documents `TransformerBridge.boot_native(TransformerBridgeConfig(...))` for randomly initialized native models. That native constructor was verified in documentation, not executed here; the fully specified offline alternative below uses a locally constructed Transformers model.
+TransformerLens 4 uses `TransformerBridge`; legacy `HookedTransformer.from_pretrained` examples
+must not be copied unchanged. The [v4 migration
+guide](https://raw.githubusercontent.com/TransformerLensOrg/TransformerLens/main/docs/source/content/migrating_to_v4.md)
+documents `TransformerBridge.boot_native(TransformerBridgeConfig(...))` for randomly initialized
+native models. That native constructor was verified in documentation, not executed here; the
+fully specified offline alternative below uses a locally constructed Transformers model.
 
-The [Transformers source adapter](https://raw.githubusercontent.com/TransformerLensOrg/TransformerLens/main/transformer_lens/model_bridge/sources/transformers/source.py) exposes these relevant arguments:
+The [Transformers source
+adapter](https://raw.githubusercontent.com/TransformerLensOrg/TransformerLens/main/transformer_lens/model_bridge/sources/transformers/source.py)
+exposes these relevant arguments:
 
 ```python
 TransformerBridge.boot_transformers(
@@ -20,11 +36,20 @@ TransformerBridge.boot_transformers(
 )
 ```
 
-It does **not** accept `local_files_only` or `use_safetensors` directly. Supplying both `hf_model` and `tokenizer` avoids the adapter's Hub model/config/tokenizer loading paths for an ordinary text model. Leave compatibility transformations disabled when comparing against original model activations: folding and centering transformations change the numerical representation.
+It does **not** accept `local_files_only` or `use_safetensors` directly. Supplying both
+`hf_model` and `tokenizer` avoids the adapter's Hub model/config/tokenizer loading paths for an
+ordinary text model. Leave compatibility transformations disabled when comparing against
+original model activations: folding and centering transformations change the numerical
+representation.
+
+</details>
 
 ## Offline random-model smoke test
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
-This validates tensor capture and hook plumbing only. Random activations say nothing about trained-model behavior, alignment, or the Ollama experiment.
+This validates tensor capture and hook plumbing only. Random activations say nothing about
+trained-model behavior, alignment, or the Ollama experiment.
 
 ```python
 import torch
@@ -57,11 +82,19 @@ bridge.eval()
 tokens = torch.tensor([[2, 3, 4]], dtype=torch.long)
 ```
 
-The model name above is a local label, not a downloadable model tag. No pretrained weights are requested by this construction. For an actual smoke check, set offline mode externally as an additional guard and run the capture below.
+The model name above is a local label, not a downloadable model tag. No pretrained weights are
+requested by this construction. For an actual smoke check, set offline mode externally as an
+additional guard and run the capture below.
+
+</details>
 
 ## Pretrained checkpoints: pinned and local-only
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
-Populate a local Hugging Face cache separately under explicit operator control. Replace both placeholders with the approved checkpoint identifier and its full commit SHA. This snippet deliberately fails if the approved cached files are missing:
+Populate a local Hugging Face cache separately under explicit operator control. Replace both
+placeholders with the approved checkpoint identifier and its full commit SHA. This snippet
+deliberately fails if the approved cached files are missing:
 
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -83,13 +116,32 @@ bridge = TransformerBridge.boot_transformers(
 )
 ```
 
-The adapter source explicitly accepts an existing Hugging Face model. Review model architecture support and storage requirements before loading; an Ollama quantization is not automatically the same checkpoint or numerical model as its Transformers counterpart. Record repository, revision, tokenizer revision, dtype, quantization, library versions and token IDs with every artifact.
+The adapter source explicitly accepts an existing Hugging Face model. Review model architecture
+support and storage requirements before loading; an Ollama quantization is not automatically the
+same checkpoint or numerical model as its Transformers counterpart. Record repository, revision,
+tokenizer revision, dtype, quantization, library versions and token IDs with every artifact.
+
+</details>
 
 ## Capture and activation interventions
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
-The [bridge API source](https://raw.githubusercontent.com/TransformerLensOrg/TransformerLens/main/transformer_lens/model_bridge/bridge_core.py) supports `run_with_cache(input, names_filter=..., return_cache_object=False, remove_batch_dim=False, **kwargs)` returning `(output, cache)`, and `run_with_hooks(input, fwd_hooks=[(name, callback)], reset_hooks_end=True, **kwargs)`. Hook callbacks receive the activation tensor and `hook` context. Use inference mode for forward-only capture; backward capture requires gradients and an appropriate scalar loss.
+The [bridge API
+source](https://raw.githubusercontent.com/TransformerLensOrg/TransformerLens/main/transformer_lens/model_bridge/bridge_core.py)
+supports `run_with_cache(input, names_filter=..., return_cache_object=False,
+remove_batch_dim=False, **kwargs)` returning `(output, cache)`, and `run_with_hooks(input,
+fwd_hooks=[(name, callback)], reset_hooks_end=True, **kwargs)`. Hook callbacks receive the
+activation tensor and `hook` context. Use inference mode for forward-only capture; backward
+capture requires gradients and an appropriate scalar loss.
 
-Current canonical names are `blocks.L.hook_out` for the residual stream after a block and `blocks.L.mlp.out.hook_in` for post-activation MLP values. Familiar aliases `blocks.L.hook_resid_post` and `blocks.L.mlp.hook_post` map to these locations. Verify the actual available names for each architecture: [block aliases](https://raw.githubusercontent.com/TransformerLensOrg/TransformerLens/main/transformer_lens/model_bridge/generalized_components/block.py), [MLP aliases](https://raw.githubusercontent.com/TransformerLensOrg/TransformerLens/main/transformer_lens/model_bridge/generalized_components/mlp.py).
+Current canonical names are `blocks.L.hook_out` for the residual stream after a block and
+`blocks.L.mlp.out.hook_in` for post-activation MLP values. Familiar aliases
+`blocks.L.hook_resid_post` and `blocks.L.mlp.hook_post` map to these locations. Verify the
+actual available names for each architecture: [block
+aliases](https://raw.githubusercontent.com/TransformerLensOrg/TransformerLens/main/transformer_lens/model_bridge/generalized_components/block.py),
+[MLP
+aliases](https://raw.githubusercontent.com/TransformerLensOrg/TransformerLens/main/transformer_lens/model_bridge/generalized_components/mlp.py).
 
 ```python
 names = ["blocks.0.hook_out", "blocks.0.mlp.out.hook_in"]
@@ -104,7 +156,9 @@ assert cache[names[0]].shape[:2] == tokens.shape
 # Residual: [batch, position, d_model]; MLP: [batch, position, d_mlp].
 ```
 
-A minimal clean-to-corrupt residual patch is below. Require an explicit token-position alignment; matching string length is insufficient. Predeclare the target-token logit difference or other outcome before inspecting the patch result.
+A minimal clean-to-corrupt residual patch is below. Require an explicit token-position
+alignment; matching string length is insufficient. Predeclare the target-token logit difference
+or other outcome before inspecting the patch result.
 
 ```python
 name, position = "blocks.0.hook_out", 1
@@ -124,11 +178,18 @@ with torch.no_grad():
     )
 ```
 
-Plot clean, corrupt and patched outcomes together, including no-op and position controls. Heatmaps show measured activation magnitudes; patch effects support a bounded causal claim about that intervention and outcome. Neither is a generic alignment score. A replay with another checkpoint is exploratory evidence, not the hidden state of the original Ollama run. Text explanations or exposed reasoning text must never be rendered as measured neural activations.
+Plot clean, corrupt and patched outcomes together, including no-op and position controls.
+Heatmaps show measured activation magnitudes; patch effects support a bounded causal claim about
+that intervention and outcome. Neither is a generic alignment score. A replay with another
+checkpoint is exploratory evidence, not the hidden state of the original Ollama run. Text
+explanations or exposed reasoning text must never be rendered as measured neural activations.
+
+</details>
 
 ## Separate Linux CPU environment
-
-Use a supported Linux machine under the operator's control; do not alter the experiment runner's environment or a remote host automatically. A conservative Python 3.11 environment avoids relying on Intel macOS Python 3.14 wheel availability:
+Use a supported Linux machine under the operator's control; do not alter the experiment runner's
+environment or a remote host automatically. A conservative Python 3.11 environment avoids
+relying on Intel macOS Python 3.14 wheel availability:
 
 ```sh
 python3.11 -m venv .venv-interp
@@ -141,4 +202,7 @@ HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 .venv-interp/bin/python path/to/smoke.py
 .venv-interp/bin/python -m pip freeze > interp-environment.lock.txt
 ```
 
-Select PyTorch builds using its [official installation instructions](https://pytorch.org/get-started/locally/). The commands above are a setup recipe, not an installation or successful test claim. Run the seeded random smoke first, then a pinned trained-checkpoint replay, and keep both artifact types visibly distinct in the dashboard.
+Select PyTorch builds using its [official installation
+instructions](https://pytorch.org/get-started/locally/). The commands above are a setup recipe,
+not an installation or successful test claim. Run the seeded random smoke first, then a pinned
+trained-checkpoint replay, and keep both artifact types visibly distinct in the dashboard.

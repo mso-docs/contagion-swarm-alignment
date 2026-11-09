@@ -1,6 +1,11 @@
 # Privacy checks before publication
 
-Raw research logs stay unchanged and ignored. Public exports are separate, scrubbed copies. Commit hooks inspect actual staged bytes, so a clean working copy cannot conceal unsafe staged content. GitHub Actions repeats the checks before Pages deployment.
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+
+Raw research logs stay unchanged and ignored. Public exports are separate, scrubbed copies.
+Commit hooks inspect actual staged bytes, so a clean working copy cannot conceal unsafe staged
+content. GitHub Actions repeats the checks before Pages deployment.
 
 ```mermaid
 flowchart LR
@@ -22,7 +27,6 @@ flowchart LR
 ```
 
 ## Run it
-
 ```bash
 # Quick read-only audit of current public data; no network or model calls.
 .venv/bin/python scripts/scan_privacy.py
@@ -34,10 +38,12 @@ flowchart LR
 .venv/bin/python scripts/scan_privacy.py --path results/studies/your-batch
 ```
 
-The scanner prints file counts and finding categories, never matched content. Any finding or scan error exits nonzero. The commit guard also names the candidate file unless its path contains a known private value. Raw audits can flag intentionally synthetic examples; keep those records private rather than changing scientific evidence to pass a publication scan.
+The scanner prints file counts and finding categories, never matched content. Any finding or
+scan error exits nonzero. The commit guard also names the candidate file unless its path
+contains a known private value. Raw audits can flag intentionally synthetic examples; keep those
+records private rather than changing scientific evidence to pass a publication scan.
 
 ## What blocks publication
-
 | Check | Scope |
 | --- | --- |
 | Gitleaks | Staged secrets; full candidate and Git-history scans in manual/CI checks |
@@ -48,17 +54,27 @@ The scanner prints file counts and finding categories, never matched content. An
 | Closed-schema validation | Only approved public fields; no arbitrary request metadata or private histories |
 | Build validation | Referenced public JSON is linted again before any artifact files are copied |
 
-Reserved example-domain email addresses are permitted in source/docs but still blocked in public JSON. Tests are not globally exempt. Scanners are read-only and fail closed; they do not silently remove findings or repair staged files.
+Reserved example-domain email addresses are permitted in source/docs but still blocked in public
+JSON. Tests are not globally exempt. Scanners are read-only and fail closed; they do not
+silently remove findings or repair staged files.
 
 ## Names, identifiers and extra strings
+Create an ignored repository-root file named `private.redact.txt`, with one private name,
+address fragment or other exact identifier per line. Comments beginning with `#` are ignored.
+Prefer specific strings of at least three characters. Do not add this file to Git.
 
-Create an ignored repository-root file named `private.redact.txt`, with one private name, address fragment or other exact identifier per line. Comments beginning with `#` are ignored. Prefer specific strings of at least three characters. Do not add this file to Git.
+The guard loads these strings and private dotenv values locally. The research exporter and
+watcher use the same private context when redacting new exports. Re-export an affected snapshot,
+then rerun the checks. Existing public rows preserved during a merge are checked too; unsafe
+existing content blocks publication rather than being silently trusted.
 
-The guard loads these strings and private dotenv values locally. The research exporter and watcher use the same private context when redacting new exports. Re-export an affected snapshot, then rerun the checks. Existing public rows preserved during a merge are checked too; unsafe existing content blocks publication rather than being silently trusted.
-
-For the legacy exporter, `--redact-file private.redact.txt` also supplies explicit extra redaction strings. `.env` files are parsed as data, never executed; no credentials or trace text are sent to a scanning service.
+For the legacy exporter, `--redact-file private.redact.txt` also supplies explicit extra
+redaction strings. `.env` files are parsed as data, never executed; no credentials or trace text
+are sent to a scanning service.
 
 ## Limits
+<details>
+<summary><strong>Implementation details and reference</strong></summary>
 
 ### Reviewed README screenshots
 
@@ -76,4 +92,11 @@ to improve a screenshot. Update the manifest only after review, then run
 CI verifies the approval hash and PNG structure; it does not independently
 repeat the visual/OCR review or prove that pixels contain no private information.
 
-Pattern checks cannot identify every personal name, postal address, encoded secret, image or sensitive fact. False positives are possible. Summary-only exports minimize exposure; opt-in traces still need review. A clean scan means no recognized pattern or configured private string was found, not proof of anonymity. If sensitive content already reached Git history, removing it from the latest snapshot is insufficient; rotate exposed credentials and assess history cleanup separately.
+Pattern checks cannot identify every personal name, postal address, encoded secret, image or
+sensitive fact. False positives are possible. Summary-only exports minimize exposure; opt-in
+traces still need review. A clean scan means no recognized pattern or configured private string
+was found, not proof of anonymity. If sensitive content already reached Git history, removing it
+from the latest snapshot is insufficient; rotate exposed credentials and assess history cleanup
+separately.
+
+</details>

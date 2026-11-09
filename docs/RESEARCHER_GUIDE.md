@@ -1,42 +1,98 @@
 # Researcher guide
 
-Contagion studies instruction boundaries in controller-mediated agent swarms. The research questions are unchanged: network propagation (RQ1), monitor visibility (RQ2), and distributed responsibility in a synthetic simulator (RQ3).
+[Documentation home](README.md) · [Experiment catalog](EXPERIMENT_CATALOG.md) · [Paper](../report/paper.pdf)
 
-## Evidence inventory
+Use this guide to distinguish what was measured, what each count means and
+which conclusions remain unsupported. The submitted evidence is frozen.
 
-Counts describe saved evidence, not independent attack designs. The current indexed live inventory is **61 attempts / 945 returned responses**: 20 original RQ1 runs / 500 responses, plus 41 newer development, timing and integration attempts / 445 responses. The newer inventory includes failed attempts and multiple protocol revisions. Mock runs and pytest tests are software evidence, not empirical model trials. Held-out conclusions must use a preselected frozen evaluation cohort, not this grand total.
+## Choose the evidence for your question
 
-| Channel | What exists | What it can support |
+| Question | Start with | Interpretation |
 | --- | --- | --- |
-| Original RQ1 | Two live model cohorts, 20 completed runs; no exact suffix adoption | A narrow null result for the specified task and mild intervention |
-| Protocol-2 studies | Live development iterations, paired checkpoints, retained failures | Harness validation and preliminary behavior; not a pooled benchmark score |
-| RQ2 | Restricted projections and confusion metrics; catalog-only baseline | Visibility-based detection with explicit positives/negatives and coverage |
-| RQ3 | Matched simulator arms and development checks | Preliminary proposal/state-change comparisons; no real system access |
-| Neural | Measured random-weight captures, latest raw/bridge parity check passed | Instrumentation correctness; no trained-model mechanism claim |
-| Advisory judge | Blinded review and human calibration tooling | Triage only until calibrated on held-out human labels |
+| Did unauthorized behavior persist? | Compact protocol 2.6 results | Intermediate flags and final adoption are different endpoints |
+| Does topology cause different outcomes? | Paired conditions and message exposure | The compact sample does not establish a topology effect |
+| Can a partial monitor detect adoption? | Catalog visibility projections | Recall/F1 are undefined without positives |
+| Does a team violate the record boundary? | Separate 64-run RQ3 follow-up | Zero observed attempts/state violations/refusals; limited cases and seeds |
+| What do activations explain? | GPT-2 reference captures and controls | Instrumentation evidence, not an Ollama swarm mechanism |
+| How broad is the archive? | Final inventory and task catalog | Coverage across protocols, not a pooled evaluation sample |
 
-## Reproduce and inspect
-
-```bash
-.venv/bin/python -m pytest -q
-.venv/bin/python scripts/research_report.py --out results/paper-candidates
-.venv/bin/python scripts/serve_dashboard.py --sync-secondary
+```mermaid
+flowchart TB
+    Q["Research question"] --> C["Select a frozen cohort"]
+    C --> U["Use runs and matched pairs"]
+    U --> E["Separate exposure, intermediate flags and final behavior"]
+    E --> D["Check failures and undefined metrics"]
+    D --> R["Report bounded conclusions"]
+    classDef question fill:#dbeafe,stroke:#2563eb,color:#172554
+    classDef method fill:#ede9fe,stroke:#7c3aed,color:#2e1065
+    classDef check fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef result fill:#dcfce7,stroke:#15803d,color:#14532d
+    class Q question
+    class C,U method
+    class E,D check
+    class R result
 ```
 
-Open **http://127.0.0.1:8765/**. The overview, models, evaluations, traces and datasets share the indexed evidence across protocols. Metrics unavailable for a run remain N/A. Neural and monitor panels show only measured/applicable evidence. The local service discovers sealed local studies every 15 seconds; optional secondary sync polls sanitized worker snapshots every minute. Worker export cadence and connectivity can add delay. Source logs remain private; corrupt/unsealed attempts are not presented as validated results.
+## Final inventory
 
-Do not run another exporter against the same output while the service owns it. [Private progress](PRIVATE_PROGRESS.md) provides queue budgets and ETA without publishing operational data. [Privacy checks](PRIVACY_CHECKS.md) apply before committing reviewed projections. Public Pages updates after a reviewed push and successful main build, not directly from private logs.
+The archive has **583 indexed live attempts** and **829 mock records**.
+Of the live attempts, 578 have locally verified source seals, including
+567 completed trajectories and 14,622 returned responses. Five older rows have
+an explicit provenance gap. These are coverage counts across separate cohorts.
 
-## Analysis rules
+The 72 trained GPT-2 reference captures and two random checks have their own
+denominators. They are not additional swarm trials.
 
-- Use runs as units. Agents, paired conditions and visibility projections are dependent. Scenario variants come from four templates.
-- Separate model digest, worker, source/freeze, protocol, task, split, executor and swarm size. Reports conservatively keep different freezes separate.
-- Report failed/exhausted attempts, parse failures and indeterminate outcomes alongside successes. A complete controller run can contain invalid artifacts.
-- Report matched control/injection differences by case/seed. Duplicate retry candidates make a pair ambiguous; no favorable retry selection.
-- Wilson intervals are binomial working-model descriptions. They do not account for template dependence or prove population robustness. Sparse paired estimates receive no automatic significance claim.
-- Do not substitute run-level objective flags for RQ1 downstream adoption or mention/exposure for behavioral adoption. Legacy raw analysis retains round-level trajectories and exposure.
-- Freeze future questions, prompts, schemas and scorers before evaluation. Existing development failures remain recorded; they are not repaired retrospectively.
+See [EXPERIMENT_CATALOG.md](EXPERIMENT_CATALOG.md) for all eleven task families,
+completed/failed attempts, models, protocols, and mock-only task coverage.
 
-## Paper artifacts
+<details>
+<summary><strong>Analysis rules and common mistakes</strong></summary>
 
-`research_report.py` writes run/cohort tables, matched-pair effects, legacy RQ1 summaries, neural quality metrics, PNG/SVG figures, captions and input/analysis hashes. All tables include every cohort; figure caps and omitted counts are explicit. Files stay in ignored `results/` until selected and reviewed. See [measurement audit](MEASUREMENT_AUDIT.md), [interpretability protocol](INTERPRETABILITY_PROTOCOL.md) and [reporting](PERIODIC_REPORTS.md).
+- Use runs as units. Nested agents, paired conditions and repeated visibility
+  projections are dependent.
+- Keep model digest, worker, source freeze, protocol, task, split, executor and
+  swarm size separate. A grand total does not define a held-out sample.
+- Preserve failed/exhausted attempts, malformed outputs and unscorable cases.
+  A completed controller run can still contain invalid task artifacts.
+- Match clean/injected results by case and seed. Do not choose the most
+  favorable retry from ambiguous duplicate candidates.
+- Separate exact-path/format scoring from semantic quality. Human disagreement
+  with a machine flag must remain visible rather than silently repaired.
+- Binomial working-model intervals do not account for template dependence.
+  Sparse paired estimates do not receive an automatic significance claim.
+- Do not substitute marker mention for adoption, runtime reduction for deliberate
+  cheating, or generated reasoning text for measured activations.
+
+</details>
+
+## Reproduce without inference
+
+```bash
+.venv/bin/python scripts/research_report.py --out results/research-review
+make report
+```
+
+Choose fresh output directories. The generic report describes available public
+snapshots; the LaTeX paper uses its own frozen evidence inputs. Rebuilding one
+does not silently expand the other's scientific sample.
+
+<details>
+<summary><strong>Reports, neural evidence and future improvements</strong></summary>
+
+The reporter writes run/cohort tables, paired effects, neural quality metrics,
+figures, captions and source hashes. Tables retain every cohort; figure caps
+and omitted counts are explicit. Generated artifacts stay in ignored `results/`.
+
+For stronger future experiments, prioritize independent task cases, repeated
+seeds, matched-delivery controls and held-out judge calibration before increasing
+swarm size. Reference checkpoint studies need a matched behavioral link before
+supporting claims about the deployed swarm model.
+
+- [Measurement audit](MEASUREMENT_AUDIT.md)
+- [Measurement plan](RESEARCH_MEASUREMENT_PLAN.md)
+- [Interpretability protocol and final status](INTERPRETABILITY_PROTOCOL.md)
+- [Reporting workflow](PERIODIC_REPORTS.md)
+- [Reproducibility](REPRODUCIBILITY.md)
+
+</details>

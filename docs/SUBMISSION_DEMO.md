@@ -1,6 +1,10 @@
 # Optional three-minute walkthrough
 
-Use a sanitized snapshot and the PDF, not private traces, credentials, SSH windows or review rationales. This outline is a recording aid; no video has been produced or submitted.
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+
+Use a sanitized snapshot and the PDF, not private traces, credentials, SSH windows or review
+rationales. This outline is a recording aid; no video has been produced or submitted.
 
 | Time | Visual | Point to explain |
 |---|---|---|
@@ -11,4 +15,7 @@ Use a sanitized snapshot and the PDF, not private traces, credentials, SSH windo
 | 2:15–2:40 | Separate long-task/safeguard status | Identify what completed by the snapshot cutoff and what is still collecting. Show a safeguard/utility result only if its gates pass. |
 | 2:40–3:00 | Reproducibility manifest and limitations | Show the fixed PDF/data/code hashes and offline figure regeneration. Reference-checkpoint neural captures do not reveal deployed swarm mechanisms. |
 
-End with the supported finding and open question: transient instruction-boundary failures can occur without final adoption; broader topology, monitoring and decomposition effects require further validated comparisons. Do not imply that a null result establishes safety or that an attractive plot establishes a mechanism.
+End with the supported finding and open question: transient instruction-boundary failures can
+occur without final adoption; broader topology, monitoring and decomposition effects require
+further validated comparisons. Do not imply that a null result establishes safety or that an
+attractive plot establishes a mechanism.

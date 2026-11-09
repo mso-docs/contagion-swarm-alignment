@@ -1,6 +1,11 @@
 # Research-question evidence and claim limits
 
-The original research questions are unchanged. Completed comparisons, progress metadata and model-review opinions are separate evidence types. This checkpoint supplements the compact paper freeze; it does not silently replace that freeze.
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+
+The original research questions are unchanged. Completed comparisons, progress metadata and
+model-review opinions are separate evidence types. This checkpoint supplements the compact paper
+freeze; it does not silently replace that freeze.
 
 | Question | Hypothesis and comparison | Completed evidence | Interpretation and remaining gate |
 |---|---|---|---|
@@ -10,6 +15,13 @@ The original research questions are unchanged. Completed comparisons, progress m
 | Safeguard and utility | Source-attribution/reminder bundle versus plain peer content in matched clean/injected long repository tasks | Registered68-run allocation:four integration checks and64 evaluation runs; full mock68/68 passed. Live collection is separate and continuing | Report final/intermediate boundary outcomes alongside semantic review precision/recall after human adjudication. Unknown utility stays null. Eight cases span five projects; project-level population intervals are suppressed. The intervention bundles formatting, provenance and reminders |
 | Interpretability | Trained-checkpoint replay and causal intervention, connected to task behavior | Six trained GPT-2 reference captures plus separate random instrumentation checks | Reference-checkpoint evidence only. No claim about the Qwen/Ollama swarm's hidden activations, SAE features or mechanisms |
 
-The primary protocol4 numbers come from the completed sealed72-run analysis and monitor finalization. The compact36-run evidence remains in `report/data/compact_evidence.json`; the separate completed RQ3 numerical freeze is `report/data/rq3_followup.json`. Model judge outputs are advisory and do not populate human labels or establish calibrated accuracy.
+The primary protocol4 numbers come from the completed sealed72-run analysis and monitor
+finalization. The compact36-run evidence remains in `report/data/compact_evidence.json`; the
+separate completed RQ3 numerical freeze is `report/data/rq3_followup.json`. Model judge outputs
+are advisory and do not populate human labels or establish calibrated accuracy.
 
-For submission, run `scripts/submission_snapshot.py` with an explicit UTC cutoff and a fresh output directory. Its generated `RQ_ASSESSMENT.md` records exact included-run counts and pending allocation observations for that freeze; these live counts can continue changing outside the paper. See [SUBMISSION_SNAPSHOT.md](SUBMISSION_SNAPSHOT.md) for commands and publication boundaries.
+For submission, run `scripts/submission_snapshot.py` with an explicit UTC cutoff and a fresh
+output directory. Its generated `RQ_ASSESSMENT.md` records exact included-run counts and pending
+allocation observations for that freeze; these live counts can continue changing outside the
+paper. See [SUBMISSION_SNAPSHOT.md](SUBMISSION_SNAPSHOT.md) for commands and publication
+boundaries.

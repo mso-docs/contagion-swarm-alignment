@@ -1,5 +1,8 @@
 # Protocol5.1 question-coverage continuation
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+
 The stopped5.0 live study completed nine development runs. A subsequent response
 contained four claims where twelve were required. Its nine completed runs, failed
 attempt,137physical calls and2,009.734413seconds remain unchanged and auditable.
@@ -31,6 +34,8 @@ not change held-out case selection or use held-out behavioral outcomes to select
 tasks. The first-case preflight therefore exercises the actual prior failure task.
 
 ## Original allowance is shared, not reset
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
 Preparation reads and verifies the stopped5.0 state, plan and sealed attempts.
 The prior137calls debit the original4,950-call ceiling, leaving **4,813 physical
@@ -75,3 +80,5 @@ controller overhead. At that rate the new4,500-call matrix would take roughly
 18.3hours. This is an initial rough estimate, not a promise: answering every
 question may increase output time. Update the estimate from the new registered
 preflight and subsequent complete runs; cooling, contention and failures add time.
+
+</details>

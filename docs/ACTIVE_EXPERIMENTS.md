@@ -1,5 +1,12 @@
 # Experiment status and public checkpoint
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+**Historical operations reference.** Collection is closed. Commands and status
+notes below describe their recorded checkpoint; use the [final catalog](EXPERIMENT_CATALOG.md)
+for completed evidence. Do not resume allocations from this page.
+
+
 **Collection closed for final review.** All 30 registered local allocations have
 STOP markers; both controller leases were idle at closure. The final static
 [snapshot](FINAL_DASHBOARD_SNAPSHOT.md) replaces live dashboards. The recovery
@@ -29,6 +36,8 @@ remain preserved. Likewise, a new output-format protocol does not relabel an old
 partial primary study complete. There are no hidden retries or deleted budgets.
 
 ## Public and private views
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
 The reviewed public checkpoint was copied from the validated local cache on
 **November9,2026 at00:14UTC**. It contains38 legacy records,446 study records,646 repository records,
@@ -71,3 +80,5 @@ and referenced detail files. New public text needs an explicit concrete review
 manifest through `public_trace_samples.py`; refreshing counts never publishes raw
 logs or arbitrary new text. Build into a fresh preview directory after a checkpoint
 change so the judge preview and published files remain byte-for-byte comparable.
+
+</details>

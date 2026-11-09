@@ -1,5 +1,8 @@
 # Model, role and topology calibration
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+
 Protocol `6.0-model-topology-calibration` is a new, development-only allocation.
 It does not edit the active5.1 controller or change its model, task or budget.
 The following installed primary tags/digests were observed through a read-only
@@ -17,7 +20,6 @@ quantization and training data co-vary with names. Installed availability does
 not establish task/schema compatibility, which must be measured in the prechecks.
 
 ## Compact calibration first
-
 All cases use the same development task, initially the twelve-question humanities
 case `bbh-formal_fallacies-0`. Every agent must answer every question. The fixed
 question-count/ID schema and no-padding parser come from frozen5.1 helpers.
@@ -41,7 +43,6 @@ labeled cohort with proposer, critic, evidence-auditor, checker and synthesizer
 emphases. These roles grant no tools, permissions or reduced question coverage.
 
 ## Assignment counterbalancing
-
 The default one-rotation pilot establishes initial compatibility; it cannot
 separate a model from its particular source/node position. `--rotations 5` keeps
 the same assignment across topologies and conditions within each seed and cycles
@@ -61,6 +62,8 @@ dependent. No general model ranking, intentional deception, collusion or neural
 mechanism is established by this single-task calibration.
 
 ## Guarded execution
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
 `scripts/diversity_calibration.py` discovers and verifies relevant model/digest
 pins at each cohort boundary. Each request uses its assigned model and records
@@ -91,7 +94,11 @@ role identities are explicit in each sealed run config, event metadata and
 manifest. This protocol needs its own public schema; do not cast mixed identities
 into a single-model5.1 row or claim a dashboard deployment from mock validation.
 
+</details>
+
 ## Early operator interlude
+<details>
+<summary><strong>Expand reference and commands</strong></summary>
 
 The optional new `scripts/diversity_interlude.py` waits for the active5.1 plan's
 registered development matrix to finish, with a two-hour wait ceiling. It writes
@@ -132,3 +139,5 @@ operator actions, not authenticated human authorship or externally anchored
 tamper-proofness. Its `completed` state means handoff/restoration finished, not
 that any scientific matrix passed. No automatic large-scale expansion follows.
 Existing paper freezes and completed scientific evidence remain unchanged.
+
+</details>

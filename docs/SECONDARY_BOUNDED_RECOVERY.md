@@ -1,5 +1,14 @@
 # Secondary bounded-report recovery
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+**Historical operations reference.** Collection is closed. Commands and status
+notes below describe their recorded checkpoint; use the [final catalog](EXPERIMENT_CATALOG.md)
+for completed evidence. Do not resume allocations from this page.
+
+<details>
+<summary><strong>Full reference</strong></summary>
+
 **Current operational continuation:** after three3.8completions, a separate
 settings-parser failure required isolated SSH configuration. Active collection is
 now `secondary-isolated-recovery-20261108`, with the same scientific protocol3.8.
@@ -65,3 +74,5 @@ disclose the selected recovery subset. No compliance, correctness, intentional
 dishonesty, official benchmark score or neural mechanism follows merely from a
 successful schema/operational preflight. Public exports require the new closed
 protocol schema; raw histories remain private.
+
+</details>

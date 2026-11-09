@@ -1,5 +1,14 @@
 # Primary output-budget amendment
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+**Historical operations reference.** Collection is closed. Commands and status
+notes below describe their recorded checkpoint; use the [final catalog](EXPERIMENT_CATALOG.md)
+for completed evidence. Do not resume allocations from this page.
+
+<details>
+<summary><strong>Full reference</strong></summary>
+
 The original protocol3.3 allocation preserved42completed runs and one failed
 transport attempt. Its first explicit transport continuation completed one further
 75-response run, then stopped after10responses in the next run: the final response
@@ -61,3 +70,5 @@ resume/retry decisions append private receipts; unsealed or corrupt attempts blo
 resumption. No model networking, tools, upstream execution or service changes are
 introduced. Public export requires a closed protocol3.6 schema and separate cohort
 labels; raw histories remain private.
+
+</details>

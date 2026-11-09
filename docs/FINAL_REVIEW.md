@@ -1,5 +1,8 @@
 # Final author review
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+
 Start with [the report](../report/paper.pdf), then the
 [experiment catalog](EXPERIMENT_CATALOG.md) and the
 [frozen dashboard preview](http://127.0.0.1:8766/).
@@ -14,7 +17,6 @@ The latest full software suite passed 524 tests. The inventory retains its
 earlier 499-test validation observation; neither number counts model experiments.
 
 ## Evidence and interpretation
-
 - The compact study remains 36 completed runs/900 responses. Seventeen strict
   proposal flags, final adoption, task correctness and real execution are
   different endpoints. No proposed patch touched host files.
@@ -38,7 +40,6 @@ earlier 499-test validation observation; neither number counts model experiments
   a general alignment probability.
 
 ## Snapshot and privacy
-
 Collection is closed; all 30 registered local allocations have STOP markers and
 the controller leases were idle at closure. Raw logs and original states were
 preserved. The dashboard cutoff is 2026-11-09T02:59:37Z.
@@ -61,7 +62,6 @@ oracle logs remain private. The author permits their username, Git name and
 email. Pattern checks and hash bindings are controls, not an anonymity guarantee.
 
 ## Final decisions
-
 Read the claims, examples, captions and references in the exact PDF you intend
 to upload. Decide whether to retain the requested typography or use the separately
 available official-typeface rendering. Confirm the submission form's authors,

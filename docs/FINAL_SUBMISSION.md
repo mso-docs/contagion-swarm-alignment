@@ -1,5 +1,8 @@
 # Submission handoff
 
+[Documentation home](README.md) · [Developer guide](DEVELOPMENT.md)
+
+
 The report is the submission. Finishing pending multi-day queues is not required,
 and pending runs must not be counted as findings. Keep the paper's evidence cutoff
 fixed while the dashboard displays later, separately labeled measurements.
