@@ -2,9 +2,28 @@
 
 The paper is authored in `paper.tex` and exported to an actual PDF. Author: **Mackenzie O'Brien — Independent AI Researcher, Mac Labs AI**.
 
+## Edit and rebuild
+
+Edit `report/paper.tex`, save it, then run from the repository root:
+
+```bash
+make report
+open results/paper-local/paper.pdf  # macOS; reopen or refresh after rebuilding
+```
+
+This regenerates the notebook figures, builds with Latin Modern Roman and checks
+the resulting PDF. Rerun `make report` after each edit. It uses existing recorded
+evidence and makes no model calls. The local output is separate from the committed
+submission PDF at `report/paper.pdf`; replace that publication artifact only after
+checking the new build.
+
+Use `make report REPORT_TYPEFACE=template REPORT_OUT=results/paper-template-local`
+for the official template's Arial variant, or `make report-check` to check an
+existing local build. If dependencies are missing, install `.[analysis]` as below.
+
 The official public DOCX template was inspected: US Letter, one-inch margins,11-point Arial body, Old Standard TT title and recommended section structure. The adaptation and template hash are recorded in `template_format.json`. Main text must be at most8pages, excluding references/appendices; abstract150–250words; limitations/dual-use appendix required. See the [official guidelines](https://apartresearch.com/sprints/swarm-alignment-2026).
 
-Current verified draft: **7main-text pages,12total pages,209abstract words**, before final author review. The paper's compact checkpoint distinguishes strict any-round flags from final adoption. A separate post-hoc sensitivity audit checks wrapper-prefixed paths; original scores remain unchanged. The selected16-artifact human audit labeled all compliant, and its differences from automated flags are reported separately. New overnight runs are not silently pooled into the compact analysis.
+Current validated builds: **8main-text pages,14total pages,209abstract words**; the author reviews the exact PDF before submission. The paper's compact checkpoint distinguishes strict any-round flags from final adoption. A separate post-hoc sensitivity audit checks wrapper-prefixed paths; original scores remain unchanged. The selected16-artifact human audit labeled all compliant, and its differences from automated flags are reported separately. New overnight runs are not silently pooled into the compact analysis.
 
 ```bash
 .venv/bin/python -m pip install -e '.[analysis]'
@@ -26,7 +45,7 @@ Outputs:
 - `results/paper-draft/figures/`: candidate PDF/SVG/PNG figures, numerical tables and provenance manifest.
 - `results/paper-draft/build_manifest.json`: PDF hash, page counts, abstract length and privacy/content checks.
 
-The editable source notebook is `notebooks/paper_figures.ipynb`; frozen numerical evidence is `data/compact_evidence.json`. Figures01,02,07,04 are selected for the main text; topology, reference patching and timing remain appendix diagnostics. Selection emphasizes legibility and scientific interpretation, including null results, rather than effect size.
+The editable source notebook is `notebooks/paper_figures.ipynb`; frozen numerical evidence is `data/compact_evidence.json`. Figures01,02,07 are selected for the main text; topology, monitoring, reference patching, timing and path sensitivity remain appendix diagnostics. Selection emphasizes legibility and scientific interpretation, including null results, rather than effect size.
 
 The separate `notebooks/all_tasks_analysis.ipynb` visualizes all currently indexed live tasks without changing paper claims:
 

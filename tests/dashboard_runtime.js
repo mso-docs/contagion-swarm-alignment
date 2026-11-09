@@ -44,7 +44,9 @@ async function dashboardSmoke(source, data, html, research={schema_version:"1.0"
     if(!ids.get('research-studies').children[0]?.children[1]?.children[2]?.textContent.includes('new-overnight-arrival'))throw Error('Latest research rows are ordered by opaque IDs instead of time');
     if(!ids.get('run-select').children[0]?.textContent.includes('new-overnight-arrival'))throw Error('Newest trace run is not discoverable at the top');
     if(!ids.get('runs-kpi').textContent.endsWith('/ '+(before+221)))throw Error('Overview did not update automatically');
-    const mockStudy={...baseStudy,id:'ffffffffffffffff',backend:'mock',model:'mock-only-arrival',case_id:'mock-only-case',detail_file:null};
+    // Keep this synthetic arrival inside the latest-200 view even when the
+    // checked-in snapshot contains hundreds of older mock validation runs.
+    const mockStudy={...baseStudy,id:'ffffffffffffffff',backend:'mock',model:'mock-only-arrival',case_id:'mock-only-case',started_utc:'2100-01-01T00:00:00+00:00',detail_file:null};
     research.studies=[...originalStudies,mockStudy];await api.refreshSnapshots();
     const textOf=node=>(node?.textContent??'')+(node?.children??[]).map(textOf).join('');
     if(textOf(ids.get('research-studies')).includes('mock-only-case'))throw Error('Mocks crowd live research by default');

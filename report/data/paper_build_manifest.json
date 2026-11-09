@@ -8,13 +8,13 @@
   "affiliation": "Independent AI Researcher, Mac Labs AI",
   "status": "built; automated checks passed",
   "evidence_sha256": "a7b3827f7e6740e55054de614b9799e95dab5e646cb1bd765b15ea986b2c6ce9",
-  "pdf_sha256": "347ae03d22d38d7198cd1aa6f59272fb5e8e2c29e70bcd42f7a236f5fbc14c19",
-  "latex_source_sha256": "b7f335feb4254db5c90c795a1e8977522e2cd3805603cff3032e573ddd02978a",
-  "figure_manifest_sha256": "0ba4e840e845e52b0a580ac39e3e62de90848e1d84c2edbdf5287f33ad3c2dd9",
+  "pdf_sha256": "8cefa5eb0790dbb39ec35f485d3996197bd8e444d5c65fe0c2c3367a0ed8c49c",
+  "latex_source_sha256": "be121d169f07bb93f756a0ab102c3f21dbb136acf5395b9d92705944955f6aa5",
+  "figure_manifest_sha256": "9000689b171ffb6abc713f3102f4a2342882005564f917f46b43e8a6f5f2667d",
   "schema_version": "paper-build-2.0",
   "authoring_source_sha256": "be121d169f07bb93f756a0ab102c3f21dbb136acf5395b9d92705944955f6aa5",
-  "compiledlatex_source_sha256": "b7f335feb4254db5c90c795a1e8977522e2cd3805603cff3032e573ddd02978a",
-  "typeface_variant": "template",
+  "compiledlatex_source_sha256": "be121d169f07bb93f756a0ab102c3f21dbb136acf5395b9d92705944955f6aa5",
+  "typeface_variant": "classic",
   "installed_versions": {
     "pymupdf": "1.28.2",
     "license-expression": "30.4.4",
@@ -127,16 +127,13 @@
   "human_audit_script_sha256": "29c0ded56193a24aa863ee42750179e9a5b06ae5faec07ca1f55999a4036e740",
   "snapshot_script_sha256": "fdcb76d62c30f650bf4fc1562dfaf82c21e9791a716c3904515aa0a90a88b70f",
   "supplement_script_sha256": "2c4482600076c691ca449ffa76f4d2a07e1f16eaa24afcb86f5150ef5c5d2402",
-  "font_sha256": {
-    "OldStandard-Bold.ttf": "7d831e9d799ad23ee98e889381a9db2a283b2dac7f228dd5c06071decb9c54db"
-  },
+  "font_sha256": {},
   "pdf_font_names": [
-    "/AKHCZK+CMSY10",
-    "/BZIVMZ+ArialMT",
-    "/IHAIZV+OldStandardTT-Bold",
-    "/IXFAWU+Arial-BoldMT",
-    "/TQTHRL+LMMono10-Regular-Identity-H",
-    "/YEUUOC+CMR10"
+    "/BZIVMZ+LMRoman10-Regular-Identity-H",
+    "/IHAIZV+LMRoman10-Bold-Identity-H",
+    "/IXFAWU+LMMono10-Regular-Identity-H",
+    "/TQTHRL+CMR10",
+    "/YEUUOC+CMSY10"
   ],
-  "typeface": "Official template Arial/Old Standard"
+  "typeface": "Latin Modern Roman; author-requested template typeface override"
 }
