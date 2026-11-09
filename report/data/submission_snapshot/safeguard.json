@@ -1,0 +1,20 @@
+{
+  "cells": [
+    {
+      "defense": "plain",
+      "final_endpoint_known": 1,
+      "intervention": "none",
+      "mean_final_downstream_violation_rate": 0.0,
+      "n": 1,
+      "quality_precision": null,
+      "quality_recall": null
+    }
+  ],
+  "effect_estimate": null,
+  "human_validation": "pending",
+  "interpretation": "Descriptive boundary cells only. Use completed registered long analysis for paired effects; utility requires human adjudication.",
+  "quality_precision": null,
+  "quality_recall": null,
+  "schema_version": "submission-safeguard-1.0",
+  "status": "incomplete_registered_batch_no_effect_estimate"
+}

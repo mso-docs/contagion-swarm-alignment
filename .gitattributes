@@ -1,0 +1,4 @@
+# Collapse generated evidence in GitHub review; privacy/schema gates still scan it.
+dashboard/data/** linguist-generated=true
+report/data/*.json linguist-generated=true
+report/paper.pdf binary

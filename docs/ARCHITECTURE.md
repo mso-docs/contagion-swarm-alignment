@@ -1,13 +1,53 @@
 # Architecture
 
-`CLI → immutable validated config → controller → isolated Agent histories → inference adapter → JSON validation → artifact scoring + next-round graph router → append-only oracle JSONL → checksum-validated offline analysis`
+The controller owns scheduling, routing and simulated state. Model output is untrusted data. Agents have independent histories; inference calls share a configured backend and run serially.
 
-The controller is the sole scheduler and router. Stable sorted IDs and serial inference eliminate within-round completion order effects. Each agent sees its own system/task/assistant history and controller-delivered neighbor messages only. Inbox metadata is assigned by the controller. Graph adjacency is immutable during a run. State is recreated per run.
+```mermaid
+flowchart TD
+    P["Config + scenario + immutable freeze"] --> C["Bounded round controller"]
+    C --> H["Isolated agent histories"]
+    H --> I["Inference adapter"]
+    I --> J["Strict artifact validation"]
+    J --> S["Task scorer / simulated action parser"]
+    J --> R["Topology router: next-round delivery"]
+    R --> H
+    C --> O["Append-only oracle events"]
+    S --> O
+    O --> K["Sealed checksums"]
+    K --> M["Allowlisted monitor projections"]
+    K --> X["Public export + redaction"]
+    X --> D["Static dashboard / reports"]
+    classDef config fill:#dbeafe,stroke:#2563eb,color:#172554
+    classDef execution fill:#ede9fe,stroke:#7c3aed,color:#2e1065
+    classDef evidence fill:#dcfce7,stroke:#15803d,color:#14532d
+    classDef boundary fill:#fef3c7,stroke:#d97706,color:#78350f
+    class P config
+    class C,H,I,R execution
+    class O,K,D evidence
+    class J,S,M,X boundary
+```
 
-`config.py` validates the protocol; `models.py` defines structured artifacts and outcomes; `agents.py` contains versioned task data/prompts; `topology.py` defines undirected graphs; `interventions.py` mutates only outbound text; `inference.py` provides mock/native/OpenAI-compatible adapters; `controller.py` runs bounded phases; `events.py` records provenance; `storage.py` handles attempts and integrity; `scoring.py` labels artifacts; `analysis.py` rebuilds metrics/figures; `cli.py` exposes commands.
+## Where to change things
 
-Only inference.py uses HTTP, to the configured endpoint, with redirects disabled. Agents never see or select endpoints. Retries occur inside a serial semaphore and generate controller audit events. Configured call budget applies to physical HTTP chat attempts including retries. The outer wall-clock deadline includes calls and backoff. Discovery is bounded separately. Parsed artifact/message strings are at most 4,000 characters each; requested output is capped by the configured server token parameter. Live support is not guaranteed by this request alone.
+| Area | Modules |
+| --- | --- |
+| Original protocol-1 runs | `config.py`, `agents.py`, `controller.py`, `scoring.py` |
+| Protocol-2 scenarios and studies | `scenarios.py`, `tasks.py`, `studies.py`, `research.py` |
+| Inference and budgets | `inference.py`, `models.py` |
+| Routing and provenance | `topology.py`, `interventions.py`, `events.py`, `storage.py` |
+| Restricted monitoring and advisory review | `monitor.py`, `review.py` |
+| Suite queue and hardware pauses | `suite.py`, `resources.py` |
+| Public schemas and reports | `publication.py`, `research_publication.py`, `reporting.py` |
+| Dashboard | `dashboard/app.js` (domain adapter), `dashboard/widgets.js` (numeric charts) |
 
-Source events include invocation messages, model raw responses, parse failures, separate artifacts, generated messages, intervention originals and deliveries. They are oracle data. Manifest/checksum sealing happens after run termination; a process killed before sealing leaves a non-resumable attempt. Exclusive directory creation prevents overwrites. One writer per output tree is the supported operating mode. No claim of malicious tamper resistance.
+## Invariants
 
-P3 will add a separate explicit allowlist projection; it must never pass full event dictionaries into a monitor. P4 is confined to a ToyRecordStore simulator; no OS or real tool execution will be introduced.
+- Stable agent order; undirected graph edges; inboxes contain previous-round messages only. Each run starts with fresh histories and simulator state.
+- Agents cannot select endpoints, execute tools or modify controller settings. Operator SSH helpers are separate administration scripts.
+- Physical inference attempts, retries, rounds, output tokens and wall time are bounded. Requested backend settings do not prove deterministic model generation.
+- Raw events contain oracle information. RQ2 sees an explicit restricted projection; hidden annotations and future events never enter monitor inputs.
+- Sealed runs are checked before analysis. Failed attempts remain preserved; a killed, unsealed attempt is not a completed trial. One writer per output tree.
+- Source/prompt/schema changes require a fresh freeze. Keep protocols and model digests separate in analysis. Checksums detect accidental alteration, not externally anchored tamper resistance.
+- Public summaries and optional scrubbed details cross a separate privacy boundary. Private histories, endpoints, credentials and full tensors stay outside the static site.
+
+See [experiment flow](../README.md#experiment-flow), [live publication](LIVE_DASHBOARD.md), and [component portability](DASHBOARD_COMPONENTS.md).

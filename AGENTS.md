@@ -13,3 +13,22 @@ Use Python 3.11+, src layout, pytest. Run `.venv/bin/python -m pytest -q` and a 
 The user has explicitly authorized a local research dashboard and GitHub Pages workflow; this supersedes the original no-frontend scope for visualization only. Keep agents tool-free. Treat public snapshot export as a distinct privacy boundary: closed allowlisted schemas, scrub free text and known environment secrets, raw logs unchanged/ignored, summary-only default, opt-in reviewed traces. Do not imply redaction guarantees perfect anonymity. Never publish raw .env, configs containing endpoints, or request histories. Do not label narrow task compliance as a general alignment score or fabricate activation/causal plots from text. Actual pushes/deployment are left to the user unless explicitly requested.
 
 The user has additionally authorized project-local worker setup on servers named in private PRIMARY_SERVER_ID/SECONDARY_SERVER_ID and PROJECT_DIR fields. Operator SSH administration is separate from simulated model agents. Use existing credentials/host trust, avoid printing target values, and create isolated release directories/environments. A secondary CPU neural worker is installed and has captured an actual random smoke measurement. Primary is shared with another operator and key-only SSH preflight now succeeds; do not restart/tune shared Ollama, change drivers/firewalls/credentials or load-test it without an agreed allocation. Variable swarm sizes require protocol2.1; original five-agent cohorts remain separate.
+
+## Required commit and PR writing skill
+
+For every request to commit, draft/create/update a PR, or write their messages, read and apply [commit-pr-writing](skills/commit-pr-writing/SKILL.md) before submitting metadata. This requirement persists as the draft PR grows. Honor `.github/pull_request_template.md`; keep validation and research claims accurate. Repository hooks validate commit subjects, and CI validates basic PR structure; these checks supplement the skill's substantive review.
+
+The user released primary for experimentation on November8,2026. Primary uses a separate loopback tunnel and exclusive primary controller lease; secondary keeps its existing queue/lease. Begin new primary allocations with bounded prechecks and preserve worker/model/source cohorts. This release authorizes existing Ollama inference, not service, driver, firewall or credential changes. Protocol4 follow-ups are separate from the frozen protocol2.6 campaign.
+
+The later November8 operator instruction supersedes that allocation: primary is reserved for another operator. Keep all primary STOP markers and do not resume primary inference without a new explicit release. Completed secondary recovery and reference-checkpoint captures are preserved; pending primary allocations are not completed experiments. Submission preparation does not require exhausting these queues.
+
+The author has requested public, redacted trace views and an identical static judge preview. Export bounded allowlisted copies, bind reviewed samples to their exact content hashes, and keep raw oracle logs, requests, environment values and operational telemetry private. The public preview must serve the exact Pages artifact without private API dependencies. Publication readiness does not authorize changing repository visibility, merging the draft PR or submitting to the hackathon.
+
+Final collection is closed. Preserve every existing allocation STOP marker and
+the submission manifest at dashboard/data/submission-freeze.json. Do not resume
+collectors, mutate frozen dashboard assets or silently enlarge the paper's
+analysis sample. Future experiments require an explicitly authorized separate
+allocation/checkpoint; do not remove the final freeze to bypass publication
+guards. Both local preview ports serve the same static artifact. Report edits
+may rebuild offline against the preserved evidence and still require author
+review before replacing the submitted PDF.

@@ -8,6 +8,7 @@ class Artifact(BaseModel):
 
 
 class SamplingConfig(BaseModel):
+    response_schema: dict | None = None
     thinking: str = "default"
     model: str
     seed: int

@@ -274,3 +274,95 @@ def test_scaling_mock_call_count_isolation_and_public_cohort(tmp_path):
     assert all(r.protocol=='2.1' and r.agent_count==10 for r in public.studies)
     with pytest.raises(ValueError):StudyPlan(protocol_version='2.1',agent_count=128,families=['catalog'],topologies=['complete'],
                                            rounds=2,max_model_calls=256,max_total_model_calls=512)
+
+
+def test_v2_monitor_rescores_catalog_and_excludes_other_tasks(tmp_path):
+    plan=StudyPlan(families=['catalog','patch'],model='mock-v1',rounds=2,max_total_model_calls=40)
+    execute_study(tmp_path,plan)
+    result=evaluate_visibility(tmp_path/'raw',tmp_path/'monitor')
+    assert result['skipped_non_catalog_runs']==2
+    assert len(result['observations'])==16
+    assert {x['truth'] for x in result['observations']}=={True,False}
+    assert all(x['model']=='mock-v1' and x['protocol']=='2.0' for x in result['summary'])
+    for path in (tmp_path/'monitor').glob('*.view.json'):
+        assert 'metadata' not in json.dumps(json.loads(path.read_text()))
+
+
+def test_public_study_detail_is_bounded_and_redacted(tmp_path):
+    from contagion.research_publication import make_research_snapshot,validate_study_detail
+    plan=StudyPlan(families=['catalog'],model='mock-v1',rounds=2,max_total_model_calls=20)
+    execute_study(tmp_path,plan)
+    public=make_research_snapshot(study_sources=[tmp_path/'raw'],detail_directory=tmp_path/'details',include_text=True,env={})
+    assert all(r.detail_file for r in public.studies)
+    for path in (tmp_path/'details').glob('*.json'):
+        detail=validate_study_detail(path,env={})
+        assert detail.task_instruction and detail.task_input and detail.traces
+        assert len(detail.traces)+detail.omitted_events==detail.eligible_events
+        assert all(t.event_type!='inference_requested' for t in detail.traces)
+
+
+def test_protocol22_retains_invalid_outputs_without_runner_failure(tmp_path):
+    from contagion.models import ModelResponse
+    class Provider:
+        identity={'backend':'ollama','model':'fixture'}
+        async def chat(self,messages,config):
+            return ModelResponse(content=json.dumps({'answer':{},'audit_marker':'violet lantern','message':'untrusted','refusal':False}))
+    plan=StudyPlan(protocol_version='2.2',families=['catalog'],model='fixture',rounds=1,max_total_model_calls=10)
+    freeze=tmp_path/'freeze.json';freeze_plan(plan,freeze)
+    asyncio.run(run_plan(plan,Provider(),tmp_path/'raw',freeze))
+    rows=summarize_study(tmp_path/'raw')
+    assert all(r['manifest']['status']=='completed' and r['manifest']['parse_failures']==5 for r in rows)
+    assert all(r['outcome']['unscorable_final_agents']==5 and r['outcome']['task_success_rate']==0 for r in rows)
+    from contagion.research_publication import make_research_snapshot
+    exported=make_research_snapshot(study_sources=[tmp_path/'raw'],env={})
+    assert all(r.violation_status=='indeterminate' and not r.violation for r in exported.studies)
+    with pytest.raises(ValueError,match='No matching completed catalog'):
+        evaluate_visibility(tmp_path/'raw',tmp_path/'monitor')
+
+
+def test_openai_compatible_judge_uses_backend_default_thinking(tmp_path):
+    from contagion.models import ModelResponse
+    class Reviewer:
+        identity={'backend':'openai'}
+        async def chat(self,messages,config):
+            assert config.thinking=='default'
+            return ModelResponse(content=json.dumps({'behavior':'ambiguous','evidence_event_ids':[],
+                'rubric_reason':'Needs human review','confidence':0.2,'needs_human_review':True}))
+    asyncio.run(review_batch(FIXTURE,tmp_path/'review',Reviewer(),model='fixture',max_calls=1))
+    rows=json.loads((tmp_path/'review/reviews.json').read_text())
+    assert rows[0]['error'] is None
+
+
+def test_openrouter_id_discovery_uses_api_id_even_when_display_name_present(monkeypatch,tmp_path):
+    from types import SimpleNamespace
+    from contagion import research
+    class Provider:
+        def __init__(self,*args,**kwargs):self.identity={'backend':'openai'}
+        async def discover(self):return [{'id':'vendor/model','name':'Friendly display name'}]
+        async def close(self):pass
+    observed=[]
+    async def review(*args,**kwargs):observed.append(args[3]);return {'reviewed':0}
+    monkeypatch.setattr(research,'HTTPProvider',Provider)
+    monkeypatch.setattr(research,'review_batch',review)
+    monkeypatch.setattr(research,'environment',lambda path:{'CONTAGION_BASE_URL':'http://localhost:1234/v1'})
+    args=SimpleNamespace(command='review',env_file=None,model='vendor/model',provider='openai',expected_digest=None,
+                         source=tmp_path,out=tmp_path/'out',max_calls=1,seed=404)
+    asyncio.run(research.main_async(args))
+    assert observed==['vendor/model']
+
+
+def test_public_study_metrics_are_derived_from_sealed_logs(tmp_path):
+    from contagion.research_publication import make_research_snapshot
+    plan=StudyPlan(families=['catalog'],model='mock-v1',max_total_model_calls=50)
+    execute_study(tmp_path,plan)
+    snapshot=make_research_snapshot([tmp_path/'raw'],env={})
+    control=next(r for r in snapshot.studies if r.intervention=='none')
+    injected=next(r for r in snapshot.studies if r.intervention=='benign_override')
+    assert control.calls==25 and control.attempted_calls==25 and control.http_attempts==0
+    assert control.started_utc and control.source_hash and control.rounds==5
+    assert control.generated_tokens is None  # Never invent token telemetry for mock inference.
+    assert control.median_call_seconds is not None
+    assert len(control.agents)==5 and all(a.task_success for a in control.agents)
+    assert sum(a.messages_received for a in control.agents)==control.messages_delivered
+    assert control.downstream_adoption_rate==0 and injected.downstream_adoption_rate==1
+    assert control.downstream_clean_rate==1

@@ -1,6 +1,6 @@
 # TransformerLens 4 integration notes
 
-These are primary-source API checks, not evidence that this repository has run TransformerLens. The current laptop environment has not executed these snippets. Pin the exact tested TransformerLens release and its dependency versions in the separate interpretability environment before collecting research data.
+The secondary Linux CPU worker has executed the offline random capture with TransformerLens 4.3.0 and verified raw/bridge logit parity. The Intel macOS laptop has not run TransformerLens; trained-checkpoint replay remains pending. The snippets below are API notes, not trained-model results. Follow [the interpretability protocol](INTERPRETABILITY_PROTOCOL.md) and pin exact worker dependencies before collecting research data.
 
 ## Supported entry points
 

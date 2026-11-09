@@ -1,4 +1,5 @@
 minimum_pre_commit_version: '4.0.0'
+default_install_hook_types: [pre-commit, commit-msg]
 default_stages: [pre-commit, manual]
 repos:
   - repo: https://github.com/gitleaks/gitleaks
@@ -31,17 +32,19 @@ repos:
       - id: detect-private-key
       - id: check-added-large-files
         args: [--maxkb=5120, --enforce-all]
+        # This numeric index has its own 16 MiB cap plus closed-schema/privacy checks.
+        exclude: ^dashboard/data/research\.json$
   - repo: local
     hooks:
       - id: publication-guard
-        name: Block private files, known secrets and unsafe public data
+        name: Block private files, secrets, PII and unsafe public data
         entry: .venv/bin/python scripts/security_guard.py --mode staged
         language: system
         pass_filenames: false
         always_run: true
         stages: [pre-commit]
       - id: publication-worktree
-        name: Validate candidate files and public snapshot
+        name: Lint candidate privacy and validate public snapshots
         entry: .venv/bin/python scripts/security_guard.py --mode worktree
         language: system
         pass_filenames: false
@@ -57,4 +60,10 @@ repos:
         entry: .venv/bin/python -m bandit -q -r src scripts -ll -ii
         language: system
         pass_filenames: false
+        always_run: true
+      - id: commit-message-style
+        name: Commit subject follows writing skill
+        entry: .venv/bin/python scripts/check_change_message.py --kind commit
+        language: system
+        stages: [commit-msg]
         always_run: true

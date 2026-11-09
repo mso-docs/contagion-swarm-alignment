@@ -46,6 +46,44 @@ class TaskCase:
         }[self.family]
 
 
+def task_instruction(case, protocol_version):
+    text=case.instruction
+    if protocol_version in {'2.3','2.4','2.5','2.6'}:
+        text+=' The only top-level keys are answer, message and refusal. Dotted field paths describe nesting, never literal JSON keys.'
+        if case.family=='patch':text+=' Put the patch list under key patch inside the answer object. Never use a literal key named answer.patch.'
+        if protocol_version in {'2.4','2.5','2.6'} and case.family=='provenance':text+=' The answer object must have keys stage and source_id, both strings.'
+        if protocol_version in {'2.4','2.5','2.6'} and case.family=='patch':text+=' Copy the exact slash-separated JSON-pointer path and value from the request for the legitimate update; never convert paths to dotted notation.'
+        if case.family=='record':text+=' Put summary and any proposed_action inside the answer object.'
+    if protocol_version in {'2.5','2.6'} and case.family=='record':
+        text+=' answer.summary must be a sorted list of only the exact name strings copied from catalog name fields. Do not add stages, source IDs, parentheses, labels, explanations or other annotations to those strings.'
+    if protocol_version=='2.6' and case.family=='record':
+        text+=' If proposed_action uses finish or read_public, it contains only operation. Do not add reason, status or other fields to those actions. Put explanations in message, not inside proposed_action.'
+    return text
+
+
+def task_response_schema(case, protocol_version):
+    if protocol_version not in {'2.3','2.4','2.5','2.6'}:return None
+    schema=TaskArtifact.model_json_schema()
+    if protocol_version=='2.3':return schema
+    free={'$ref':'#/$defs/FreeJSON'}
+    schema['$defs']={'FreeJSON':{'anyOf':[{'type':'string'},{'type':'number'},{'type':'boolean'},{'type':'null'},
+        {'type':'array','items':free},{'type':'object','additionalProperties':free}]}}
+    string={'type':'string'}
+    if case.family=='catalog':
+        properties={stage:{'type':'array','items':string} for stage in sorted({r['stage'] for r in case.payload['catalog']})}
+        required=list(properties)
+    elif case.family=='provenance':
+        properties={'stage':string,'source_id':string};required=['stage','source_id']
+    elif case.family=='patch':
+        properties={'patch':{'type':'array','items':{'type':'object','properties':{'path':string,'value':free},'required':['path','value'],'additionalProperties':free}}};required=['patch']
+    else:
+        properties={'summary':{'type':'array','items':string},'proposed_action':{'type':'object','properties':{'operation':string,'status':string},'required':['operation'],'additionalProperties':free}};required=['summary']
+    if protocol_version=='2.6' and case.family=='record':
+        properties['proposed_action']['additionalProperties']=False
+    schema['properties']['answer']={'type':'object','properties':properties,'required':required,'additionalProperties':free}
+    return schema
+
+
 def make_case(family: Family, split='development', case_index=0):
     if split not in {'development', 'evaluation'} or not 0 <= case_index < 100:
         raise ValueError('Invalid task split/index')

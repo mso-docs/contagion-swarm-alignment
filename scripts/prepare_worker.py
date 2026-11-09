@@ -8,11 +8,11 @@ from pathlib import Path
 import tarfile
 
 ROOT = Path(__file__).resolve().parents[1]
-DIRECTORIES = ('src', 'scripts', 'configs', 'tests', 'docs')
+DIRECTORIES = ('src', 'scripts', 'configs', 'tests', 'docs', 'notebooks')
 FILES = ('pyproject.toml', 'requirements.lock.txt', 'requirements-bootstrap.txt', 'requirements-interpretability.txt',
          'README.md', 'AGENTS.md', 'CONTAGION_AGENT_MVP_SPEC.md', '.env.example',
-         'dashboard/index.html', 'dashboard/style.css', 'dashboard/app.js',
-         'dashboard/data/results.json', 'dashboard/data/research.json')
+         'dashboard/index.html', 'dashboard/style.css', 'dashboard/app.js', 'dashboard/widgets.js',
+         'dashboard/data/results.json', 'dashboard/data/research.json', 'dashboard/data/repositories.json')
 
 
 def sources(root=ROOT):
@@ -20,6 +20,7 @@ def sources(root=ROOT):
     candidates = [root / name for name in FILES]
     for name in DIRECTORIES:
         candidates.extend((root / name).rglob('*'))
+    candidates.extend((root/'dashboard/data/studies').glob('*.json'))
     result = []
     for path in sorted(candidates):
         relative = path.relative_to(root)

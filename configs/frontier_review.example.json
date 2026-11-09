@@ -1,0 +1,12 @@
+{
+  "model": "anthropic/claude-sonnet-5.5",
+  "queue": "results/reviews/compact-artifact-audit-v1",
+  "out": "results/reviews/frontier-spotcheck-next",
+  "env_file": ".env.judge",
+  "max_calls": 20,
+  "max_output_tokens": 4096,
+  "usd_cap": "20",
+  "ledger": "results/reviews/frontier-global-budget.private.json",
+  "local_results": null,
+  "oracle_labels": null
+}

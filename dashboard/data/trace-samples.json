@@ -1,0 +1,66 @@
+{
+  "schema_version": "public-trace-samples-1.0",
+  "generated_utc": "2026-11-09T00:09:45.715489+00:00",
+  "samples": [
+    {
+      "id": "a673ebb9068d3585",
+      "file": "data/trace-samples/a673ebb9068d3585.json",
+      "protocol": "5.1-multidomain-question-coverage",
+      "source_kind": "multidomain",
+      "source_seal_sha256": "dae096d04b3fd415e713cd4a7254dbd46f2956dc9065516766f9cf4efee616a3",
+      "content_sha256": "2fd7168d0d290d5b1b78db6b4055b52d4a89ff2143ab0bdd9ab8f84bb1bbd444"
+    },
+    {
+      "id": "13051ae2f9145de7",
+      "file": "data/trace-samples/13051ae2f9145de7.json",
+      "protocol": "5.1-multidomain-question-coverage",
+      "source_kind": "multidomain",
+      "source_seal_sha256": "8f9f49ea00d0495777f985f610299ebfb480061a563679710ab1a5896da19283",
+      "content_sha256": "a35f775c8a199c2022d0bbebd5fdb73d05b5b6e399eccf35312d017ceb94aa39"
+    },
+    {
+      "id": "38311b5843f586e3",
+      "file": "data/trace-samples/38311b5843f586e3.json",
+      "protocol": "5.1-multidomain-question-coverage",
+      "source_kind": "multidomain",
+      "source_seal_sha256": "4b9db961d472f2f0e8f9859be67a0791da64c7718da6ce1e5fa98be97db448f4",
+      "content_sha256": "a52a6431b19a36d7a8a4b2d5b418c147857146eb21e28b55fe895b4dc58df56b"
+    },
+    {
+      "id": "4fc23c2cf737d519",
+      "file": "data/trace-samples/4fc23c2cf737d519.json",
+      "protocol": "4.0-confirmatory",
+      "source_kind": "followup",
+      "source_seal_sha256": "f48a23ed44d555ed1f3042e8ce0316502f807932b3add9d4584e9db775997da3",
+      "content_sha256": "df3b0f59360054d0a609b3dfc3c61e2c837099a50499d0fef547c80f74736d4c"
+    },
+    {
+      "id": "0a3c79f4a58498ff",
+      "file": "data/trace-samples/0a3c79f4a58498ff.json",
+      "protocol": "4.0-confirmatory",
+      "source_kind": "followup",
+      "source_seal_sha256": "b60b2c1972ad576674cf843c5dcd23886338c371659ed85a29dca788386fdd3b",
+      "content_sha256": "fdd2c2709fe9f838c3bb043b687c1fb2b54cd0d82a02a8cb3543bb2c67e55bf0"
+    },
+    {
+      "id": "c2eb1153f517ccc8",
+      "file": "data/trace-samples/c2eb1153f517ccc8.json",
+      "protocol": "3.8-repository-bounded-output",
+      "source_kind": "repository",
+      "source_seal_sha256": "24a61a2fc28a07ede90fcb3e9a4fc65fc306a1847e3544ee9943a84e033d5064",
+      "content_sha256": "ed45d715dc189801c6196524864b095b57d37c37bdfd0ce92a292c4fbcbdf8c0"
+    },
+    {
+      "id": "cf9f3f90861afadd",
+      "file": "data/trace-samples/cf9f3f90861afadd.json",
+      "protocol": "3.8-repository-bounded-output",
+      "source_kind": "repository",
+      "source_seal_sha256": "55ade9a68eccb0b9d093363bd8fa6b98bb75d581eb0ea288300223d5495befd2",
+      "content_sha256": "29f459baffd007ed34ed21818ea24bae57250fb0989ef215a338c97210e5aa1d"
+    }
+  ],
+  "raw_logs_included": false,
+  "request_histories_included": false,
+  "human_privacy_review_claimed": false,
+  "release_scope": "explicit_user_opt_in_agent_reviewed_excerpts"
+}
