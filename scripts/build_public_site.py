@@ -51,7 +51,7 @@ def validate_overview(html, css, known):
                 raise ValueError('Broken overview anchor')
         elif link not in {'./', '../', 'style.css', 'paper.pdf'}:
             url = urlsplit(link)
-            if tag != 'a' or url.scheme != 'https' or url.hostname not in {'github.com', 'youtu.be'} or url.username or url.password or url.query:
+            if tag != 'a' or url.scheme != 'https' or url.hostname not in {'github.com', 'youtu.be', 'apartresearch.com'} or url.username or url.password or url.query:
                 raise ValueError('Unapproved overview link or asset')
     if findings(' '.join(parser.text), public=True, known=known):
         raise ValueError('Overview failed privacy validation')

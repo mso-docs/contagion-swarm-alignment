@@ -365,3 +365,7 @@ policy tests passed. The browser reported no page errors and the judge overview
 fits a390px viewport. Full regression passed:531 tests in269.42s. Final manual
 secret/history, publication privacy, Ruff and Bandit checks also passed. The
 new overview requires human review and merge before Pages publishes it.
+
+Added the author-supplied Apart Research project URL to the README and judge
+overview footer. The link remains subject to Apart's own access/publication
+settings; no judging outcome or public-page availability is claimed.

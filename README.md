@@ -7,7 +7,8 @@ A reproducible research harness for instruction-boundary failures in LLM swarms,
 [static dashboard snapshot](docs/FINAL_DASHBOARD_SNAPSHOT.md).
 
 **Online:** [final dashboard snapshot](https://mso-docs.github.io/contagion-swarm-alignment/) ·
-[judge overview](https://mso-docs.github.io/contagion-swarm-alignment/overview/).
+[judge overview](https://mso-docs.github.io/contagion-swarm-alignment/overview/) ·
+[Apart Research project](https://apartresearch.com/sprints/projects/contagion-testing-how-unsafe-instructions-spread-through-ai-agent-networks-3hzoqflrcr).
 
 Watch the [video demo](https://youtu.be/7FGDfEq0ucE).
 
