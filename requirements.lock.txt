@@ -25,4 +25,4 @@ PyYAML==6.0.3
 typing-inspection==0.4.5
 typing_extensions==4.16.0
 tzdata==2026.6
-setuptools==84.1.0
+setuptools==84.2.1
