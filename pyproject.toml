@@ -13,7 +13,7 @@ dependencies = ["pydantic>=2,<3", "httpx>=0.27,<1", "PyYAML>=6,<7", "matplotlib>
 analysis = ["pandas>=2.2,<4", "seaborn>=0.13,<1", "nbformat>=5,<6", "ipykernel>=6,<8", "nbclient>=0.10,<1", "pypdf>=6,<8"]
 benchmarks = ["pyarrow==23.0.1"]
 test = ["pytest>=8,<10"]
-security = ["setuptools>=84.1.0,<85", "pre-commit>=4,<5", "bandit>=1.9,<2", "pip-audit>=2.10,<3", "ruff>=0.15,<1", "pypdf==7.0.0"]
+security = ["setuptools>=84.1.0,<85", "pre-commit>=4,<5", "bandit>=1.9,<2", "pip-audit>=2.10,<3", "ruff>=0.15,<1", "pypdf==7.0.1"]
 
 [project.scripts]
 contagion = "contagion.cli:main"
