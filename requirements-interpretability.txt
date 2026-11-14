@@ -2,4 +2,4 @@
 # Pin the tested API major; freeze the resolved worker environment alongside each capture.
 transformer-lens==4.3.0
 torch>=2.6,<3
-safetensors>=0.6,<1
+safetensors>=0.8.0,<1
